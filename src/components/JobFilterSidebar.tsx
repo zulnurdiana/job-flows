@@ -4,10 +4,12 @@ import Select from "./ui/select";
 import prisma from "@/lib/prisma";
 import { jobTypes } from "@/lib/job-types";
 import { Button } from "./ui/button";
-import { jobFilterSchema } from "@/lib/validation";
+import { jobFilterSchema, jobFilterValue } from "@/lib/validation";
 import { redirect } from "next/navigation";
+import FormSubmitButton from "./FormSubmitButton";
 async function filterJob(formData: FormData) {
   "use server";
+
   // konversi kedalam bentuk obj js
   const values = Object.fromEntries(formData.entries());
 
@@ -24,7 +26,11 @@ async function filterJob(formData: FormData) {
   redirect(`/?${searchParams}`.toString());
 }
 
-const JobFilterSidebar = async () => {
+interface JobFilterSidebarProps {
+  defaultValues: jobFilterValue;
+}
+
+const JobFilterSidebar = async ({ defaultValues }: JobFilterSidebarProps) => {
   const disctincLocation = (await prisma.job
     .findMany({
       where: {
@@ -44,11 +50,15 @@ const JobFilterSidebar = async () => {
         <div className="space-y-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="q">Search</Label>
-            <Input id="q" name="q" />
+            <Input id="q" name="q" defaultValue={defaultValues.q} />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="type">Type</Label>
-            <Select id="type" name="type" defaultValue="">
+            <Select
+              id="type"
+              name="type"
+              defaultValue={defaultValues.type || ""}
+            >
               <option value="">All Type</option>
               {jobTypes.map((job) => (
                 <option value={job} key={job}>
@@ -59,7 +69,11 @@ const JobFilterSidebar = async () => {
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="location">Location</Label>
-            <Select id="location" name="location" defaultValue="">
+            <Select
+              id="location"
+              name="location"
+              defaultValue={defaultValues.location || ""}
+            >
               <option value="">All Location</option>
               {disctincLocation.map((location) => (
                 <option value={location} key={location}>
@@ -74,12 +88,11 @@ const JobFilterSidebar = async () => {
               id="remote"
               name="remote"
               className="scale-125 accent-black"
+              defaultChecked={defaultValues.remote}
             />
             <Label htmlFor="remote">Remote</Label>
           </div>
-          <Button type="submit" className="w-full">
-            Filter Job
-          </Button>
+          <FormSubmitButton className="w-full">Filter Job</FormSubmitButton>
         </div>
       </form>
     </aside>
