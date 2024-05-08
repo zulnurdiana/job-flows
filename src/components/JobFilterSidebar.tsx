@@ -3,7 +3,6 @@ import { Input } from "./ui/input";
 import Select from "./ui/select";
 import prisma from "@/lib/prisma";
 import { jobTypes } from "@/lib/job-types";
-import { Button } from "./ui/button";
 import { jobFilterSchema, jobFilterValue } from "@/lib/validation";
 import { redirect } from "next/navigation";
 import FormSubmitButton from "./FormSubmitButton";
@@ -46,7 +45,7 @@ const JobFilterSidebar = async ({ defaultValues }: JobFilterSidebarProps) => {
     )) as string[];
   return (
     <aside className="md:w-[260px] border rounded-xl md:sticky top-0 bg-background p-4 h-fit">
-      <form action={filterJob}>
+      <form action={filterJob} key={JSON.stringify(defaultValues)}>
         <div className="space-y-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="q">Search</Label>
