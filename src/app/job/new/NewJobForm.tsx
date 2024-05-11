@@ -11,7 +11,12 @@ const NewJobForm = () => {
           Get your joob posting seen by thousand job seekers
         </p>
       </div>
-      <div className="border rounded-lg space-y-6 p-4"></div>
+      <div className="border rounded-lg space-y-4 p-4">
+        <h2 className="font-semibold">Job Details</h2>
+        <p className="text-muted-foreground">
+          Provide job description and detail
+        </p>
+      </div>
     </main>
   );
 };

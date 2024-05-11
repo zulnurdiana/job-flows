@@ -13,7 +13,7 @@ const companyLogoSchema = z
     !file || (file instanceof File && file.type.startsWith("image/"));
   }, "Must be an image file")
   .refine((file) => {
-    !file || file.size > 1024 * 1024 * 2;
+    !file || file.size < 1024 * 1024 * 2;
   }, "File must be less than 2MB");
 
 // email validation

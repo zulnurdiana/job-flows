@@ -34,3 +34,4 @@ model Job {
 
   @@map("jobs")
 }
+
