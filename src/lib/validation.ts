@@ -70,3 +70,20 @@ export const jobFilterSchema = z.object({
 });
 
 export type jobFilterValue = z.infer<typeof jobFilterSchema>;
+
+interface dataTest {
+  id?: number;
+  name?: string;
+  location: string;
+}
+
+function Tester<T>(data: T): T {
+  return data;
+}
+
+const test = Tester([1, 2, 3, 4, 5]);
+const test2 = Tester("awfaw");
+
+const cobaDataTest = async (data: dataTest) => {
+  return data;
+};
