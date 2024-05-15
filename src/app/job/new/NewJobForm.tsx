@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import RichTextEditor from "@/components/RichTextEditor";
 import { draftToMarkdown } from "markdown-draft-js";
 import LoadingButton from "@/components/LoadingButton";
+import { createJobPosting } from "./action";
 
 const NewJobForm = () => {
   const form = useForm<createJobValue>({
@@ -37,8 +38,20 @@ const NewJobForm = () => {
     formState: { isSubmitting },
   } = form;
 
-  async function onSubmit(value: createJobValue) {
-    alert(JSON.stringify(value, null, 2));
+  async function onSubmit(values: createJobValue) {
+    const formData = new FormData();
+
+    Object.entries(values).forEach(([key, value]) => {
+      if (value) {
+        formData.append(key, value);
+      }
+    });
+
+    try {
+      await createJobPosting(formData);
+    } catch (error) {
+      alert("Something went wrong");
+    }
   }
 
   return (

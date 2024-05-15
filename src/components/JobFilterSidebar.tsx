@@ -3,7 +3,7 @@ import { Input } from "./ui/input";
 import Select from "./ui/select";
 import prisma from "@/lib/prisma";
 import { jobTypes } from "@/lib/job-types";
-import { jobFilterSchema, jobFilterValue } from "@/lib/validation";
+import { jobFilterSchema, JobFilterValues } from "@/lib/validation";
 import { redirect } from "next/navigation";
 import FormSubmitButton from "./FormSubmitButton";
 async function filterJob(formData: FormData) {
@@ -26,7 +26,7 @@ async function filterJob(formData: FormData) {
 }
 
 interface JobFilterSidebarProps {
-  defaultValues: jobFilterValue;
+  defaultValues: JobFilterValues;
 }
 
 const JobFilterSidebar = async ({ defaultValues }: JobFilterSidebarProps) => {
