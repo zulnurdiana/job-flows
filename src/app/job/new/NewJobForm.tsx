@@ -38,53 +38,56 @@ const NewJobForm = () => {
   } = form;
 
   async function onSubmit(value: createJobValue) {
-    console.log("halo");
-
     alert(JSON.stringify(value, null, 2));
   }
 
   return (
-    <main className="max-w-[350px] sm:max-w-3xl m-auto space-y-10 my-10">
+    <main className="m-auto my-10 max-w-3xl space-y-10">
       <div className="space-y-5 text-center">
-        <H1>Find your best developer</H1>
+        <H1>Find your perfect developer</H1>
         <p className="text-muted-foreground">
-          Get your joob posting seen by thousand job seekers
+          Get your job posting seen by thousands of job seekers.
         </p>
       </div>
-      <div className="border rounded-lg space-y-4 p-4">
-        <h2 className="font-semibold">Job Details</h2>
-        <p className="text-muted-foreground">
-          Provide job description and detail
-        </p>
+      <div className="space-y-6 rounded-lg border p-4">
+        <div>
+          <h2 className="font-semibold">Job details</h2>
+          <p className="text-muted-foreground">
+            Provide a job description and details
+          </p>
+        </div>
         <Form {...form}>
-          <form noValidate onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="space-y-4"
+            noValidate
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <FormField
               control={control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Job Title</FormLabel>
+                  <FormLabel>Job title</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g Frontend Developer" {...field} />
+                    <Input placeholder="e.g. Frontend Developer" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Job Type</FormLabel>
+                  <FormLabel>Job type</FormLabel>
                   <FormControl>
                     <Select {...field} defaultValue="">
                       <option value="" hidden>
-                        Select Job Type
+                        Select an option
                       </option>
                       {jobTypes.map((jobType) => (
-                        <option value={jobType} key={jobType}>
+                        <option key={jobType} value={jobType}>
                           {jobType}
                         </option>
                       ))}
@@ -94,7 +97,6 @@ const NewJobForm = () => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="companyName"
@@ -108,19 +110,17 @@ const NewJobForm = () => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="companyLogo"
               render={({ field: { value, ...fieldValues } }) => (
                 <FormItem>
-                  <FormLabel>Company</FormLabel>
+                  <FormLabel>Company logo</FormLabel>
                   <FormControl>
                     <Input
                       {...fieldValues}
                       type="file"
                       accept="image/*"
-                      // handle jika user menginput lebih dari 1 image
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         fieldValues.onChange(file);
@@ -131,7 +131,6 @@ const NewJobForm = () => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="locationType"
@@ -139,12 +138,21 @@ const NewJobForm = () => {
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <Select {...field} defaultValue="">
+                    <Select
+                      {...field}
+                      defaultValue=""
+                      onChange={(e) => {
+                        field.onChange(e);
+                        if (e.currentTarget.value === "Remote") {
+                          trigger("location");
+                        }
+                      }}
+                    >
                       <option value="" hidden>
                         Select an option
                       </option>
                       {locationTypes.map((locationType) => (
-                        <option value={locationType} key={locationType}>
+                        <option key={locationType} value={locationType}>
                           {locationType}
                         </option>
                       ))}
@@ -154,13 +162,12 @@ const NewJobForm = () => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Office Location</FormLabel>
+                  <FormLabel>Office location</FormLabel>
                   <FormControl>
                     <LocationInput
                       onLocationSelected={field.onChange}
@@ -168,24 +175,24 @@ const NewJobForm = () => {
                     />
                   </FormControl>
                   {watch("location") && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setValue("location", "", { shouldValidate: true })
-                      }
-                      className="flex items-center gap-2"
-                    >
-                      <X size={20} />
-                      <span>{watch("location")}</span>
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setValue("location", "", { shouldValidate: true });
+                        }}
+                      >
+                        <X size={20} />
+                      </button>
+                      <span className="text-sm">{watch("location")}</span>
+                    </div>
                   )}
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <div>
-              <Label htmlFor="applicationEmail">How To Apply</Label>
+            <div className="space-y-2">
+              <Label htmlFor="applicationEmail">How to apply</Label>
               <div className="flex justify-between">
                 <FormField
                   control={control}
@@ -195,8 +202,8 @@ const NewJobForm = () => {
                       <FormControl>
                         <div className="flex items-center">
                           <Input
-                            placeholder="Email"
                             id="applicationEmail"
+                            placeholder="Email"
                             type="email"
                             {...field}
                           />
@@ -229,7 +236,6 @@ const NewJobForm = () => {
                 />
               </div>
             </div>
-
             <FormField
               control={control}
               name="description"
@@ -250,7 +256,6 @@ const NewJobForm = () => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="salary"
@@ -258,7 +263,7 @@ const NewJobForm = () => {
                 <FormItem>
                   <FormLabel>Salary</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input {...field} type="number" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
