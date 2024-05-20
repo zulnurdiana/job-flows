@@ -1,22 +1,18 @@
 "use server";
-import { isAdmin } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs";
+
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { del } from "@vercel/blob";
 import { redirect } from "next/navigation";
+import getSession from "@/lib/getSession";
 
-type FormState = { error?: string } | undefined;
-
-export async function approvedSubmission(
-  prevState: FormState,
-  formData: FormData,
-): Promise<FormState> {
+export async function approvedSubmission(formData: FormData) {
   try {
     const jobId = parseInt(formData.get("jobId") as string);
 
-    let user = await currentUser();
-    if (!user || !isAdmin(user)) {
+    let user = await getSession();
+
+    if (!user || user.user.role !== "admin") {
       throw new Error("Not Unauthorized");
     }
 
@@ -31,23 +27,17 @@ export async function approvedSubmission(
 
     revalidatePath("/");
   } catch (error) {
-    // Digunakan untuk melempar pesan ke frontend
-    let message = "Something went wrong";
-    if (error instanceof Error) {
-      message = error.message;
-    }
-    return {
-      error: message,
-    };
+    console.log(error);
   }
 }
 
-export async function deleteJob(prevState: FormState, formData: FormData) {
+export async function deleteJob(formData: FormData) {
   try {
     const jobId = parseInt(formData.get("jobId") as string);
 
-    let user = await currentUser();
-    if (!user || !isAdmin(user)) {
+    let user = await getSession();
+
+    if (!user || user.user.role !== "admin") {
       throw new Error("Not Unauthorized");
     }
 
@@ -68,13 +58,7 @@ export async function deleteJob(prevState: FormState, formData: FormData) {
     });
     revalidatePath("/");
   } catch (error) {
-    let message = "Something went wrong";
-    if (error instanceof Error) {
-      message = error.message;
-    }
-    return {
-      error: message,
-    };
+    console.log(error);
   }
 
   redirect("/admin");

@@ -1,10 +1,18 @@
-
-import JobListItem from "@/components/JobListItem";
 import H1 from "@/components/ui/h1";
+import getSession from "@/lib/getSession";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
+import JobListItem from "@/components/JobListItem";
 import Link from "next/link";
 
-const AdminPage = async () => {
+const page = async () => {
+  const session = await getSession();
+  const user = session?.user;
+
+  if (!session) {
+    redirect("/");
+  }
+
   const unapprovedJobs = await prisma.job.findMany({
     where: {
       approved: false,
@@ -12,21 +20,29 @@ const AdminPage = async () => {
   });
 
   return (
-    <main className="max-w-5xl m-auto my-10 space-y-10 px-3">
-      <H1 className="text-center">Admin Dashboard</H1>
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-bold mb-3">Unapproved Jobs : </h2>
-        {unapprovedJobs.map((job) => (
-          <Link key={job.id} href={`/admin/job/${job.slug}`} className="block">
-            <JobListItem job={job} />
-          </Link>
-        ))}
-      </section>
-      {unapprovedJobs.length === 0 && (
-        <p className="text-center font-bold">No unapproved jobs found</p>
+    <div className="max-w-5xl m-auto my-10 space-y-5">
+      <H1 className="text-center text-xl font-bold">Halaman admin</H1>
+
+      {user?.role !== "admin" ? (
+        <p className="text-center">Anda bukan admin</p>
+      ) : (
+        <div className="space-y-5">
+          {unapprovedJobs.map((job) => (
+            <Link
+              href={`/admin/job/${job.slug}`}
+              key={job.id}
+              className="block"
+            >
+              <JobListItem job={job} />
+            </Link>
+          ))}
+          {unapprovedJobs.length === 0 && (
+            <p className="text-center">Tidak ada job</p>
+          )}
+        </div>
       )}
-    </main>
+    </div>
   );
 };
 
-export default AdminPage;
+export default page;

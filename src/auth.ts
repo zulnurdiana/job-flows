@@ -6,6 +6,7 @@ import Google from "next-auth/providers/google";
 import Github from "next-auth/providers/github";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   adapter: PrismaAdapter(prisma) as Adapter,
   callbacks: {
     session({ session, user }: any) {
@@ -13,6 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
+
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
