@@ -1,37 +1,26 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+import prisma from "./lib/prisma";
 import { Adapter } from "next-auth/adapters";
-import Credentials from "next-auth/providers/credentials";
-import { getUserFromDB, saltAndHashPassword } from "./lib/utils";
+import Google from "next-auth/providers/google";
+import Github from "next-auth/providers/github";
 
-const prisma = new PrismaClient();
-
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma) as Adapter,
+  callbacks: {
+    session({ session, user }: any) {
+      session.user.role = user.role;
+      return session;
+    },
+  },
   providers: [
-    Credentials({
-      credentials: {
-        email: {},
-        password: {},
-      },
-      authorize: async (credentials) => {
-        let user = null;
-
-        // logic to salt and hash password
-        const pwHash = saltAndHashPassword(credentials?.password as string);
-
-        user = await getUserFromDB(credentials?.email as string, pwHash);
-
-        if (!user) {
-          // No user found, so this is their first attempt to login
-          // meaning this is also the place you could do registration
-          throw new Error("User not found.");
-        }
-
-        // return user object with the their profile data
-        return user;
-      },
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+    }),
+    Github({
+      clientId: process.env.AUTH_GITHUB_ID!,
+      clientSecret: process.env.AUTH_GITHUB_SECRET!,
     }),
   ],
 });

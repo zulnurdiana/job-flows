@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import DetailJobPage from "@/components/DetailJobPage";
 import { Button } from "@/components/ui/button";
+import getSession from "@/lib/getSession";
 
 interface PageProps {
   params: {
@@ -59,15 +60,21 @@ const page = async ({ params: { slug } }: PageProps) => {
     console.error("Application Doesn't Exist");
     notFound();
   }
+
+  const session = await getSession();
+  const user = session?.user;
+
   return (
     <main className="max-w-5xl m-auto px-3 my-10 flex flex-col sm:flex-row items-center gap-5 md:items-start">
       <DetailJobPage job={job} />
       <aside>
-        <Button asChild>
-          <a href={`${applicationLink}`} className="w-40 md:w-fit">
-            Apply Now
-          </a>
-        </Button>
+        {user?.role === "pelamar" && (
+          <Button asChild>
+            <a href={`${applicationLink}`} className="w-40 md:w-fit">
+              Apply Now
+            </a>
+          </Button>
+        )}
       </aside>
     </main>
   );
