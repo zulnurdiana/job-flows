@@ -59,8 +59,6 @@ export const createJobsSchema = z
   .and(applicationSchema)
   .and(locationSchema);
 
-export type createJobValue = z.infer<typeof createJobsSchema>;
-
 export const jobFilterSchema = z.object({
   q: z.string().optional(),
   type: z.string().optional(),
@@ -68,4 +66,17 @@ export const jobFilterSchema = z.object({
   remote: z.coerce.boolean().optional(),
 });
 
+export const createPermintaanSchema = z.object({
+  jumlah_pegawai: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  tanggal_permintaan: z.date().optional(),
+  status_permintaan: z.boolean().default(false),
+  id_jabatan: z.number().int("Must be an integer"),
+  id_user: z.string(),
+});
+
+export type createJobValue = z.infer<typeof createJobsSchema>;
 export type JobFilterValues = z.infer<typeof jobFilterSchema>;
+export type createPermintaanValues = z.infer<typeof createPermintaanSchema>;

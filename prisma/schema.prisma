@@ -32,12 +32,15 @@ model Jabatan {
   nama_jabatan      String    @unique
   deskripsi_jabatan String?
   divisi            Divisi    @relation(fields: [id_divisi], references: [id_divisi], onDelete: Cascade)
+  permintaans       Permintaan[] 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("jabatan")
 }
+
+
 
 model Job {
   id Int @id @default(autoincrement())
@@ -60,6 +63,22 @@ model Job {
 }
 
 
+model Permintaan {
+  id_permintaan   Int        @id @default(autoincrement())
+  jumlah_pegawai  Int
+  status_permintaan Boolean  @default(false)
+  tanggal_permintaan DateTime
+  id_jabatan      Int
+  jabatan         Jabatan    @relation(fields: [id_jabatan], references: [id_jabatan], onDelete: Cascade)
+  id_user         String
+  user            User       @relation(fields: [id_user], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("permintaan")
+}
+
 model User {
   id            String          @id @default(cuid())
   name          String?
@@ -67,6 +86,7 @@ model User {
   emailVerified DateTime?
   image         String?
   role          String? @default("pelamar")
+  permintaan    Permintaan[]
   accounts      Account[]
   sessions      Session[]
  

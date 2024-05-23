@@ -4,6 +4,11 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import JobListItem from "@/components/JobListItem";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Halaman Admin",
+};
 
 const page = async () => {
   const session = await getSession();

@@ -24,6 +24,12 @@ const Header = () => {
             <Link href={"/job/new"}>Post a job</Link>
           </Button>
         )}
+
+        {user?.role === "admin" && (
+          <Button asChild>
+            <Link href={"/permintaan/new"}>Permintaan</Link>
+          </Button>
+        )}
       </div>
     </header>
   );
