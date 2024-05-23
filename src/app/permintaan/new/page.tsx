@@ -14,13 +14,9 @@ const page = async () => {
     redirect("/");
   }
 
-  const jabatan = await getJabatan();
+  const jabatan = await prisma.jabatan.findMany({});
 
-  return (
-    <div className="m-auto max-w-5xl my-10">
-      <NewPermintaanForm />
-    </div>
-  );
+  return <NewPermintaanForm jabatan={jabatan} />;
 };
 
 export default page;

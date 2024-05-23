@@ -18,12 +18,14 @@ import {
 import { Input } from "@/components/ui/input";
 import Select from "@/components/ui/select";
 import { Jabatan } from "@prisma/client";
+import LoadingButton from "@/components/LoadingButton";
+import createPermintaan from "./actions";
 
 interface NewPermintaanFormProps {
-  jabatan: Jabatan;
+  jabatan: Jabatan[];
 }
 
-const NewPermintaanForm = () => {
+const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
   const form = useForm<createPermintaanValues>({
     resolver: zodResolver(createPermintaanSchema),
   });
@@ -37,6 +39,27 @@ const NewPermintaanForm = () => {
     setFocus,
     formState: { isSubmitting },
   } = form;
+  async function onSubmit(values: createPermintaanValues) {
+    try {
+      const formData = new FormData();
+
+      // Mengisi FormData dengan nilai dari createPermintaanValues
+      Object.entries(values).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          if (typeof value === "object" && value instanceof Date) {
+            formData.append(key, value.toISOString());
+          } else {
+            formData.append(key, String(value));
+          }
+        }
+      });
+
+      // Memanggil createPermintaan dengan formData yang telah diisi
+      await createPermintaan(formData);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <main className="m-auto max-w-5xl my-10 space-y-10">
@@ -44,37 +67,47 @@ const NewPermintaanForm = () => {
         <H1>Tambah Permintaan</H1>
       </div>
       <Form {...form}>
-        <FormField
-          control={control}
-          name="jumlah_pegawai"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Jumlah Pegawai</FormLabel>
-              <FormControl>
-                <Input {...field} type="number" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormField
+            control={control}
+            name="jumlah_pegawai"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Jumlah Pegawai</FormLabel>
+                <FormControl>
+                  <Input {...field} type="number" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={control}
-          name="id_jabatan"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Job type</FormLabel>
-              <FormControl>
-                <Select {...field} defaultValue="">
-                  <option value="" hidden>
-                    Select jabatan
-                  </option>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={control}
+            name="id_jabatan"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Job type</FormLabel>
+                <FormControl>
+                  <Select {...field} defaultValue="">
+                    <option value="" hidden>
+                      Pilih Jabatan
+                    </option>
+                    {jabatan.map((jab) => (
+                      <option key={jab.id_jabatan} value={jab.id_jabatan}>
+                        {jab.nama_jabatan}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <LoadingButton type="submit" loading={isSubmitting}>
+            Submit
+          </LoadingButton>
+        </form>
       </Form>
     </main>
   );

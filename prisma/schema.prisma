@@ -67,7 +67,7 @@ model Permintaan {
   id_permintaan   Int        @id @default(autoincrement())
   jumlah_pegawai  Int
   status_permintaan Boolean  @default(false)
-  tanggal_permintaan DateTime
+  tanggal_permintaan DateTime @default(now())
   id_jabatan      Int
   jabatan         Jabatan    @relation(fields: [id_jabatan], references: [id_jabatan], onDelete: Cascade)
   id_user         String
