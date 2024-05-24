@@ -15,18 +15,11 @@ const page = async () => {
   }
 
   const jabatan = await prisma.jabatan.findMany({});
-  const unapprovedPermintaan = await prisma.permintaan.findMany({
-    where: {
-      status_permintaan: false,
-    },
-  });
+ 
 
   return (
     <div>
       <NewPermintaanForm jabatan={jabatan} />
-      {unapprovedPermintaan.map((permintaan) => (
-        <div key={permintaan.id_permintaan}>{permintaan.jumlah_pegawai}</div>
-      ))}
     </div>
   );
 };

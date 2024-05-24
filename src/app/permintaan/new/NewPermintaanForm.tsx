@@ -58,7 +58,9 @@ const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
 
     try {
       await createPermintaan(formData);
-    } catch (error) {}
+    } catch (error) {
+      alert("Something went wrong");
+    }
   }
 
   return (

@@ -2,6 +2,7 @@
 import getSession from "@/lib/getSession";
 import prisma from "@/lib/prisma";
 import { createPermintaanSchema } from "@/lib/validation";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export default async function createPermintaan(formData: FormData) {
@@ -21,4 +22,49 @@ export default async function createPermintaan(formData: FormData) {
   });
 
   redirect("/");
+}
+
+export async function approvedPermintaan(formData: FormData) {
+  try {
+    const id_permintaan = parseInt(formData.get("id_permintaan") as string);
+
+    const user = await getSession();
+
+    if (!user || user.user.role !== "direktur") {
+      throw new Error("Not Unauthorized");
+    }
+
+    await prisma.permintaan.update({
+      where: {
+        id_permintaan: id_permintaan,
+      },
+      data: {
+        status_permintaan: true,
+      },
+    });
+
+    revalidatePath("/");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function deletePermintaan(formData: FormData) {
+  try {
+    const id_permintaan = parseInt(formData.get("id_permintaan") as string);
+    const user = await getSession();
+
+    if (!user || user.user.role !== "direktur") {
+      throw new Error("Not Unauthorized");
+    }
+
+    await prisma.permintaan.delete({
+      where: {
+        id_permintaan: id_permintaan,
+      },
+    });
+    revalidatePath("/");
+  } catch (error) {
+    console.log(error);
+  }
 }
