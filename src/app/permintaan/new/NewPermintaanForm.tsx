@@ -28,6 +28,9 @@ interface NewPermintaanFormProps {
 const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
   const form = useForm<createPermintaanValues>({
     resolver: zodResolver(createPermintaanSchema),
+    defaultValues: {
+      jumlah_pegawai: "0",
+    },
   });
 
   const {
@@ -39,26 +42,23 @@ const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
     setFocus,
     formState: { isSubmitting },
   } = form;
+
   async function onSubmit(values: createPermintaanValues) {
-    try {
-      const formData = new FormData();
-
-      // Mengisi FormData dengan nilai dari createPermintaanValues
-      Object.entries(values).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          if (typeof value === "object" && value instanceof Date) {
-            formData.append(key, value.toISOString());
-          } else {
-            formData.append(key, String(value));
-          }
+    const formData = new FormData();
+    // Mengisi FormData dengan nilai dari createPermintaanValues
+    Object.entries(values).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (typeof value === "object" && value instanceof Date) {
+          formData.append(key, value.toISOString());
+        } else {
+          formData.append(key, String(value));
         }
-      });
+      }
+    });
 
-      // Memanggil createPermintaan dengan formData yang telah diisi
+    try {
       await createPermintaan(formData);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   return (
@@ -67,7 +67,7 @@ const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
         <H1>Tambah Permintaan</H1>
       </div>
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
           <FormField
             control={control}
             name="jumlah_pegawai"

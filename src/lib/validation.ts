@@ -72,9 +72,9 @@ export const createPermintaanSchema = z.object({
     "Number cant be longer than 3 digits",
   ),
   tanggal_permintaan: z.date().optional(),
-  status_permintaan: z.boolean().default(false),
-  id_jabatan: z.number().int("Must be an integer"),
-  id_user: z.string(),
+  status_permintaan: z.boolean().optional(),
+  id_jabatan: z.string(),
+  id_user: z.string().optional(),
 });
 
 export type createJobValue = z.infer<typeof createJobsSchema>;

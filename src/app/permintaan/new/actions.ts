@@ -1,3 +1,4 @@
+"use server";
 import getSession from "@/lib/getSession";
 import prisma from "@/lib/prisma";
 import { createPermintaanSchema } from "@/lib/validation";
@@ -14,7 +15,7 @@ export default async function createPermintaan(formData: FormData) {
       jumlah_pegawai: parseInt(jumlah_pegawai),
       // Tambahkan properti yang hilang
       tanggal_permintaan: new Date(), // Atau gunakan tanggal yang sesuai
-      jabatan: { connect: { id_jabatan: id_jabatan } }, // Menghubungkan ke jabatan yang sesuai
+      jabatan: { connect: { id_jabatan: parseInt(id_jabatan) } }, // Menghubungkan ke jabatan yang sesuai
       user: { connect: { id: id_user } }, // Menghubungkan ke user yang sesuai
     },
   });
