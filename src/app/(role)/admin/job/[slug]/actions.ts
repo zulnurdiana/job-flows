@@ -12,7 +12,7 @@ export async function approvedSubmission(formData: FormData) {
 
     let user = await getSession();
 
-    if (!user || user.user.role !== "admin") {
+    if (!user || user.user.role?.toLocaleLowerCase() !== "admin") {
       throw new Error("Not Unauthorized");
     }
 
@@ -37,7 +37,7 @@ export async function deleteJob(formData: FormData) {
 
     let user = await getSession();
 
-    if (!user || user.user.role !== "admin") {
+    if (!user || user.user.role?.toLowerCase() !== "admin") {
       throw new Error("Not Unauthorized");
     }
 

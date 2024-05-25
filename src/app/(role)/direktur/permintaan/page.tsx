@@ -11,7 +11,10 @@ import {
 } from "@/components/ui/table";
 import prisma from "@/lib/prisma";
 import FormSubmitButton from "@/components/FormSubmitButton";
-import { approvedPermintaan, deletePermintaan } from "./new/actions";
+import {
+  approvedPermintaan,
+  deletePermintaan,
+} from "../../user/permintaan/new/actions";
 
 const page = async () => {
   const session = await getSession();
@@ -33,7 +36,7 @@ const page = async () => {
 
   return (
     <div className="max-w-5xl m-auto my-10 space-y-5">
-      {user?.role !== "direktur" ? (
+      {user?.role?.toLocaleLowerCase() !== "direktur" ? (
         <span className="text-center">
           Anda tidak diizinkan mengakses halaman ini
         </span>

@@ -17,19 +17,10 @@ const Header = () => {
         <span className="font-bold tracking-tight text-xl">Job Flows</span>
       </Link>
       <div className="flex items-center gap-3">
+        <span className="text-sm"> {user?.name}</span>
+
         {!user && logginButton()}
         {user && <UserButton user={user} />}
-        {user?.role === "admin" && (
-          <Button asChild>
-            <Link href={"/job/new"}>Post a job</Link>
-          </Button>
-        )}
-
-        {user?.role === "admin" && (
-          <Button asChild>
-            <Link href={"/permintaan/new"}>Permintaan</Link>
-          </Button>
-        )}
       </div>
     </header>
   );

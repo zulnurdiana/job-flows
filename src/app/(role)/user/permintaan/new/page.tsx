@@ -15,7 +15,6 @@ const page = async () => {
   }
 
   const jabatan = await prisma.jabatan.findMany({});
- 
 
   return (
     <div>

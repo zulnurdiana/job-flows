@@ -30,7 +30,7 @@ export async function approvedPermintaan(formData: FormData) {
 
     const user = await getSession();
 
-    if (!user || user.user.role !== "direktur") {
+    if (!user || user.user.role?.toLocaleLowerCase() !== "direktur") {
       throw new Error("Not Unauthorized");
     }
 
@@ -54,7 +54,7 @@ export async function deletePermintaan(formData: FormData) {
     const id_permintaan = parseInt(formData.get("id_permintaan") as string);
     const user = await getSession();
 
-    if (!user || user.user.role !== "direktur") {
+    if (!user || user.user.role?.toLowerCase() !== "direktur") {
       throw new Error("Not Unauthorized");
     }
 
