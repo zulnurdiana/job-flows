@@ -53,7 +53,11 @@ const page = async () => {
                     "Pending"
                   ) : (
                     <Button asChild>
-                      <Link href={"/user/persyaratan"}>Buat Persyaratan</Link>
+                      <Link
+                        href={`/user/persyaratan/new/${permintaan.id_permintaan}`}
+                      >
+                        Buat Persyaratan
+                      </Link>
                     </Button>
                   )}
                 </TableCell>

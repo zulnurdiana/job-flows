@@ -74,9 +74,19 @@ export const createPermintaanSchema = z.object({
   tanggal_permintaan: z.date().optional(),
   status_permintaan: z.boolean().optional(),
   id_jabatan: z.string(),
-  id_user: z.string().optional(),
 });
 
+export const createPersyaratanSchema = z.object({
+  pengalaman_kerja: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  pendidikan: requiredString,
+  umur: numericRequiredString.max(3, "Number cant be longer than 3 digits"),
+  status_pernikahan: requiredString,
+});
+
+export type createPersyaratanValues = z.infer<typeof createPersyaratanSchema>;
 export type createJobValue = z.infer<typeof createJobsSchema>;
 export type JobFilterValues = z.infer<typeof jobFilterSchema>;
 export type createPermintaanValues = z.infer<typeof createPermintaanSchema>;

@@ -59,6 +59,7 @@ model Job {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
+
   @@map("jobs")
 }
 
@@ -79,6 +80,24 @@ model Permintaan {
   @@map("permintaan")
 }
 
+model Persyaratan {
+  id_persyaratan Int @id @default(autoincrement())
+  pengalaman_kerja Int
+  pendidikan String
+  umur Int
+  status_pernikahan String
+
+  id_user String
+  user    User             @relation(fields: [id_user], references: [id])
+
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("persyaratan")
+}
+
 model User {
   id            String          @id @default(cuid())
   name          String?
@@ -87,6 +106,7 @@ model User {
   image         String?
   role          String? @default("pelamar")
   permintaan    Permintaan[]
+  persyaratan   Persyaratan[]
   accounts      Account[]
   sessions      Session[]
  

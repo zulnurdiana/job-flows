@@ -21,7 +21,7 @@ export default async function createPermintaan(formData: FormData) {
     },
   });
 
-  redirect("/");
+  redirect("/user/permintaan/submitted");
 }
 
 export async function approvedPermintaan(formData: FormData) {
