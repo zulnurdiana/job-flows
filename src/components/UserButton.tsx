@@ -13,7 +13,14 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { signOut } from "next-auth/react";
-import { StickyNote, FileInput, CheckCheck, ListStart } from "lucide-react";
+import {
+  StickyNote,
+  FileInput,
+  CheckCheck,
+  ListStart,
+  UserRoundCheck,
+  FilePen,
+} from "lucide-react";
 
 interface UserButtonProps {
   user: User;
@@ -39,31 +46,39 @@ export default function UserButton({ user }: UserButtonProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
+          {/* <DropdownMenuItem asChild>
             <Link href="/settings">
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </Link>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
 
           {/* TODO: Show this only for HR */}
           {user.role?.toLocaleLowerCase() === "hr" && (
             <DropdownMenuItem asChild className="cursor-pointer">
-              <Link href="/job/new">
-                <StickyNote className="mr-2 h-4 w-4" />
-                Post A Job
+              <Link href="/hr/job/new">
+                <FilePen className="mr-2 h-4 w-4" />
+                Posting Lowongan
               </Link>
             </DropdownMenuItem>
           )}
 
           {/* TODO: Show this only for Direktur */}
           {user.role?.toLocaleLowerCase() === "direktur" && (
-            <DropdownMenuItem asChild className="cursor-pointer">
-              <Link href="/direktur/permintaan">
-                <CheckCheck className="mr-2 h-4 w-4" />
-                Approve Permintaan
-              </Link>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/direktur/permintaan">
+                  <UserRoundCheck className="mr-2 h-4 w-4" />
+                  Approve Permintaan
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/direktur/job">
+                  <CheckCheck className="mr-2 h-4 w-4" />
+                  Approve Lowongan
+                </Link>
+              </DropdownMenuItem>
+            </>
           )}
 
           {/* TODO: Show this only for User */}

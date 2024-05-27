@@ -17,7 +17,7 @@ const page = async () => {
   const jabatan = await prisma.jabatan.findMany({});
 
   return (
-    <div>
+    <div className="min-h-[400px]">
       <NewPermintaanForm jabatan={jabatan} />
     </div>
   );

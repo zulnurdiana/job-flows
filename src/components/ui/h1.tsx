@@ -6,7 +6,7 @@ const H1 = (props: React.HTMLProps<HTMLHeadingElement>) => {
     <h1
       {...props}
       className={cn(
-        "text-4xl font-extrabold tracking-tight lg:text-5xl",
+        "text-4xl font-extrabold tracking-tight lg:text-4xl",
         props.className,
       )}
     />

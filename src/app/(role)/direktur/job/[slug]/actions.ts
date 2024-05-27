@@ -12,7 +12,7 @@ export async function approvedSubmission(formData: FormData) {
 
     let user = await getSession();
 
-    if (!user || user.user.role?.toLocaleLowerCase() !== "admin") {
+    if (!user || user.user.role?.toLocaleLowerCase() !== "direktur") {
       throw new Error("Not Unauthorized");
     }
 
@@ -37,7 +37,7 @@ export async function deleteJob(formData: FormData) {
 
     let user = await getSession();
 
-    if (!user || user.user.role?.toLowerCase() !== "admin") {
+    if (!user || user.user.role?.toLowerCase() !== "direktur") {
       throw new Error("Not Unauthorized");
     }
 
@@ -61,5 +61,5 @@ export async function deleteJob(formData: FormData) {
     console.log(error);
   }
 
-  redirect("/admin");
+  redirect("/direktur/job");
 }

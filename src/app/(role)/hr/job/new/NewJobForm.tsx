@@ -37,8 +37,7 @@ const NewJobForm = () => {
     setFocus,
     formState: { isSubmitting },
   } = form;
-   const formData = new FormData();
-
+  const formData = new FormData();
 
   async function onSubmit(values: createJobValue) {
     const formData = new FormData();

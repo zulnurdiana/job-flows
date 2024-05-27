@@ -106,7 +106,11 @@ const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
               </FormItem>
             )}
           />
-          <LoadingButton type="submit" loading={isSubmitting}>
+          <LoadingButton
+            type="submit"
+            className="w-full"
+            loading={isSubmitting}
+          >
             Submit
           </LoadingButton>
         </form>

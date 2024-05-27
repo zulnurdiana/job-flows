@@ -15,12 +15,13 @@ import {
   approvedPermintaan,
   deletePermintaan,
 } from "../../user/permintaan/new/actions";
+import H1 from "@/components/ui/h1";
 
 const page = async () => {
   const session = await getSession();
   const user = session?.user;
 
-  if (!session) {
+  if (!session || user?.role !== "direktur") {
     redirect("/");
   }
 
@@ -35,12 +36,9 @@ const page = async () => {
   });
 
   return (
-    <div className="max-w-5xl m-auto my-10 space-y-5">
-      {user?.role?.toLocaleLowerCase() !== "direktur" ? (
-        <span className="text-center">
-          Anda tidak diizinkan mengakses halaman ini
-        </span>
-      ) : (
+    <div className="max-w-5xl m-auto my-10 space-y-5 min-h-[400px]">
+      <H1 className="text-center ">Daftar Permintaan Pegawai</H1>
+      {unapprovedPermintaan.length !== 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -93,6 +91,8 @@ const page = async () => {
             ))}
           </TableBody>
         </Table>
+      ) : (
+        <p className="text-center">Tidak ada permintaan yang pending</p>
       )}
     </div>
   );

@@ -25,16 +25,18 @@ const page = async () => {
   });
 
   return (
-    <div className="max-w-5xl m-auto my-10 space-y-5">
-      <H1 className="text-center text-xl font-bold">Halaman admin</H1>
+    <div className="max-w-5xl m-auto my-10 space-y-5 min-h-[400px]">
+      <H1 className="text-center text-lg font-bold">
+        Daftar Pembukaan Lowongan
+      </H1>
 
-      {user?.role !== "admin" ? (
-        <p className="text-center">Anda bukan admin</p>
+      {user?.role !== "direktur" ? (
+        <p className="text-center">Anda bukan Direktur</p>
       ) : (
         <div className="space-y-5">
           {unapprovedJobs.map((job) => (
             <Link
-              href={`/admin/job/${job.slug}`}
+              href={`/direktur/job/${job.slug}`}
               key={job.id}
               className="block"
             >
@@ -42,7 +44,9 @@ const page = async () => {
             </Link>
           ))}
           {unapprovedJobs.length === 0 && (
-            <p className="text-center">Tidak ada job</p>
+            <p className="text-center mt-44">
+              Tidak ada daftar lowongan yang pending
+            </p>
           )}
         </div>
       )}

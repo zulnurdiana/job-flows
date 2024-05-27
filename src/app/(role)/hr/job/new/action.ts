@@ -58,5 +58,5 @@ export async function createJobPosting(formData: FormData) {
     },
   });
 
-  redirect(`/job/job-submitted`);
+  redirect(`/hr/job/job-submitted`);
 }
