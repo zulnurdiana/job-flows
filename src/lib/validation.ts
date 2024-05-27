@@ -72,7 +72,6 @@ export const createPermintaanSchema = z.object({
     "Number cant be longer than 3 digits",
   ),
   tanggal_permintaan: z.date().optional(),
-  status_permintaan: z.boolean().optional(),
   id_jabatan: z.string(),
 });
 

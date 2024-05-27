@@ -39,7 +39,7 @@ export async function approvedPermintaan(formData: FormData) {
         id_permintaan: id_permintaan,
       },
       data: {
-        status_permintaan: true,
+        approved: true,
       },
     });
 

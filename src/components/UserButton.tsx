@@ -20,6 +20,7 @@ import {
   ListStart,
   UserRoundCheck,
   FilePen,
+  BookUser,
 } from "lucide-react";
 
 interface UserButtonProps {
@@ -55,12 +56,20 @@ export default function UserButton({ user }: UserButtonProps) {
 
           {/* TODO: Show this only for HR */}
           {user.role?.toLocaleLowerCase() === "hr" && (
-            <DropdownMenuItem asChild className="cursor-pointer">
-              <Link href="/hr/job/new">
-                <FilePen className="mr-2 h-4 w-4" />
-                Posting Lowongan
-              </Link>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/hr/job/new">
+                  <FilePen className="mr-2 h-4 w-4" />
+                  Posting Lowongan
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/hr/persyaratan">
+                  <BookUser className="mr-2 h-4 w-4" />
+                  Daftar Persyaratan
+                </Link>
+              </DropdownMenuItem>
+            </>
           )}
 
           {/* TODO: Show this only for Direktur */}

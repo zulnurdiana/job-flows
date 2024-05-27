@@ -26,15 +26,18 @@ export default async function createPersyaratan(
       pendidikan: pendidikan,
       umur: parseInt(umur),
       status_pernikahan: status_pernikahan,
-      user: { connect: { id: id_user } },
+      id_user: id_user,
+      id_permintaan: id_permintaan,
     },
   });
 
   if (persyaratan) {
-    await prisma.permintaan.delete({
+    await prisma.permintaan.update({
       where: {
         id_permintaan: id_permintaan,
-        id_user: id_user,
+      },
+      data: {
+        status_permintaan: true,
       },
     });
   }

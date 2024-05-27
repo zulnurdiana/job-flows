@@ -27,13 +27,15 @@ const page = async () => {
 
   const unapprovedPermintaan = await prisma.permintaan.findMany({
     where: {
-      status_permintaan: false,
+      approved: false,
     },
     include: {
       jabatan: true,
       user: true,
     },
   });
+
+  console.log(unapprovedPermintaan);
 
   return (
     <div className="max-w-5xl m-auto my-10 space-y-5 min-h-[400px]">

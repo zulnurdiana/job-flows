@@ -19,10 +19,11 @@ const page = async () => {
   const user = session?.user;
   if (!session) redirect("/");
   if (user?.role?.toLowerCase() !== "user") redirect("/");
-  
+
   const permintaanByUser = await prisma.permintaan.findMany({
     where: {
       id_user: user?.id,
+      status_permintaan: false,
     },
     include: {
       user: true,
@@ -52,7 +53,7 @@ const page = async () => {
                 <TableCell>{permintaan.jabatan.nama_jabatan}</TableCell>
                 <TableCell>{permintaan.jumlah_pegawai}</TableCell>
                 <TableCell>
-                  {permintaan.status_permintaan === false ? (
+                  {permintaan.approved === false ? (
                     "Pending"
                   ) : (
                     <Button asChild>

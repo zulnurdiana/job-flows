@@ -1,8 +1,20 @@
 const { divisi, jabatan } = require("./divisi-jabatan-data");
 const { PrismaClient } = require("@prisma/client");
+const { placeholderJobs } = require("./placeholder-data");
 const prisma = new PrismaClient();
 
 async function main() {
+  await Promise.all(
+    placeholderJobs.map(async (job) => {
+      await prisma.job.upsert({
+        where: {
+          slug: job.slug,
+        },
+        update: job,
+        create: job,
+      });
+    }),
+  );
   await Promise.all(
     divisi.map(async (d) => {
       await prisma.divisi.upsert({
