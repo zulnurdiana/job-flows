@@ -66,7 +66,9 @@ const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
   return (
     <main className="m-auto max-w-5xl my-10 space-y-10">
       <div className="space-y-5 text-center">
-        <H1>Tambah Permintaan</H1>
+        <H1>
+          Formulir Tambah <br /> Permintaan Pegawai
+        </H1>
       </div>
       <Form {...form}>
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>

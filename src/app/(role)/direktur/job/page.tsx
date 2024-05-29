@@ -22,6 +22,7 @@ const page = async () => {
     where: {
       approved: false,
     },
+  
   });
 
   return (

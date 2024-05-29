@@ -16,8 +16,8 @@ export default async function createPermintaan(formData: FormData) {
       jumlah_pegawai: parseInt(jumlah_pegawai),
       // Tambahkan properti yang hilang
       tanggal_permintaan: new Date(), // Atau gunakan tanggal yang sesuai
-      jabatan: { connect: { id_jabatan: parseInt(id_jabatan) } }, // Menghubungkan ke jabatan yang sesuai
-      user: { connect: { id: id_user } }, // Menghubungkan ke user yang sesuai
+      id_jabatan: parseInt(id_jabatan),
+      id_user: id_user as string,
     },
   });
 

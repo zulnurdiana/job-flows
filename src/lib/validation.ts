@@ -68,8 +68,8 @@ export const jobFilterSchema = z.object({
 
 export const createPermintaanSchema = z.object({
   jumlah_pegawai: numericRequiredString.max(
-    3,
-    "Number cant be longer than 3 digits",
+    1,
+    "Number cant be longer than 1 digits",
   ),
   tanggal_permintaan: z.date().optional(),
   id_jabatan: z.string(),

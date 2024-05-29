@@ -30,34 +30,42 @@ const page = async () => {
       approved: false,
     },
     include: {
-      jabatan: true,
+      jabatan: {
+        include: {
+          divisi: true,
+        },
+      },
       user: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 
-  console.log(unapprovedPermintaan);
-
   return (
-    <div className="max-w-5xl m-auto my-10 space-y-5 min-h-[400px]">
-      <H1 className="text-center ">Daftar Permintaan Pegawai</H1>
+    <div className="max-w-5xl m-auto my-10 space-y-6 min-h-[400px]">
+      <H1 className="text-center">Daftar Permintaan Pegawai</H1>
       {unapprovedPermintaan.length !== 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[200px]">Jumlah Pegawai</TableHead>
-              <TableHead>Jabatan</TableHead>
-              <TableHead>Tanggal Permintaan</TableHead>
-              <TableHead>Nama Peminta</TableHead>
-              <TableHead>Action</TableHead>
+              <TableHead className="text-center font-bold">No</TableHead>
+              <TableHead className="text-center">Jabatan</TableHead>
+              <TableHead className="text-center">Divisi</TableHead>
+              <TableHead className="text-center">Jumlah Permintaan</TableHead>
+              <TableHead className="text-center">Tanggal Permintaan</TableHead>
+              <TableHead className="text-center">Nama Peminta</TableHead>
+              <TableHead className="text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {unapprovedPermintaan.map((permintaan) => (
-              <TableRow key={permintaan.id_permintaan}>
-                <TableCell className="font-medium">
-                  {permintaan.jumlah_pegawai}
-                </TableCell>
+            {unapprovedPermintaan.map((permintaan, index) => (
+              <TableRow key={permintaan.id_permintaan} className="text-center">
+                <TableCell className="font-bold">{index + 1}</TableCell>
                 <TableCell>{permintaan.jabatan.nama_jabatan}</TableCell>
+                <TableCell>{permintaan.jabatan.divisi.nama_divisi}</TableCell>
+                <TableCell>{permintaan.jumlah_pegawai} Pegawai</TableCell>
+
                 <TableCell className="text-center">
                   {permintaan.tanggal_permintaan.toLocaleDateString()}
                 </TableCell>
@@ -72,7 +80,7 @@ const page = async () => {
                         name="id_permintaan"
                         value={permintaan.id_permintaan}
                       />
-                      <FormSubmitButton className="w-full text-green-500 hover:text-green-600">
+                      <FormSubmitButton className="w-full bg-white border-2 text-green-500 hover:text-white font-bold">
                         Approved
                       </FormSubmitButton>
                     </form>
@@ -83,8 +91,8 @@ const page = async () => {
                         name="id_permintaan"
                         value={permintaan.id_permintaan}
                       />
-                      <FormSubmitButton className="w-full text-red-500 hover:text-red-600">
-                        Deleted
+                      <FormSubmitButton className="w-full bg-white border-2 font-bold text-red-500 hover:text-white">
+                        Rejected
                       </FormSubmitButton>
                     </form>
                   </div>
