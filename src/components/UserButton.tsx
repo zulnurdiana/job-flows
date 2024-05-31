@@ -21,6 +21,8 @@ import {
   UserRoundCheck,
   FilePen,
   BookUser,
+  UserSearch,
+  SmilePlus,
 } from "lucide-react";
 
 interface UserButtonProps {
@@ -83,7 +85,7 @@ export default function UserButton({ user }: UserButtonProps) {
               </DropdownMenuItem>
               <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href="/direktur/job">
-                  <CheckCheck className="mr-2 h-4 w-4" />
+                  <UserSearch className="mr-2 h-4 w-4" />
                   Approve Lowongan
                 </Link>
               </DropdownMenuItem>
@@ -101,9 +103,16 @@ export default function UserButton({ user }: UserButtonProps) {
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/user/daftar-permintaan">
+                <Link href="/user/permintaan/daftar-permintaan">
                   <ListStart className="mr-2 h-4 w-4" />
                   Daftar Permintaan
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/user/kriteria/daftar-kriteria">
+                  <SmilePlus className="mr-2 h-4 w-4" />
+                  Daftar Kriteria
                 </Link>
               </DropdownMenuItem>
             </>

@@ -100,6 +100,29 @@ model Persyaratan {
   @@map("persyaratan")
 }
 
+enum JenisKriteria {
+  COST
+  BENEFIT
+}
+
+model Kriteria {
+  id_kriteria Int @id @default(autoincrement())
+  deskripsi_kriteria String
+  nama_kriteria String
+  bobot Int   @default(0)
+  kepentingan Float?
+  jenis_kriteria JenisKriteria 
+  id_user String
+  user User @relation(fields: [id_user],references: [id])
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("kriteria")
+
+}
+
 model User {
   id            String          @id @default(cuid())
   name          String?
@@ -109,6 +132,7 @@ model User {
   role          String? @default("pelamar")
   permintaan    Permintaan[]
   persyaratan   Persyaratan[]
+  kriteria      Kriteria[]
   accounts      Account[]
   sessions      Session[]
  
