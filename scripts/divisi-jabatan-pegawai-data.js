@@ -169,4 +169,283 @@ const jabatan = [
   },
 ];
 
-module.exports = { divisi, jabatan };
+// Fungsi untuk menghasilkan tanggal acak dalam 2 tahun terakhir
+function getRandomDateWithinTwoYears() {
+  const now = new Date();
+  const past = new Date(now.setFullYear(now.getFullYear() - 2));
+  const randomDate = new Date(
+    past.getTime() + Math.random() * (Date.now() - past.getTime()),
+  );
+  return randomDate;
+}
+
+const pegawai = [
+  {
+    nama_pegawai: "Andi",
+    status_pegawai: "Aktif",
+    id_jabatan: 1,
+  },
+  {
+    nama_pegawai: "Budi",
+    status_pegawai: "Aktif",
+    id_jabatan: 2,
+  },
+  {
+    nama_pegawai: "Citra",
+    status_pegawai: "Aktif",
+    id_jabatan: 3,
+  },
+  {
+    nama_pegawai: "Dewi",
+    status_pegawai: "Aktif",
+    id_jabatan: 4,
+  },
+  {
+    nama_pegawai: "Eko",
+    status_pegawai: "Aktif",
+    id_jabatan: 5,
+  },
+  {
+    nama_pegawai: "Fajar",
+    status_pegawai: "Aktif",
+    id_jabatan: 6,
+  },
+  {
+    nama_pegawai: "Gita",
+    status_pegawai: "Aktif",
+    id_jabatan: 7,
+  },
+  {
+    nama_pegawai: "Hendra",
+    status_pegawai: "Aktif",
+    id_jabatan: 8,
+  },
+  {
+    nama_pegawai: "Indra",
+    status_pegawai: "Aktif",
+    id_jabatan: 9,
+  },
+  {
+    nama_pegawai: "Joko",
+    status_pegawai: "Aktif",
+    id_jabatan: 10,
+  },
+  {
+    nama_pegawai: "Kiki",
+    status_pegawai: "Aktif",
+    id_jabatan: 11,
+  },
+  {
+    nama_pegawai: "Lina",
+    status_pegawai: "Aktif",
+    id_jabatan: 12,
+  },
+  {
+    nama_pegawai: "Mira",
+    status_pegawai: "Aktif",
+    id_jabatan: 13,
+  },
+  {
+    nama_pegawai: "Nina",
+    status_pegawai: "Aktif",
+    id_jabatan: 14,
+  },
+  {
+    nama_pegawai: "Oki",
+    status_pegawai: "Aktif",
+    id_jabatan: 15,
+  },
+  {
+    nama_pegawai: "Putu",
+    status_pegawai: "Aktif",
+    id_jabatan: 16,
+  },
+  {
+    nama_pegawai: "Qori",
+    status_pegawai: "Aktif",
+    id_jabatan: 17,
+  },
+  {
+    nama_pegawai: "Rini",
+    status_pegawai: "Cuti",
+    id_jabatan: 18,
+  },
+  {
+    nama_pegawai: "Sinta",
+    status_pegawai: "Cuti",
+    id_jabatan: 19,
+  },
+  {
+    nama_pegawai: "Tina",
+    status_pegawai: "Cuti",
+    id_jabatan: 20,
+  },
+  {
+    nama_pegawai: "Udin",
+    status_pegawai: "Cuti",
+    id_jabatan: 21,
+  },
+  {
+    nama_pegawai: "Vina",
+    status_pegawai: "Cuti",
+    id_jabatan: 22,
+  },
+  {
+    nama_pegawai: "Wawan",
+    status_pegawai: "Cuti",
+    id_jabatan: 23,
+  },
+  {
+    nama_pegawai: "Xena",
+    status_pegawai: "Cuti",
+    id_jabatan: 24,
+  },
+  {
+    nama_pegawai: "Yudi",
+    status_pegawai: "Cuti",
+    id_jabatan: 26,
+  },
+  {
+    nama_pegawai: "Zara",
+    status_pegawai: "Cuti",
+    id_jabatan: 26,
+  },
+  {
+    nama_pegawai: "Asep",
+    status_pegawai: "Cuti",
+    id_jabatan: 26,
+  },
+  {
+    nama_pegawai: "Beni",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 1,
+  },
+  {
+    nama_pegawai: "Cici",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 2,
+  },
+  {
+    nama_pegawai: "Dodi",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 3,
+  },
+  {
+    nama_pegawai: "Evi",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 4,
+  },
+  {
+    nama_pegawai: "Fani",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 5,
+  },
+  {
+    nama_pegawai: "Gilang",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 6,
+  },
+  {
+    nama_pegawai: "Hana",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 7,
+  },
+  {
+    nama_pegawai: "Iwan",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 8,
+  },
+  {
+    nama_pegawai: "Jeni",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 9,
+  },
+  {
+    nama_pegawai: "Karin",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 10,
+  },
+  {
+    nama_pegawai: "Lutfi",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 11,
+  },
+  {
+    nama_pegawai: "Miko",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 12,
+  },
+  {
+    nama_pegawai: "Novi",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 13,
+  },
+  {
+    nama_pegawai: "Omar",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 14,
+  },
+  {
+    nama_pegawai: "Putra",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 15,
+  },
+  {
+    nama_pegawai: "Qila",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 16,
+  },
+  {
+    nama_pegawai: "Reno",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 17,
+  },
+  {
+    nama_pegawai: "Sari",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 18,
+  },
+  {
+    nama_pegawai: "Tomi",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 19,
+  },
+  {
+    nama_pegawai: "Uli",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 20,
+  },
+  {
+    nama_pegawai: "Vito",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 21,
+  },
+  {
+    nama_pegawai: "Wina",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 22,
+  },
+  {
+    nama_pegawai: "Xander",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 23,
+  },
+  {
+    nama_pegawai: "Yana",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 24,
+  },
+  {
+    nama_pegawai: "Zaki",
+    status_pegawai: "Nonaktif",
+    id_jabatan: 26,
+  },
+];
+
+// Menambahkan email dan tanggal_gabung secara manual
+pegawai.forEach((p) => {
+  p.email = `${p.nama_pegawai.toLowerCase()}@qtasnim.com`;
+  p.tanggal_gabung = getRandomDateWithinTwoYears();
+});
+
+module.exports = { divisi, jabatan, pegawai };

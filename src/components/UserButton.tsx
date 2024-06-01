@@ -23,6 +23,7 @@ import {
   BookUser,
   UserSearch,
   SmilePlus,
+  Users,
 } from "lucide-react";
 
 interface UserButtonProps {
@@ -87,6 +88,12 @@ export default function UserButton({ user }: UserButtonProps) {
                 <Link href="/direktur/job">
                   <UserSearch className="mr-2 h-4 w-4" />
                   Approve Lowongan
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/direktur/pegawai/daftar-pegawai">
+                  <Users className="mr-2 h-4 w-4" />
+                  Daftar Pegawai
                 </Link>
               </DropdownMenuItem>
             </>
