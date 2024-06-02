@@ -23,9 +23,72 @@ import { draftToMarkdown } from "markdown-draft-js";
 import LoadingButton from "@/components/LoadingButton";
 import { createJobPosting } from "./action";
 
-const NewJobForm = () => {
+// Interface untuk model Jabatan
+interface Jabatan {
+  id_jabatan: number;
+  id_divisi: number;
+  nama_jabatan: string;
+  deskripsi_jabatan?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Interface untuk model Permintaan
+interface Permintaan {
+  id_permintaan: number;
+  jumlah_pegawai: number;
+  status_permintaan?: boolean | null;
+  approved?: boolean | null;
+  tanggal_permintaan: Date;
+  id_jabatan: number;
+  jabatan: Jabatan;
+  id_user: string;
+  // Properti user dapat didefinisikan jika diperlukan
+  persyaratan?: Persyaratan[]; // Buat properti persyaratan bersifat opsional
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Interface untuk model Persyaratan
+interface Persyaratan {
+  id_persyaratan: number;
+  pengalaman_kerja: number;
+  pendidikan: string;
+  umur: number;
+  status_pernikahan: string;
+  id_user: string;
+  // Properti user dapat didefinisikan jika diperlukan
+  id_permintaan: number;
+  permintaan: Permintaan;
+  id_job?: number | null; // Perbarui tipe untuk mengakomodasi nilai null
+  // Properti job dapat didefinisikan jika diperlukan
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Interface untuk props yang akan diterima oleh komponen NewJobForm
+interface NewJobFormProps {
+  persyaratan: Persyaratan;
+}
+
+const NewJobForm = ({
+  persyaratan: {
+    id_permintaan,
+    id_persyaratan,
+    pengalaman_kerja,
+    pendidikan,
+    umur,
+    status_pernikahan,
+    permintaan: {
+      jabatan: { nama_jabatan },
+    },
+  },
+}: NewJobFormProps) => {
   const form = useForm<createJobValue>({
     resolver: zodResolver(createJobsSchema),
+    defaultValues: {
+      title: nama_jabatan,
+    },
   });
 
   const {
@@ -37,7 +100,6 @@ const NewJobForm = () => {
     setFocus,
     formState: { isSubmitting },
   } = form;
-  const formData = new FormData();
 
   async function onSubmit(values: createJobValue) {
     const formData = new FormData();
@@ -49,7 +111,7 @@ const NewJobForm = () => {
     });
 
     try {
-      await createJobPosting(formData);
+      await createJobPosting(formData, id_persyaratan,);
     } catch (error) {
       alert("Something went wrong");
     }
@@ -83,7 +145,11 @@ const NewJobForm = () => {
                 <FormItem>
                   <FormLabel>Job title</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Frontend Developer" {...field} />
+                    <Input
+                      placeholder="e.g. Frontend Developer"
+                      {...field}
+                      disabled
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

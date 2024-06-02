@@ -9,7 +9,10 @@ import path from "path";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
-export async function createJobPosting(formData: FormData) {
+export async function createJobPosting(
+  formData: FormData,
+  id_persyaratan: number,
+) {
   const values = Object.fromEntries(formData.entries());
   const {
     title,
@@ -41,7 +44,7 @@ export async function createJobPosting(formData: FormData) {
     companyLogoUrl = blog.url;
   }
 
-  await prisma.job.create({
+  const newJob = await prisma.job.create({
     data: {
       title: title.trim(),
       slug,
@@ -55,6 +58,15 @@ export async function createJobPosting(formData: FormData) {
       description: description?.trim(),
       salary: parseInt(salary),
       // approved: true,
+    },
+  });
+
+  await prisma.persyaratan.update({
+    data: {
+      id_job: newJob.id,
+    },
+    where: {
+      id_persyaratan: id_persyaratan,
     },
   });
 

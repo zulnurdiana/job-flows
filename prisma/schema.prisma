@@ -47,44 +47,46 @@ model Pegawai{
 }
 
 
+model Permintaan {
+  id_permintaan      Int         @id @default(autoincrement())
+  jumlah_pegawai     Int
+  status_permintaan  Boolean?    @default(false)
+  approved           Boolean?    @default(false)
+  tanggal_permintaan DateTime    @default(now())
+  id_jabatan         Int
+  jabatan            Jabatan     @relation(fields: [id_jabatan], references: [id_jabatan], onDelete: Cascade)
+  id_user            String
+  user               User        @relation(fields: [id_user], references: [id])
+  persyaratan        Persyaratan[]
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+
+  @@map("permintaan")
+}
 
 model Job {
-  id Int @id @default(autoincrement())
-  slug String @unique
-  title String
-  type String
-  locationType String
-  location String?
-  description String?
-  salary Int
-  companyName String
+  id               Int        @id @default(autoincrement())
+  slug             String     @unique
+  title            String
+  type             String
+  locationType     String
+  location         String?
+  description      String?
+  salary           Int
+  companyName      String
   applicationEmail String?
-  applicationUrl String?
-  companyLogoUrl String?
-  approved Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  applicationUrl   String?
+  companyLogoUrl   String?
+  approved         Boolean    @default(false)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @default(now())
+  user             User[]
+
+  persyaratan Persyaratan[]
 
 
   @@map("jobs")
-}
-
-
-model Permintaan {
-  id_permintaan   Int        @id @default(autoincrement())
-  jumlah_pegawai  Int
-  status_permintaan       Boolean?  @default(false)
-  approved                Boolean?  @default(false)
-  tanggal_permintaan DateTime @default(now())
-  id_jabatan      Int
-  jabatan         Jabatan    @relation(fields: [id_jabatan], references: [id_jabatan], onDelete: Cascade)
-  id_user         String
-  user            User       @relation(fields: [id_user], references: [id])
-  persyaratan Persyaratan[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("permintaan")
 }
 
 model Persyaratan {
@@ -99,6 +101,9 @@ model Persyaratan {
 
   id_permintaan Int
   permintaan Permintaan  @relation(fields: [id_permintaan], references: [id_permintaan])
+
+  id_job Int?
+  job Job? @relation(fields: [id_job],references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,6 +147,8 @@ model User {
   kriteria      Kriteria[]
   accounts      Account[]
   sessions      Session[]
+  id_job        Int?
+  job Job? @relation(fields: [id_job],references: [id])
  
  
   createdAt DateTime @default(now())
@@ -179,12 +186,3 @@ model Session {
   updatedAt DateTime @updatedAt
 }
  
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
- 
-  @@id([identifier, token])
-}
- 
-

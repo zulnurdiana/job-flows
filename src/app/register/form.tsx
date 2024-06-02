@@ -12,12 +12,15 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
@@ -29,18 +32,18 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 export default function FormPage() {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      name: "",
       username: "",
       password: "",
     },
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log("Submitting form", data);
-
-    const { username: email, password } = data;
+    const { name, username: email, password } = data;
 
     try {
       const response = await fetch("/api/auth/register", {
@@ -48,23 +51,49 @@ export default function FormPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        router.push("/");
+      } else {
+        toast({
+          title: "Registration Failed",
+          description: responseData.message,
+        });
       }
-      // Process response here
-      console.log("Registration Successful", response);
-      toast({ title: "Registration Successful" });
-    } catch (error: any) {
-      console.error("Registration Failed:", error);
-      toast({ title: "Registration Failed", description: error.message });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast({ title: "Registration Failed", description: error.message });
+      } else {
+        toast({
+          title: "Registration Failed",
+          description: "An unknown error occurred",
+        });
+      }
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Name" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is your public display name.
+              </FormDescription>
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="username"

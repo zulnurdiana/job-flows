@@ -1,10 +1,12 @@
 import { cache } from "react";
 import prisma from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import DetailJobPage from "@/components/DetailJobPage";
 import { Button } from "@/components/ui/button";
 import getSession from "@/lib/getSession";
+import FormSubmitButton from "@/components/FormSubmitButton";
+import { lamarLowongan } from "./action";
 
 interface PageProps {
   params: {
@@ -63,17 +65,26 @@ const page = async ({ params: { slug } }: PageProps) => {
 
   const session = await getSession();
   const user = session?.user;
+  const checkJabatanPending = await prisma.user.findUnique({
+    where: {
+      id: user?.id as string,
+    },
+  });
+  if (!session) redirect("/");
 
   return (
     <main className="max-w-5xl m-auto px-3 my-10 flex flex-col sm:flex-row items-center gap-5 md:items-start">
       <DetailJobPage job={job} />
       <aside>
-        {user?.role === "pelamar" && (
-          <Button asChild>
-            <a href={`${applicationLink}`} className="w-40 md:w-fit">
+        {user?.role === "pelamar" && checkJabatanPending?.id_job === null ? (
+          <form action={lamarLowongan}>
+            <input hidden id="id_job" name="id_job" value={job.id} />
+            <FormSubmitButton className="w-full hover:text-white font-bold">
               Apply Now
-            </a>
-          </Button>
+            </FormSubmitButton>
+          </form>
+        ) : (
+          <Button>Anda sudah melamar</Button>
         )}
       </aside>
     </main>

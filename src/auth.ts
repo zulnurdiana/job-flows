@@ -5,6 +5,7 @@ import { Adapter } from "next-auth/adapters";
 import Google from "next-auth/providers/google";
 import Github from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcrypt";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
@@ -46,7 +47,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           },
         });
 
-        if (response) {
+        if (!response) throw new Error("Credensial not match");
+
+        const compare = await bcrypt.compare(
+          credentials.password as string,
+          response?.password || "",
+        );
+
+        if (compare) {
           return {
             id: response.id,
             name: response.name || response.email,
@@ -55,7 +63,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password: response.password,
           };
         }
-        console.log("credentials", credentials);
+        console.log("password not match");
         return null;
       },
     }),

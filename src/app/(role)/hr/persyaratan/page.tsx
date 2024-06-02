@@ -87,7 +87,9 @@ const page = async () => {
                 </TableCell>
                 <TableCell>
                   <Button asChild>
-                    <Link href={"/hr/job/new"}>Buka Lowongan</Link>
+                    <Link href={`/hr/job/new/${persyaratan.id_persyaratan}`}>
+                      Buka Lowongan
+                    </Link>
                   </Button>
                 </TableCell>
               </TableRow>

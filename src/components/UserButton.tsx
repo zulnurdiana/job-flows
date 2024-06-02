@@ -62,9 +62,9 @@ export default function UserButton({ user }: UserButtonProps) {
           {user.role?.toLocaleLowerCase() === "hr" && (
             <>
               <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/hr/job/new">
+                <Link href="/hr/job/daftar-pelamar">
                   <FilePen className="mr-2 h-4 w-4" />
-                  Posting Lowongan
+                  Daftar Pelamar
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild className="cursor-pointer">

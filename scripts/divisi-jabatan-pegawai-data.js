@@ -293,12 +293,12 @@ const pegawai = [
   {
     nama_pegawai: "Wawan",
     status_pegawai: "Cuti",
-    id_jabatan: 23,
+    id_jabatan: 22,
   },
   {
     nama_pegawai: "Xena",
     status_pegawai: "Cuti",
-    id_jabatan: 24,
+    id_jabatan: 22,
   },
   {
     nama_pegawai: "Yudi",
@@ -428,7 +428,7 @@ const pegawai = [
   {
     nama_pegawai: "Xander",
     status_pegawai: "Nonaktif",
-    id_jabatan: 23,
+    id_jabatan: 22,
   },
   {
     nama_pegawai: "Yana",
