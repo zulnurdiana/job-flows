@@ -1,4 +1,4 @@
-import { LogOut, Settings } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { User } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,6 +25,7 @@ import {
   SmilePlus,
   Users,
 } from "lucide-react";
+import UserProfilePlaceHolder from "@/assets/profile.jpeg";
 
 interface UserButtonProps {
   user: User;
@@ -36,7 +37,7 @@ export default function UserButton({ user }: UserButtonProps) {
       <DropdownMenuTrigger asChild>
         <Button size="icon" className="flex-none rounded-full">
           <Image
-            src={user.image || ""}
+            src={user.image || UserProfilePlaceHolder}
             alt="User profile picture"
             width={50}
             height={50}

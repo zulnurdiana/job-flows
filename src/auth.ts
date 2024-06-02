@@ -4,18 +4,61 @@ import prisma from "./lib/prisma";
 import { Adapter } from "next-auth/adapters";
 import Google from "next-auth/providers/google";
 import Github from "next-auth/providers/github";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   adapter: PrismaAdapter(prisma) as Adapter,
   callbacks: {
-    session({ session, user }: any) {
-      session.user.role = user.role;
+    async jwt({ token, user }) {
+      if (user) {
+        token.email = user.email;
+        token.id = user.id;
+        token.role = user.role;
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user.id = token.id as string;
+        session.user.name = token.name;
+        session.user.email = token.email || "";
+        session.user.role = token.role;
+      }
       return session;
     },
   },
-
+  session: {
+    strategy: "jwt",
+  },
   providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "email", type: "text" },
+        password: { label: "password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        const response = await prisma.user.findUnique({
+          where: {
+            email: credentials?.email as string,
+          },
+        });
+
+        if (response) {
+          return {
+            id: response.id,
+            name: response.name || response.email,
+            email: response.email,
+            role: response.role || "pelamar",
+            password: response.password,
+          };
+        }
+        console.log("credentials", credentials);
+        return null;
+      },
+    }),
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,

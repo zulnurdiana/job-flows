@@ -11,8 +11,13 @@ import {
 import H1 from "@/components/ui/h1";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import getSession from "@/lib/getSession";
+import { redirect } from "next/navigation";
 
 const page = async () => {
+  const session = await getSession();
+  if (!session || session.user.role?.toLowerCase() !== "direktur")
+    redirect("/");
   const daftarPegawaiPerjabatan = await prisma.jabatan.findMany({
     include: {
       divisi: true,
