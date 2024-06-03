@@ -88,6 +88,7 @@ const getJobDetails = async () => {
         0,
       ),
       jumlah_pelamar: jumlah_pelamar,
+      id_jobs: jobIdsForJabatan, // Tambahkan id_job ke hasil
     };
   });
 
@@ -118,19 +119,23 @@ const page = async () => {
             <TableHead className="text-center">Divisi</TableHead>
             <TableHead className="text-center">Jumlah Pelamar</TableHead>
             <TableHead className="text-center">Jumlah Permintaan</TableHead>
+            <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {jobDetails.map((res, index) => (
             <TableRow key={res.id_jabatan} className="text-center">
               <TableCell className="font-bold">{index + 1}</TableCell>
-              <TableCell className="font-bold">{res.nama_jabatan}</TableCell>
-              <TableCell className="font-bold">{res.nama_divisi}</TableCell>
-              <TableCell className="font-bold">
-                {res.jumlah_pelamar} Pelamar
-              </TableCell>
-              <TableCell className="font-bold">
-                {res.jumlah_pegawai} Pegawai
+              <TableCell>{res.nama_jabatan}</TableCell>
+              <TableCell>{res.nama_divisi}</TableCell>
+              <TableCell>{res.jumlah_pelamar} Pelamar</TableCell>
+              <TableCell>{res.jumlah_pegawai} Pegawai</TableCell>
+              <TableCell>
+                <Button asChild>
+                  <Link href={`/hr/job/daftar-pelamar/${res.id_jobs}`}>
+                    Lihat Pelamar
+                  </Link>
+                </Button>
               </TableCell>
             </TableRow>
           ))}

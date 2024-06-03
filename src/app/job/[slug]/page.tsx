@@ -50,6 +50,19 @@ export async function generateMetadata({
 }
 
 const page = async ({ params: { slug } }: PageProps) => {
+  const session = await getSession();
+  let checkJabatanPending;
+  const user = session?.user;
+  if (!session) {
+    checkJabatanPending = null;
+  } else {
+    checkJabatanPending = await prisma.user.findUnique({
+      where: {
+        id: user?.id as string,
+      },
+    });
+  }
+
   const job = await getJobs(slug);
 
   const { applicationEmail, applicationUrl } = job;
@@ -63,28 +76,21 @@ const page = async ({ params: { slug } }: PageProps) => {
     notFound();
   }
 
-  const session = await getSession();
-  const user = session?.user;
-  const checkJabatanPending = await prisma.user.findUnique({
-    where: {
-      id: user?.id as string,
-    },
-  });
-  if (!session) redirect("/");
-
   return (
     <main className="max-w-5xl m-auto px-3 my-10 flex flex-col sm:flex-row items-center gap-5 md:items-start">
       <DetailJobPage job={job} />
       <aside>
-        {user?.role === "pelamar" && checkJabatanPending?.id_job === null ? (
+        {user?.role === "pelamar" ? (
           <form action={lamarLowongan}>
             <input hidden id="id_job" name="id_job" value={job.id} />
             <FormSubmitButton className="w-full hover:text-white font-bold">
-              Apply Now
+              {checkJabatanPending?.id_job === null
+                ? "Lamar Sekarang"
+                : "Anda sudah melamar"}
             </FormSubmitButton>
           </form>
         ) : (
-          <Button>Anda sudah melamar</Button>
+          <div></div>
         )}
       </aside>
     </main>
