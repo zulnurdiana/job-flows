@@ -22,7 +22,7 @@ const page = async () => {
   if (user?.role?.toLowerCase() !== "user") redirect("/");
 
   const kriteriaList = await prisma.kriteria.findMany({
-    orderBy: [{ updatedAt: "desc" }],
+    orderBy: { updatedAt: "desc" },
   });
 
   return (

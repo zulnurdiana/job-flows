@@ -20,7 +20,7 @@ export async function createKriteria(formData: FormData) {
     data: {
       nama_kriteria,
       deskripsi_kriteria,
-      bobot: parseInt(bobot),
+      bobot: parseFloat(bobot),
       jenis_kriteria: jenis_kriteria || "BENEFIT",
       id_user: user.id as string,
     },
@@ -44,7 +44,7 @@ export async function updateKriteria(formData: FormData, id_kriteria: number) {
     data: {
       nama_kriteria,
       deskripsi_kriteria,
-      bobot: parseInt(bobot),
+      bobot: parseFloat(bobot),
       jenis_kriteria: jenis_kriteria || "BENEFIT",
     },
     where: {

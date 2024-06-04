@@ -111,7 +111,7 @@ const NewJobForm = ({
     });
 
     try {
-      await createJobPosting(formData, id_persyaratan,);
+      await createJobPosting(formData, id_persyaratan);
     } catch (error) {
       alert("Something went wrong");
     }

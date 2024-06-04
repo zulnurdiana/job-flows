@@ -88,7 +88,15 @@ export const createPersyaratanSchema = z.object({
 export const createKriteriaSchema = z.object({
   nama_kriteria: requiredString.max(50, "Max length is 50 characters"),
   deskripsi_kriteria: requiredString.max(500, "Max length is 500 characters"),
-  bobot: numericRequiredString.max(1, "Number cant be longer than 3 digits"),
+  bobot: z.string().refine(
+    (val) => {
+      const num = parseFloat(val);
+      return num >= 0 && num <= 1;
+    },
+    {
+      message: "Bobot must be between 0.0 and 1.0",
+    },
+  ),
   jenis_kriteria: z.enum(["COST", "BENEFIT"]),
 });
 

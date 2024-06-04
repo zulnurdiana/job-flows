@@ -40,7 +40,9 @@ const page = async () => {
 
   return (
     <div className="max-w-6xl min-h-[400px] m-auto my-10 space-y-6">
-      <H1 className="text-center">Daftar Persyaratan Calon Pegawai</H1>
+      <H1 className="text-center">
+        Daftar Persyaratan <br /> Calon Pegawai
+      </H1>
       {persyaratans.length === 0 ? (
         <div className="text-center">Tidak ada persyaratan</div>
       ) : (
@@ -68,16 +70,16 @@ const page = async () => {
                 <TableCell className="font-bold">{index + 1}</TableCell>
                 <TableCell>{persyaratan.pendidikan}</TableCell>
                 <TableCell>{persyaratan.status_pernikahan}</TableCell>
-                <TableCell>{persyaratan.pengalaman_kerja} tahun</TableCell>
+                <TableCell>{persyaratan.pengalaman_kerja} Tahun</TableCell>
 
-                <TableCell>{persyaratan.umur} tahun</TableCell>
+                <TableCell>{persyaratan.umur} Tahun</TableCell>
 
                 <TableCell>
                   {persyaratan.createdAt.toLocaleDateString()}
                 </TableCell>
 
                 <TableCell>
-                  {persyaratan.permintaan.jumlah_pegawai} orang
+                  {persyaratan.permintaan.jumlah_pegawai} Pegawai
                 </TableCell>
                 <TableCell>
                   {persyaratan.permintaan?.jabatan.nama_jabatan}

@@ -120,7 +120,7 @@ model Kriteria {
   id_kriteria Int @id @default(autoincrement())
   deskripsi_kriteria String
   nama_kriteria String
-  bobot Int   @default(0)
+  bobot Float @default(0.0)
   kepentingan Float?
   jenis_kriteria JenisKriteria 
   id_user String
