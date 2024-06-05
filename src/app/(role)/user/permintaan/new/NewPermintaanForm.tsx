@@ -17,19 +17,24 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Select from "@/components/ui/select";
-import { Jabatan } from "@prisma/client";
+import { Divisi, Jabatan } from "@prisma/client";
 import LoadingButton from "@/components/LoadingButton";
 import createPermintaan from "./actions";
+import { useState } from "react";
 
 interface NewPermintaanFormProps {
   jabatan: Jabatan[];
+  divisi: Divisi[];
 }
 
-const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
+const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
+  const [selectedDivisi, setSelectedDivisi] = useState<number | null>(null);
   const form = useForm<createPermintaanValues>({
     resolver: zodResolver(createPermintaanSchema),
     defaultValues: {
       jumlah_pegawai: "0",
+      id_divisi: "0",
+      id_jabatan: "0",
     },
   });
 
@@ -43,9 +48,19 @@ const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
     formState: { isSubmitting },
   } = form;
 
+  const filteredJabatan = selectedDivisi
+    ? jabatan.filter((jab) => jab.id_divisi === selectedDivisi)
+    : [];
+
+  const handleDivisiChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedId = e.target.value; // Keep it as string
+    setSelectedDivisi(parseInt(selectedId)); // Parse to number for local state
+    setValue("id_divisi", selectedId); // Set value in the form state as string
+    setValue("id_jabatan", ""); // Reset the job type when division changes
+  };
+
   async function onSubmit(values: createPermintaanValues) {
     const formData = new FormData();
-    // Mengisi FormData dengan nilai dari createPermintaanValues
     Object.entries(values).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
         if (typeof value === "object" && value instanceof Date) {
@@ -88,6 +103,33 @@ const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
 
           <FormField
             control={control}
+            name="id_divisi"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Division</FormLabel>
+                <FormControl>
+                  <Select
+                    {...field}
+                    defaultValue=""
+                    onChange={handleDivisiChange}
+                  >
+                    <option value="" hidden>
+                      Select Division
+                    </option>
+                    {divisi.map((div) => (
+                      <option key={div.id_divisi} value={div.id_divisi}>
+                        {div.nama_divisi}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
             name="id_jabatan"
             render={({ field }) => (
               <FormItem>
@@ -95,9 +137,9 @@ const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
                 <FormControl>
                   <Select {...field} defaultValue="">
                     <option value="" hidden>
-                      Pilih Jabatan
+                      Select Job
                     </option>
-                    {jabatan.map((jab) => (
+                    {filteredJabatan.map((jab) => (
                       <option key={jab.id_jabatan} value={jab.id_jabatan}>
                         {jab.nama_jabatan}
                       </option>
@@ -108,6 +150,7 @@ const NewPermintaanForm = ({ jabatan }: NewPermintaanFormProps) => {
               </FormItem>
             )}
           />
+
           <LoadingButton
             type="submit"
             className="w-full"

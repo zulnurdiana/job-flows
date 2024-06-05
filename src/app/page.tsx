@@ -21,10 +21,10 @@ function generateTitle({ q, type, location, remote }: JobFilterValues) {
   const titlePrefix = q
     ? `${q} Jobs`
     : type
-      ? `${type} Developer Jobs`
+      ? `${type} Jobs`
       : remote
-        ? "Remote Developer Jobs"
-        : "All Developer Jobs";
+        ? "Remote Jobs"
+        : "All Available Jobs";
   const titleSuffix = location ? `in ${location}` : "";
   return `${titlePrefix} ${titleSuffix}`;
 }
@@ -34,7 +34,7 @@ export function generateMetadata({
   searchParams: { q, type, location, remote },
 }: pageProps): Metadata {
   return {
-    title: `${generateTitle({ q, type, location, remote: remote === "true" })} | Job Flows`,
+    title: `${generateTitle({ q, type, location, remote: remote === "true" })} | Qtasnim Jobs`,
   };
 }
 

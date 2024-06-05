@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import NewPermintaanForm from "./NewPermintaanForm";
 import prisma from "@/lib/prisma";
+import { Divisi } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "Buat Permintaan",
@@ -14,11 +15,22 @@ const page = async () => {
     redirect("/");
   }
 
-  const jabatan = await prisma.jabatan.findMany({});
+  const jabatan = await prisma.jabatan.findMany({
+    include: {
+      divisi: true,
+    },
+  });
+
+  // Hilangkan duplikat divisi
+  const divisiMap = new Map<number, Divisi>();
+  jabatan.forEach((jab) => {
+    divisiMap.set(jab.divisi.id_divisi, jab.divisi);
+  });
+  const divisi = Array.from(divisiMap.values());
 
   return (
     <div className="min-h-[400px]">
-      <NewPermintaanForm jabatan={jabatan} />
+      <NewPermintaanForm jabatan={jabatan} divisi={divisi} />
     </div>
   );
 };

@@ -117,6 +117,8 @@ const NewJobForm = ({
     }
   }
 
+  const defaultDescription = `**Qualification**: \n- Pengalaman Kerja: ${pengalaman_kerja} tahun \n- Pendidikan: ${pendidikan} \n- Umur: ${umur} tahun \n- Status Pernikahan: ${status_pernikahan}`;
+
   return (
     <main className="m-auto my-10 max-w-3xl space-y-10">
       <div className="space-y-5 text-center">
@@ -326,6 +328,7 @@ const NewJobForm = ({
                   </Label>
                   <FormControl>
                     <RichTextEditor
+                      defaultValue={defaultDescription}
                       onChange={(draft) =>
                         field.onChange(draftToMarkdown(draft))
                       }
