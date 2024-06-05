@@ -51,13 +51,7 @@ const page = async () => {
   return (
     <div className="max-w-5xl m-auto my-10 space-y-6 min-h-[400px]">
       <H1 className="text-center">Daftar Permintaan Pegawai</H1>
-      <div className="flex items-center justify-center">
-        <div className="w-36 h-36 bg-muted-foreground border-black border-2 items-center">
-          <h3 className="text-center">Permintaan {appPermintaan.length}</h3>
-        </div>
-        <div></div>
-        <div></div>
-      </div>
+
       {unapprovedPermintaan.length !== 0 ? (
         <Table>
           <TableHeader>

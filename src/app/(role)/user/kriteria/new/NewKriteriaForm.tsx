@@ -14,9 +14,10 @@ import { Input } from "@/components/ui/input";
 import H1 from "@/components/ui/h1";
 import { Textarea } from "@/components/ui/textarea";
 import Select from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import LoadingButton from "@/components/LoadingButton";
 import { createKriteria } from "../actions";
+import { toast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 const NewKriteriaForm = () => {
   const form = useForm<createKriteriaValues>({
@@ -30,7 +31,7 @@ const NewKriteriaForm = () => {
 
   const {
     handleSubmit,
-
+    reset,
     formState: { isSubmitting },
   } = form;
 
@@ -42,19 +43,27 @@ const NewKriteriaForm = () => {
       }
     });
     try {
-      await createKriteria(formData);
+      const result = await createKriteria(formData);
+      if (result) {
+        toast({
+          className: cn(""),
+          title: "Sukses",
+          description: `${result?.message}`,
+        });
+        reset();
+      }
     } catch (error) {
-      alert("Something went wrong");
+      alert("Terjadi kesalahan");
     }
   }
 
   return (
-    <div className="max-w-5xl m-auto my-10 space-y-6">
-      <H1 className="text-center">
+    <div className="max-w-4xl mx-auto my-10 p-6 bg-white shadow-md rounded-lg">
+      <H1 className="text-center text-2xl font-bold mb-6">
         Formulir Tambah <br /> Kriteria Penilaian
       </H1>
       <Form {...form}>
-        <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="nama_kriteria"
@@ -110,7 +119,7 @@ const NewKriteriaForm = () => {
                 <FormControl>
                   <Select {...field} defaultValue={""}>
                     <option value="" hidden>
-                      Jenis Kriteria
+                      Pilih Jenis Kriteria
                     </option>
                     <option value="BENEFIT">Benefit</option>
                     <option value="COST">Cost</option>
@@ -122,7 +131,7 @@ const NewKriteriaForm = () => {
           />
           <LoadingButton
             type="submit"
-            className="w-full"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-300"
             loading={isSubmitting}
           >
             Submit

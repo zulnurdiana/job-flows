@@ -15,6 +15,8 @@ import Link from "next/link";
 import { deleteKriteria } from "../actions";
 import FormSubmitButton from "@/components/FormSubmitButton";
 
+import FormKriteria from "./FormKriteria";
+
 const page = async () => {
   const session = await getSession();
   const user = session?.user;
@@ -59,17 +61,7 @@ const page = async () => {
                       Update
                     </Link>
                   </Button>
-                  <form action={deleteKriteria}>
-                    <input
-                      hidden
-                      id="id_kriteria"
-                      name="id_kriteria"
-                      value={kriteria.id_kriteria}
-                    />
-                    <FormSubmitButton className="w-full bg-white border-2 font-bold text-red-500 hover:text-white">
-                      Delete
-                    </FormSubmitButton>
-                  </form>
+                  <FormKriteria id={kriteria.id_kriteria} />
                 </TableCell>
               </TableRow>
             ))}

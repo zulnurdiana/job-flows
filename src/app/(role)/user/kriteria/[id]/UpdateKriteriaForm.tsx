@@ -14,10 +14,11 @@ import { Input } from "@/components/ui/input";
 import H1 from "@/components/ui/h1";
 import { Textarea } from "@/components/ui/textarea";
 import Select from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import LoadingButton from "@/components/LoadingButton";
 import { createKriteria, updateKriteria } from "../actions";
 import { Kriteria } from "@prisma/client";
+import { toast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 interface UpdateKriteriaPageProps {
   kriteria: Kriteria;
@@ -44,7 +45,6 @@ const UpdateKriteriaForm = ({
 
   const {
     handleSubmit,
-
     formState: { isSubmitting },
   } = form;
 
@@ -56,19 +56,29 @@ const UpdateKriteriaForm = ({
       }
     });
     try {
-      await updateKriteria(formData, id_kriteria);
+      const result = await updateKriteria(formData, id_kriteria);
+      if (!result?.error) {
+        toast({
+          className: cn(""),
+          title: "Sukses",
+          description: `${result.message}`,
+        });
+      }
     } catch (error) {
-      alert("Something went wrong");
+      toast({
+        title: "Gagal",
+        description: `${error}`,
+      });
     }
   }
 
   return (
-    <div className="max-w-5xl m-auto my-10 space-y-6">
-      <H1 className="text-center">
-        Formulir Tambah <br /> Kriteria Penilaian
+    <div className="max-w-4xl mx-auto my-10 p-6 bg-white shadow-md rounded-lg">
+      <H1 className="text-center text-2xl font-bold mb-6">
+        Formulir Ubah <br /> Kriteria Penilaian
       </H1>
       <Form {...form}>
-        <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="nama_kriteria"
@@ -124,7 +134,7 @@ const UpdateKriteriaForm = ({
                 <FormControl>
                   <Select {...field}>
                     <option value="" hidden>
-                      Jenis Kriteria
+                      Pilih Jenis Kriteria
                     </option>
                     <option value="BENEFIT">Benefit</option>
                     <option value="COST">Cost</option>
@@ -136,7 +146,7 @@ const UpdateKriteriaForm = ({
           />
           <LoadingButton
             type="submit"
-            className="w-full"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-300"
             loading={isSubmitting}
           >
             Submit
