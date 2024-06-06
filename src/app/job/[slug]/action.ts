@@ -2,6 +2,7 @@
 
 import getSession from "@/lib/getSession";
 import prisma from "@/lib/prisma";
+import { handleError } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
 export async function lamarLowongan(formData: FormData) {
@@ -15,23 +16,29 @@ export async function lamarLowongan(formData: FormData) {
       throw new Error("Not Unauthorized");
     }
 
-    await prisma.user.update({
+    const userUpdate = await prisma.user.update({
       data: {
         id_job: id_job,
+      },
+      include: {
+        job: true,
       },
       where: {
         id: user.id,
       },
     });
+    
     revalidatePath("/");
-    return {
-      success: true,
-      message: "Anda telah berhasil melamar pekerjaan ini.",
-    };
+
+    if (userUpdate) {
+      return {
+        success: true,
+        message: `Anda telah berhasil melamar pada jabatan ${userUpdate.job?.title}`,
+      };
+    }
   } catch (error) {
     return {
-      success: false,
-      message: "Terjadi kesalahan saat melamar pekerjaan.",
+      error: handleError(error),
     };
   }
 }

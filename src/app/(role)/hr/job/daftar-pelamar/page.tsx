@@ -123,22 +123,24 @@ const page = async () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {jobDetails.map((res, index) => (
-            <TableRow key={res.id_jabatan} className="text-center">
-              <TableCell className="font-bold">{index + 1}</TableCell>
-              <TableCell>{res.nama_jabatan}</TableCell>
-              <TableCell>{res.nama_divisi}</TableCell>
-              <TableCell>{res.jumlah_pelamar} Pelamar</TableCell>
-              <TableCell>{res.jumlah_pegawai} Pegawai</TableCell>
-              <TableCell>
-                <Button asChild>
-                  <Link href={`/hr/job/daftar-pelamar/${res.id_jobs}`}>
-                    Lihat Pelamar
-                  </Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {jobDetails
+            .filter((res) => res.id_jobs.length > 0) // Filter untuk memastikan id_jobs ada
+            .map((res, index) => (
+              <TableRow key={res.id_jabatan} className="text-center">
+                <TableCell className="font-bold">{index + 1}</TableCell>
+                <TableCell>{res.nama_jabatan}</TableCell>
+                <TableCell>{res.nama_divisi}</TableCell>
+                <TableCell>{res.jumlah_pelamar} Pelamar</TableCell>
+                <TableCell>{res.jumlah_pegawai} Pegawai</TableCell>
+                <TableCell>
+                  <Button asChild>
+                    <Link href={`/hr/job/daftar-pelamar/${res.id_jobs}`}>
+                      Lihat Pelamar
+                    </Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { del } from "@vercel/blob";
 import { redirect } from "next/navigation";
 import getSession from "@/lib/getSession";
+import { handleError } from "@/lib/utils";
 
 export async function approvedSubmission(formData: FormData) {
   try {
@@ -16,7 +17,7 @@ export async function approvedSubmission(formData: FormData) {
       throw new Error("Not Unauthorized");
     }
 
-    await prisma.job.update({
+    const job = await prisma.job.update({
       where: {
         id: jobId,
       },
@@ -25,9 +26,16 @@ export async function approvedSubmission(formData: FormData) {
       },
     });
 
+    if (job) {
+      return {
+        message: `Berhasil Approve Lowongan Untuk ${job.title}`,
+      };
+    }
     revalidatePath("/");
   } catch (error) {
-    console.log(error);
+    return {
+      error: handleError(error),
+    };
   }
 }
 
@@ -51,14 +59,21 @@ export async function deleteJob(formData: FormData) {
       del(job.companyLogoUrl);
     }
 
-    await prisma.job.delete({
+    const jobDeleted = await prisma.job.delete({
       where: {
         id: jobId,
       },
     });
     revalidatePath("/");
+    if (jobDeleted) {
+      return {
+        message: `Berhasil Deleted Lowongan ${jobDeleted.title}`,
+      };
+    }
   } catch (error) {
-    console.log(error);
+    return {
+      error: handleError,
+    };
   }
 
   redirect("/direktur/job");

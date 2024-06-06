@@ -22,6 +22,9 @@ const page = async ({ params: { id } }: PageProps) => {
     where: {
       id_jabatan: parseInt(id),
     },
+    include: {
+      jabatan: true,
+    },
     orderBy: {
       nama_pegawai: "asc",
     },
@@ -31,7 +34,7 @@ const page = async ({ params: { id } }: PageProps) => {
     <div className="max-w-6xl min-h-[400px] m-auto my-10 space-y-6">
       <H1 className="text-center">
         Daftar Pegawai Untuk <br />
-        Setiap Jabatan
+        Jabatan {pegawaiPerJabatan[0].jabatan?.nama_jabatan}
       </H1>
 
       <Table>

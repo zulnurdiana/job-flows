@@ -2,6 +2,7 @@
 import FormSubmitButton from "@/components/FormSubmitButton";
 import { Job } from "@prisma/client";
 import { approvedSubmission, deleteJob } from "./actions";
+import { toast } from "@/components/ui/use-toast";
 
 interface AdminSideBarProps {
   job: Job;
@@ -9,11 +10,8 @@ interface AdminSideBarProps {
 const AdminSideBar = ({ job }: AdminSideBarProps) => {
   return (
     <aside className="flex w-[200px] flex-none flex-row md:flex-col items-center gap-2 md:items-stretch">
-      {job.approved ? (
-        <span className="text-green-500 text-lg font-bold">Approved</span>
-      ) : (
-        <ApproveSubmissionButton jobId={job.id} />
-      )}
+      <ApproveSubmissionButton jobId={job.id} />
+
       <DeletedJobButton jobId={job.id} />
     </aside>
   );
@@ -25,10 +23,20 @@ interface adminButtonProps {
 
 function ApproveSubmissionButton({ jobId }: adminButtonProps) {
   // Digunakan karena agar progressive enchanment ketika js dimatikan
+  async function actionClient(formData: FormData) {
+    const result = await approvedSubmission(formData);
+
+    if (result) {
+      toast({
+        title: "Berhasil",
+        description: result?.message,
+      });
+    }
+  }
   return (
-    <form action={approvedSubmission} className="space-y-1">
+    <form action={actionClient} className="space-y-1">
       <input hidden id="jobId" name="jobId" value={jobId} />
-      <FormSubmitButton className="w-full text-green-500 hover:text-green-600">
+      <FormSubmitButton className="w-full bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
         Approve
       </FormSubmitButton>
     </form>
@@ -37,12 +45,22 @@ function ApproveSubmissionButton({ jobId }: adminButtonProps) {
 
 function DeletedJobButton({ jobId }: adminButtonProps) {
   // Digunakan karena agar progressive enchanment ketika js dimatikan
+  async function actionClient(formData: FormData) {
+    const result = await deleteJob(formData);
+
+    if (result) {
+      toast({
+        title: "Berhasil",
+        description: result?.message,
+      });
+    }
+  }
 
   return (
-    <form action={deleteJob} className="space-y-1">
+    <form action={actionClient} className="space-y-1">
       <input hidden id="jobId" name="jobId" value={jobId} />
-      <FormSubmitButton className="w-full text-red-500 hover:text-red-600">
-        Deleted
+      <FormSubmitButton className="w-full bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+        Delete
       </FormSubmitButton>
     </form>
   );

@@ -35,34 +35,43 @@ const page = async ({ params: { id } }: PageProps) => {
   });
 
   return (
-    <div className="max-w-6xl min-h-[400px] m-auto my-10 space-y-6">
+    <div className="max-w-5xl min-h-[400px] m-auto my-10 space-y-16">
       <H1 className="text-center">
         Daftar Pelamar <br />
-        Jabatan {getPelamarPerJabatan[0].job?.title}
+        Jabatan{" "}
+        {getPelamarPerJabatan.length > 0
+          ? getPelamarPerJabatan[0].job?.title
+          : ""}
       </H1>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-center font-bold">No</TableHead>
-            <TableHead className="text-center">Nama Pelamar</TableHead>
-            <TableHead className="text-center">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {getPelamarPerJabatan?.map((pelamar, index) => (
-            <TableRow key={pelamar.id} className="text-center">
-              <TableCell className="font-bold">{index + 1}</TableCell>
-              <TableCell>{pelamar.name}</TableCell>
-              <TableCell>
-                <Button asChild>
-                  <Link href={`/hr/nilai/${pelamar.id}`}>Nilai Pelamar</Link>
-                </Button>
-              </TableCell>
+      {getPelamarPerJabatan.length > 0 ? (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center font-bold">No</TableHead>
+              <TableHead className="text-center">Nama Pelamar</TableHead>
+              <TableHead className="text-center">Action</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {getPelamarPerJabatan?.map((pelamar, index) => (
+              <TableRow key={pelamar.id} className="text-center">
+                <TableCell className="font-bold">{index + 1}</TableCell>
+                <TableCell>{pelamar.name}</TableCell>
+                <TableCell>
+                  <Button asChild>
+                    <Link href={`/hr/nilai/${pelamar.id}`}>Nilai Pelamar</Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <div className="flex items-center justify-center my-10">
+          <h2>Belum Ada Pelamar Pada Jabatan Ini</h2>
+        </div>
+      )}
     </div>
   );
 };

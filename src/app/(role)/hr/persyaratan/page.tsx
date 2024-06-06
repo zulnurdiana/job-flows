@@ -29,6 +29,9 @@ const page = async () => {
         },
       },
     },
+    where: {
+      status_persyaratan: false,
+    },
     orderBy: {
       createdAt: "desc",
     },

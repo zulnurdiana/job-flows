@@ -3,10 +3,11 @@ import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import DetailJobPage from "@/components/DetailJobPage";
-import { Button } from "@/components/ui/button";
 import getSession from "@/lib/getSession";
 import FormSubmitButton from "@/components/FormSubmitButton";
 import { lamarLowongan } from "./action";
+import ButtonLamar from "./ButtonLamar";
+import { Button } from "@/components/ui/button";
 
 interface PageProps {
   params: {
@@ -80,18 +81,13 @@ const page = async ({ params: { slug } }: PageProps) => {
     <main className="max-w-5xl m-auto px-3 my-10 flex flex-col sm:flex-row items-center gap-5 md:items-start">
       <DetailJobPage job={job} />
       <aside>
-        {user?.role === "pelamar" ? (
-          <form action={lamarLowongan}>
-            <input hidden id="id_job" name="id_job" value={job.id} />
-            <FormSubmitButton className="w-full hover:text-white font-bold">
-              {checkJabatanPending?.id_job === null
-                ? "Lamar Sekarang"
-                : "Anda sudah melamar"}
-            </FormSubmitButton>
-          </form>
-        ) : (
-          <div></div>
-        )}
+        {session ? (
+          user?.role === "pelamar" && checkJabatanPending?.id_job === null ? (
+            <ButtonLamar id_job={job.id} />
+          ) : (
+            <Button>Anda sudah melamar</Button>
+          )
+        ) : null}
       </aside>
     </main>
   );

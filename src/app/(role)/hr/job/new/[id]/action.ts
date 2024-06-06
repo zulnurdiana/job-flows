@@ -64,6 +64,7 @@ export async function createJobPosting(
   await prisma.persyaratan.update({
     data: {
       id_job: newJob.id,
+      status_persyaratan: true,
     },
     where: {
       id_persyaratan: id_persyaratan,
