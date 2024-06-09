@@ -30,6 +30,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Image from "next/image";
+import { CalendarDays } from "lucide-react";
 
 // Interface untuk model Jabatan
 interface Jabatan {
@@ -114,7 +118,12 @@ const NewJobForm = ({
 
     Object.entries(values).forEach(([key, value]) => {
       if (value) {
-        formData.append(key, value);
+        // Konversi nilai Date ke string
+        if (value instanceof Date) {
+          formData.append(key, value.toISOString());
+        } else {
+          formData.append(key, value);
+        }
       }
     });
 
@@ -348,6 +357,59 @@ const NewJobForm = ({
                 />
               </div>
             </div>
+
+            <div className="flex flex-col justify-between gap-5 md:flex-row">
+              <FormField
+                control={form.control}
+                name="tanggal_mulai"
+                render={({ field }) => (
+                  <FormItem className="flex-grow">
+                    <FormLabel htmlFor="tanggal_mulai">Start Date</FormLabel>
+                    <div className="flex items-center gap-2 border border-black rounded-full px-4 py-2">
+                      <CalendarDays width={24} height={24} />
+                      <DatePicker
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={(date: Date) =>
+                          field.onChange(date.toISOString())
+                        }
+                        showTimeSelect
+                        timeInputLabel="Time:"
+                        dateFormat={"MM/dd/yyyy h:mm aa"}
+                        wrapperClassName="datePicker"
+                        className="w-full border-0 focus:ring-0 focus:border-transparent"
+                      />
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="tanggal_selesai"
+                render={({ field }) => (
+                  <FormItem className="flex-grow">
+                    <FormLabel htmlFor="tanggal_selesai">End Date</FormLabel>
+                    <div className="flex items-center gap-2 border border-black rounded-full px-4 py-2">
+                      <CalendarDays width={24} height={24} />
+                      <DatePicker
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={(date: Date) =>
+                          field.onChange(date.toISOString())
+                        }
+                        showTimeSelect
+                        timeInputLabel="Time:"
+                        dateFormat={"MM/dd/yyyy h:mm aa"}
+                        wrapperClassName="datePicker"
+                        className="w-full border-0 focus:ring-0 focus:border-transparent"
+                      />
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={control}
               name="description"
@@ -369,6 +431,7 @@ const NewJobForm = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={control}
               name="salary"

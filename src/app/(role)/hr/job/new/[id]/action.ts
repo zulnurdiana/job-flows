@@ -25,9 +25,13 @@ export async function createJobPosting(
     applicationEmail,
     description,
     salary,
+    tanggal_mulai,
+    tanggal_selesai,
   } = createJobsSchema.parse(values);
 
   const slug = `${createSlug(title)}-${nanoid(10)}`;
+
+  console.log(tanggal_mulai);
 
   let companyLogoUrl: string | undefined = undefined;
 
@@ -57,6 +61,8 @@ export async function createJobPosting(
       applicationEmail: applicationEmail?.trim(),
       description: description?.trim(),
       salary: parseInt(salary),
+      tanggal_mulai: new Date(tanggal_mulai),
+      tanggal_selesai: new Date(tanggal_selesai),
       // approved: true,
     },
   });

@@ -433,7 +433,7 @@ const pegawai = [
   {
     nama_pegawai: "Yana",
     status_pegawai: "Nonaktif",
-    id_jabatan: 24,
+    id_jabatan: 23,
   },
   {
     nama_pegawai: "Zaki",

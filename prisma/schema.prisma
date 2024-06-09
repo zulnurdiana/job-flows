@@ -79,6 +79,8 @@ model Job {
   applicationUrl   String?
   companyLogoUrl   String?
   approved         Boolean    @default(false)
+  tanggal_mulai    DateTime   @default(now())
+  tanggal_selesai  DateTime   @default(now())
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @default(now())
   user             User[]
@@ -96,16 +98,12 @@ model Persyaratan {
   umur Int
   status_pernikahan String
   status_persyaratan Boolean @default(false)
-
   id_user String
   user    User             @relation(fields: [id_user], references: [id])
-
   id_permintaan Int
   permintaan Permintaan  @relation(fields: [id_permintaan], references: [id_permintaan])
-
   id_job Int?
   job Job? @relation(fields: [id_job],references: [id])
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "jobs" ADD COLUMN     "tanggal_mulai" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "tanggal_selesai" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "persyaratan" ALTER COLUMN "pengalaman_kerja" SET DATA TYPE TEXT;

@@ -1,7 +1,7 @@
 import { Job } from "@prisma/client";
 import Image from "next/image";
-import { Banknote, Briefcase, Globe2, MapPin } from "lucide-react";
-import { formatMoney } from "@/lib/utils";
+import { Banknote, Briefcase, Globe2, MapPin, Clock } from "lucide-react";
+import { formatDateTime, formatMoney } from "@/lib/utils";
 import Link from "next/link";
 import Markdown from "./Markdown";
 import {
@@ -30,10 +30,14 @@ const DetailJobPage = async ({
     description,
     applicationUrl,
     applicationEmail,
+    tanggal_mulai,
+    tanggal_selesai,
   },
 }: DetailJobPageProps) => {
   const session = await getSession();
   const role = session?.user.role;
+  const isExpired = new Date(tanggal_selesai) < new Date();
+
   return (
     <section className="w-full grow space-y-5 ">
       {session && role?.toLowerCase() === "direktur" && (
@@ -92,6 +96,10 @@ const DetailJobPage = async ({
               <p className="flex items-center gap-1.5 ">
                 <Banknote className="shrink-0" size={16} />{" "}
                 {formatMoney(salary)}
+              </p>
+              <p className="flex items-center gap-1.5 ">
+                <Clock className="shrink-0" size={16} />{" "}
+                {isExpired ? "Expired" : formatDateTime(tanggal_mulai).dateOnly}
               </p>
             </div>
           </div>

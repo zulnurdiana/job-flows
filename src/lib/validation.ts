@@ -41,6 +41,8 @@ const locationSchema = z
     },
   );
 
+const dateISOString = z.string().refine((val) => !!Date.parse(val));
+
 export const createJobsSchema = z
   .object({
     title: requiredString.max(100),
@@ -51,6 +53,8 @@ export const createJobsSchema = z
     companyName: requiredString.max(100),
     companyLogo: companyLogoSchema,
     description: z.string().max(5000).optional(),
+    tanggal_mulai: dateISOString,
+    tanggal_selesai: dateISOString,
     salary: numericRequiredString.max(
       9,
       "Number can't be longer than 9 digits",
