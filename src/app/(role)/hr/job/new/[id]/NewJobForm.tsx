@@ -125,7 +125,11 @@ const NewJobForm = ({
     }
   }
 
-  const defaultDescription = `**Qualification**: \n- Pengalaman Kerja: ${pengalaman_kerja} tahun \n- Pendidikan: ${pendidikan} \n- Umur: ${umur} tahun \n- Status Pernikahan: ${status_pernikahan}`;
+  const defaultDescription = `**Kualifikasi**: 
+- Pengalaman Kerja: ${pengalaman_kerja}
+- Pendidikan: ${pendidikan} 
+- Umur: ${umur} tahun 
+- Status Pernikahan: ${status_pernikahan}`;
 
   return (
     <main className="m-auto my-4 max-w-5xl space-y-10">

@@ -18,7 +18,11 @@ import {
 import { Input } from "@/components/ui/input";
 import Select from "@/components/ui/select";
 import LoadingButton from "@/components/LoadingButton";
-import { pendidikanList, statusPernikahanList } from "@/lib/persyaratan-list";
+import {
+  pendidikanList,
+  pengalamanKerjaList,
+  statusPernikahanList,
+} from "@/lib/persyaratan-list";
 import createPersyaratan from "./actions";
 import {
   Breadcrumb,
@@ -29,11 +33,41 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-interface NewPersyaratanFormProps {
-  id_permintaan: number;
+interface Jabatan {
+  id_jabatan: number;
+  id_divisi: number;
+  nama_jabatan: string;
+  deskripsi_jabatan?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const NewPersyaratanForm = ({ id_permintaan }: NewPersyaratanFormProps) => {
+// Interface untuk model Permintaan
+interface Permintaan {
+  id_permintaan: number;
+  jumlah_pegawai: number;
+  status_permintaan?: boolean | null;
+  approved?: boolean | null;
+  tanggal_permintaan: Date;
+  id_jabatan: number;
+  jabatan: Jabatan;
+  id_user: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Interface untuk model Persyaratan
+
+interface NewPersyaratanFormProps {
+  permintaan: Permintaan;
+}
+
+const NewPersyaratanForm = ({
+  permintaan: {
+    id_permintaan,
+    jabatan: { nama_jabatan },
+  },
+}: NewPersyaratanFormProps) => {
   const form = useForm<createPersyaratanValues>({
     resolver: zodResolver(createPersyaratanSchema),
     defaultValues: {
@@ -64,7 +98,7 @@ const NewPersyaratanForm = ({ id_permintaan }: NewPersyaratanFormProps) => {
   }
 
   return (
-    <main className="m-auto max-w-5xl my-4 space-y-4">
+    <main className="m-auto max-w-5xl my-4 space-y-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -78,14 +112,14 @@ const NewPersyaratanForm = ({ id_permintaan }: NewPersyaratanFormProps) => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Formulir Persyaratan</BreadcrumbPage>
+            <BreadcrumbPage>Formulir Persyaratan {nama_jabatan}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
       <div className="space-y-5 text-center">
         <H1>
-          Formulir Persyaratan <br /> Calon Pelamar
+          Formulir Persyaratan <br /> {nama_jabatan}
         </H1>
       </div>
       <Form {...form}>
@@ -97,7 +131,16 @@ const NewPersyaratanForm = ({ id_permintaan }: NewPersyaratanFormProps) => {
               <FormItem>
                 <FormLabel>Pengalaman Kerja</FormLabel>
                 <FormControl>
-                  <Input {...field} type="number" />
+                  <Select {...field} defaultValue="">
+                    <option value="" hidden>
+                      Pilih Pengalaman
+                    </option>
+                    {pengalamanKerjaList.map((pengalaman) => (
+                      <option key={pengalaman} value={pengalaman}>
+                        {pengalaman}
+                      </option>
+                    ))}
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

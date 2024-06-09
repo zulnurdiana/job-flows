@@ -77,10 +77,7 @@ export const createPermintaanSchema = z.object({
 });
 
 export const createPersyaratanSchema = z.object({
-  pengalaman_kerja: numericRequiredString.max(
-    3,
-    "Number cant be longer than 3 digits",
-  ),
+  pengalaman_kerja: requiredString,
   pendidikan: requiredString,
   umur: numericRequiredString.max(3, "Number cant be longer than 3 digits"),
   status_pernikahan: requiredString,

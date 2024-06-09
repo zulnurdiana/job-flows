@@ -1,2 +1,9 @@
-export const pendidikanList = ["SMA / SMK", "D1", "D2", "D3", "D4", "S1", "S2"];
+export const pendidikanList = ["SMA / SMK", "D1/D2/D3", "S1/D4"];
 export const statusPernikahanList = ["Menikah", "Lajang"];
+export const pengalamanKerjaList = [
+  "0 - 1 Tahun",
+  "1 - 2 Tahun",
+  "2 - 4 Tahun",
+  "4 - 6 Tahun",
+  "> 6 Tahun",
+];

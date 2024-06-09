@@ -91,7 +91,7 @@ model Job {
 
 model Persyaratan {
   id_persyaratan Int @id @default(autoincrement())
-  pengalaman_kerja Int
+  pengalaman_kerja String
   pendidikan String
   umur Int
   status_pernikahan String

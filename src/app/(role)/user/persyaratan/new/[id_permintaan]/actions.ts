@@ -22,7 +22,7 @@ export default async function createPersyaratan(
 
   const persyaratan = await prisma.persyaratan.create({
     data: {
-      pengalaman_kerja: parseInt(pengalaman_kerja),
+      pengalaman_kerja: pengalaman_kerja,
       pendidikan: pendidikan,
       umur: parseInt(umur),
       status_pernikahan: status_pernikahan,

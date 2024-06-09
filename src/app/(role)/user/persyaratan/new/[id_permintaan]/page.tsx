@@ -1,4 +1,5 @@
 import NewPersyaratanForm from "./NewPersyaratanForm";
+import prisma from "@/lib/prisma";
 
 interface PageProps {
   params: {
@@ -6,11 +7,22 @@ interface PageProps {
   };
 }
 
-const page = ({ params: { id_permintaan } }: PageProps) => {
+const page = async ({ params: { id_permintaan } }: PageProps) => {
   const permintaanId = parseInt(id_permintaan);
+  const permintaan = await prisma.permintaan.findUnique({
+    where: {
+      id_permintaan: permintaanId,
+    },
+    include: {
+      jabatan: true,
+    },
+  });
+  if (!permintaan) {
+    throw new Error("Permintaan not found");
+  }
   return (
     <div>
-      <NewPersyaratanForm id_permintaan={permintaanId} />
+      <NewPersyaratanForm permintaan={permintaan} />
     </div>
   );
 };
