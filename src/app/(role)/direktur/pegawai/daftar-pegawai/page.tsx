@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -13,6 +12,14 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import getSession from "@/lib/getSession";
 import { redirect } from "next/navigation";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const page = async () => {
   const session = await getSession();
@@ -38,7 +45,19 @@ const page = async () => {
   }));
 
   return (
-    <div className="max-w-6xl min-h-[400px] m-auto my-10 space-y-6">
+    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Daftar Pegawai</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <H1 className="text-center">
         Daftar Pegawai Untuk <br />
         Setiap Jabatan

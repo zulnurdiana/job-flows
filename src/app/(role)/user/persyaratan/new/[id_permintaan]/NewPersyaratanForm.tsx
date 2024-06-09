@@ -20,6 +20,14 @@ import Select from "@/components/ui/select";
 import LoadingButton from "@/components/LoadingButton";
 import { pendidikanList, statusPernikahanList } from "@/lib/persyaratan-list";
 import createPersyaratan from "./actions";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface NewPersyaratanFormProps {
   id_permintaan: number;
@@ -56,9 +64,29 @@ const NewPersyaratanForm = ({ id_permintaan }: NewPersyaratanFormProps) => {
   }
 
   return (
-    <main className="m-auto max-w-5xl my-10 space-y-10">
+    <main className="m-auto max-w-5xl my-4 space-y-4">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/user/permintaan/daftar-permintaan">
+              Daftar Permintaan
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Formulir Persyaratan</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <div className="space-y-5 text-center">
-        <H1>Persyaratan Calon Pelamar</H1>
+        <H1>
+          Formulir Persyaratan <br /> Calon Pelamar
+        </H1>
       </div>
       <Form {...form}>
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
@@ -135,7 +163,11 @@ const NewPersyaratanForm = ({ id_permintaan }: NewPersyaratanFormProps) => {
               </FormItem>
             )}
           />
-          <LoadingButton type="submit" loading={isSubmitting}>
+          <LoadingButton
+            type="submit"
+            className="w-full"
+            loading={isSubmitting}
+          >
             Submit
           </LoadingButton>
         </form>

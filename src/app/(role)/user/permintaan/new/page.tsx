@@ -5,6 +5,7 @@ import NewPermintaanForm from "./NewPermintaanForm";
 import prisma from "@/lib/prisma";
 import { Divisi } from "@prisma/client";
 
+
 export const metadata: Metadata = {
   title: "Buat Permintaan",
 };

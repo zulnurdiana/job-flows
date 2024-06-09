@@ -15,10 +15,18 @@ import H1 from "@/components/ui/h1";
 import { Textarea } from "@/components/ui/textarea";
 import Select from "@/components/ui/select";
 import LoadingButton from "@/components/LoadingButton";
-import { createKriteria, updateKriteria } from "../actions";
+import { updateKriteria } from "../actions";
 import { Kriteria } from "@prisma/client";
 import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface UpdateKriteriaPageProps {
   kriteria: Kriteria;
@@ -73,7 +81,25 @@ const UpdateKriteriaForm = ({
   }
 
   return (
-    <div className="max-w-4xl mx-auto my-10 p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-5xl mx-auto my-4 rounded-lg">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/user/kriteria/daftar-kriteria">
+              Daftar Kriteria
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{nama_kriteria}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <H1 className="text-center text-2xl font-bold mb-6">
         Formulir Ubah <br /> Kriteria Penilaian
       </H1>

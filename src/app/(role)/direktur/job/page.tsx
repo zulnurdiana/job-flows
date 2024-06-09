@@ -5,6 +5,14 @@ import prisma from "@/lib/prisma";
 import JobListItem from "@/components/JobListItem";
 import Link from "next/link";
 import { Metadata } from "next";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export const metadata: Metadata = {
   title: "Halaman Admin",
@@ -22,11 +30,23 @@ const page = async () => {
     where: {
       approved: false,
     },
-  
   });
 
   return (
-    <div className="max-w-5xl m-auto my-10 space-y-5 min-h-[400px]">
+    <div className="max-w-5xl m-auto my-4 space-y-5 min-h-[400px]">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Daftar Lowongan</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <H1 className="text-center text-lg font-bold">
         Daftar Pembukaan Lowongan
       </H1>

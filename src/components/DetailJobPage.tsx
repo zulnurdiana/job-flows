@@ -1,16 +1,24 @@
 import { Job } from "@prisma/client";
 import Image from "next/image";
-import H1 from "./ui/h1";
 import { Banknote, Briefcase, Globe2, MapPin } from "lucide-react";
 import { formatMoney } from "@/lib/utils";
 import Link from "next/link";
 import Markdown from "./Markdown";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import getSession from "@/lib/getSession";
 
 interface DetailJobPageProps {
   job: Job;
 }
 
-const DetailJobPage = ({
+const DetailJobPage = async ({
   job: {
     title,
     type,
@@ -24,8 +32,32 @@ const DetailJobPage = ({
     applicationEmail,
   },
 }: DetailJobPageProps) => {
+  const session = await getSession();
+  const role = session?.user.role;
   return (
-    <section className="w-full grow space-y-5  ">
+    <section className="w-full grow space-y-5 ">
+      {session && role?.toLowerCase() === "direktur" && (
+        <>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/direktur/job">
+                  Daftar Lowongan
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </>
+      )}
+
       <div className="flex items-center gap-3">
         {companyLogoUrl && (
           <Image

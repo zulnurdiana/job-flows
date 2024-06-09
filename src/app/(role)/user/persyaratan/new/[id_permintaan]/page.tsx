@@ -1,4 +1,4 @@
-import NewPersyaratanForm from "../NewPersyaratanForm";
+import NewPersyaratanForm from "./NewPersyaratanForm";
 
 interface PageProps {
   params: {

@@ -22,6 +22,14 @@ import RichTextEditor from "@/components/RichTextEditor";
 import { draftToMarkdown } from "markdown-draft-js";
 import LoadingButton from "@/components/LoadingButton";
 import { createJobPosting } from "./action";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 // Interface untuk model Jabatan
 interface Jabatan {
@@ -120,14 +128,32 @@ const NewJobForm = ({
   const defaultDescription = `**Qualification**: \n- Pengalaman Kerja: ${pengalaman_kerja} tahun \n- Pendidikan: ${pendidikan} \n- Umur: ${umur} tahun \n- Status Pernikahan: ${status_pernikahan}`;
 
   return (
-    <main className="m-auto my-10 max-w-3xl space-y-10">
+    <main className="m-auto my-4 max-w-5xl space-y-10">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/hr/persyaratan">
+              Daftar Persyaratan
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{nama_jabatan}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <div className="space-y-5 text-center">
         <H1>Find your perfect developer</H1>
         <p className="text-muted-foreground">
           Get your job posting seen by thousands of job seekers.
         </p>
       </div>
-      <div className="space-y-6 rounded-lg border p-4">
+      <div className="space-y-6 m-auto rounded-lg border p-4  max-w-3xl">
         <div>
           <h2 className="font-semibold">Job details</h2>
           <p className="text-muted-foreground">

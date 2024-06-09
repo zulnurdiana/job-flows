@@ -21,6 +21,14 @@ import { Divisi, Jabatan } from "@prisma/client";
 import LoadingButton from "@/components/LoadingButton";
 import createPermintaan from "./actions";
 import { useState } from "react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface NewPermintaanFormProps {
   jabatan: Jabatan[];
@@ -79,7 +87,20 @@ const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
   }
 
   return (
-    <main className="m-auto max-w-5xl my-10 space-y-10">
+    <main className="m-auto max-w-5xl my-4 space-y-4">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Formulir Permintaan</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <div className="space-y-5 text-center">
         <H1>
           Formulir Tambah <br /> Permintaan Pegawai

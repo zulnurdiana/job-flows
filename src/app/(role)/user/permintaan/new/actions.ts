@@ -1,6 +1,7 @@
 "use server";
 import getSession from "@/lib/getSession";
 import prisma from "@/lib/prisma";
+import { handleError } from "@/lib/utils";
 import { createPermintaanSchema } from "@/lib/validation";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -34,18 +35,28 @@ export async function approvedPermintaan(formData: FormData) {
       throw new Error("Not Unauthorized");
     }
 
-    await prisma.permintaan.update({
+    const permintaan = await prisma.permintaan.update({
       where: {
         id_permintaan: id_permintaan,
+      },
+      include: {
+        jabatan: true,
       },
       data: {
         approved: true,
       },
     });
-
     revalidatePath("/");
+    if (permintaan) {
+      return {
+        code: 200,
+        message: `Berhasil Approve Permintaan Untuk Jabatan ${permintaan.jabatan.nama_jabatan}`,
+      };
+    }
   } catch (error) {
-    console.log(error);
+    return {
+      error: handleError(error),
+    };
   }
 }
 
@@ -58,13 +69,24 @@ export async function deletePermintaan(formData: FormData) {
       throw new Error("Not Unauthorized");
     }
 
-    await prisma.permintaan.delete({
+    const permintaan = await prisma.permintaan.delete({
       where: {
         id_permintaan: id_permintaan,
       },
+      include: {
+        jabatan: true,
+      },
     });
     revalidatePath("/");
+    if (permintaan) {
+      return {
+        code: 200,
+        message: `Berhasil Delete Permintaan Untuk Jabatan ${permintaan.jabatan.nama_jabatan}`,
+      };
+    }
   } catch (error) {
-    console.log(error);
+    return {
+      error: handleError(error),
+    };
   }
 }

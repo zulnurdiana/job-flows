@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -14,6 +13,14 @@ import {
 import H1 from "@/components/ui/h1";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const page = async () => {
   const persyaratans = await prisma.persyaratan.findMany({
@@ -42,7 +49,21 @@ const page = async () => {
   if (!session || user?.role?.toLowerCase() !== "hr") return redirect("/");
 
   return (
-    <div className="max-w-6xl min-h-[400px] m-auto my-10 space-y-6">
+    <div className="max-w-6xl min-h-[400px] m-auto my-4 space-y-6">
+      <div className="max-w-5xl m-auto">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Daftar Persyaratan</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
       <H1 className="text-center">
         Daftar Persyaratan <br /> Calon Pegawai
       </H1>
@@ -93,7 +114,7 @@ const page = async () => {
                 <TableCell>
                   <Button asChild>
                     <Link href={`/hr/job/new/${persyaratan.id_persyaratan}`}>
-                      Buka Lowongan
+                      Lowongan
                     </Link>
                   </Button>
                 </TableCell>

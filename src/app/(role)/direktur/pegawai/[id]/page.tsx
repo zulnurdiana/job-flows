@@ -9,8 +9,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import H1 from "@/components/ui/h1";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface PageProps {
   params: {
@@ -31,7 +37,27 @@ const page = async ({ params: { id } }: PageProps) => {
   });
 
   return (
-    <div className="max-w-6xl min-h-[400px] m-auto my-10 space-y-6">
+    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/direktur/pegawai/daftar-pegawai">
+              Daftar Pegawai
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>
+              {pegawaiPerJabatan[0].jabatan?.nama_jabatan}
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <H1 className="text-center">
         Daftar Pegawai Untuk <br />
         Jabatan {pegawaiPerJabatan[0].jabatan?.nama_jabatan}

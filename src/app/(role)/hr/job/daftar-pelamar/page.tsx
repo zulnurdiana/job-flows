@@ -12,6 +12,14 @@ import prisma from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import H1 from "@/components/ui/h1";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const getJobDetails = async () => {
   const jobDetails = await prisma.jabatan.findMany({
@@ -105,7 +113,19 @@ const page = async () => {
   const jobDetails = await getJobDetails();
 
   return (
-    <div className="max-w-6xl min-h-[400px] m-auto my-10 space-y-6">
+    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-4">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Daftar Pelamar</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <H1 className="text-center">
         Daftar Pelamar <br />
         Setiap Jabatan

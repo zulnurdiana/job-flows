@@ -12,6 +12,14 @@ import prisma from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import H1 from "@/components/ui/h1";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface PageProps {
   params: {
@@ -35,7 +43,29 @@ const page = async ({ params: { id } }: PageProps) => {
   });
 
   return (
-    <div className="max-w-5xl min-h-[400px] m-auto my-10 space-y-16">
+    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/hr/job/daftar-pelamar">
+              Daftar Pelamar
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>
+              {getPelamarPerJabatan.length > 0
+                ? getPelamarPerJabatan[0].job?.title
+                : ""}
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <H1 className="text-center">
         Daftar Pelamar <br />
         Jabatan{" "}

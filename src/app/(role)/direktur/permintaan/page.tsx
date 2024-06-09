@@ -10,12 +10,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import prisma from "@/lib/prisma";
-import FormSubmitButton from "@/components/FormSubmitButton";
-import {
-  approvedPermintaan,
-  deletePermintaan,
-} from "../../user/permintaan/new/actions";
 import H1 from "@/components/ui/h1";
+import ButtonPermintaan from "./ButtonPermintaan";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const page = async () => {
   const session = await getSession();
@@ -42,14 +46,21 @@ const page = async () => {
     },
   });
 
-  const appPermintaan = await prisma.permintaan.findMany({
-    where: {
-      approved: true,
-    },
-  });
-
   return (
-    <div className="max-w-5xl m-auto my-10 space-y-6 min-h-[400px]">
+    <div className="max-w-5xl m-auto my-4 space-y-6 min-h-[400px]">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+
+          <BreadcrumbItem>
+            <BreadcrumbPage>Daftar Permintaan</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <H1 className="text-center">Daftar Permintaan Pegawai</H1>
 
       {unapprovedPermintaan.length !== 0 ? (
@@ -80,28 +91,7 @@ const page = async () => {
                 <TableCell>{permintaan.user.name}</TableCell>
                 <TableCell>
                   <div className="flex gap-3 items-center">
-                    <form action={approvedPermintaan}>
-                      <input
-                        hidden
-                        id="id_permintaan"
-                        name="id_permintaan"
-                        value={permintaan.id_permintaan}
-                      />
-                      <FormSubmitButton className="w-full bg-white border-2 text-green-500 hover:text-white font-bold">
-                        Approved
-                      </FormSubmitButton>
-                    </form>
-                    <form action={deletePermintaan}>
-                      <input
-                        hidden
-                        id="id_permintaan"
-                        name="id_permintaan"
-                        value={permintaan.id_permintaan}
-                      />
-                      <FormSubmitButton className="w-full bg-white border-2 font-bold text-red-500 hover:text-white">
-                        Rejected
-                      </FormSubmitButton>
-                    </form>
+                    <ButtonPermintaan permintaan={permintaan} />
                   </div>
                 </TableCell>
               </TableRow>

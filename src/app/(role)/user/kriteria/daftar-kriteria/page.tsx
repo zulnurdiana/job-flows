@@ -12,10 +12,15 @@ import prisma from "@/lib/prisma";
 import H1 from "@/components/ui/h1";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { deleteKriteria } from "../actions";
-import FormSubmitButton from "@/components/FormSubmitButton";
-
 import ButtonDeleteKriteria from "./ButtonDeleteKriteria";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const page = async () => {
   const session = await getSession();
@@ -28,7 +33,19 @@ const page = async () => {
   });
 
   return (
-    <div className="max-w-5xl m-auto my-10 space-y-5 min-h-[400px]">
+    <div className="max-w-5xl m-auto my-4 space-y-5 min-h-[400px]">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Daftar Kriteria</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <H1 className="text-center">Daftar Kriteria Penilaian</H1>
       <Button asChild>
         <Link href={"/user/kriteria/new"}>Tambah Kriteria</Link>

@@ -18,6 +18,14 @@ import LoadingButton from "@/components/LoadingButton";
 import { createKriteria } from "../actions";
 import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 const NewKriteriaForm = () => {
   const form = useForm<createKriteriaValues>({
@@ -58,12 +66,33 @@ const NewKriteriaForm = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto my-10 p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-5xl mx-auto my-4 space-y-6 rounded-lg min-h-[400px]">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/user/kriteria/daftar-kriteria">
+              Daftar Kriteria
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Formulir Kriteria Penilaian</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <H1 className="text-center text-2xl font-bold mb-6">
         Formulir Tambah <br /> Kriteria Penilaian
       </H1>
       <Form {...form}>
-        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="space-y-6 max-w-3xl m-auto"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <FormField
             control={form.control}
             name="nama_kriteria"
@@ -131,7 +160,7 @@ const NewKriteriaForm = () => {
           />
           <LoadingButton
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-300"
+            className="w-full  text-white py-2 rounded-md  transition duration-300"
             loading={isSubmitting}
           >
             Submit

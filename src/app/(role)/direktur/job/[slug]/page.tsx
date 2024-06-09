@@ -19,9 +19,15 @@ const page = async ({ params: { slug } }: PageProps) => {
   if (!job) notFound();
 
   return (
-    <main className="max-w-5xl m-auto my-10 space-y-10 flex flex-col items-center gap-5 md:flex-row md:items-start">
-      <DetailJobPage job={job} />
-      <AdminSideBar job={job} />
+    <main className="max-w-5xl m-auto my-4 space-y-10 flex flex-col items-center gap-5 md:flex-row md:items-start">
+      {job ? (
+        <>
+          <DetailJobPage job={job} />
+          <AdminSideBar job={job} />
+        </>
+      ) : (
+        <div className="text-center">Lowongan tidak ditemukan</div>
+      )}
     </main>
   );
 };

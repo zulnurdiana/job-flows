@@ -4,10 +4,16 @@ import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import DetailJobPage from "@/components/DetailJobPage";
 import getSession from "@/lib/getSession";
-import FormSubmitButton from "@/components/FormSubmitButton";
-import { lamarLowongan } from "./action";
 import ButtonLamar from "./ButtonLamar";
 import { Button } from "@/components/ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 interface PageProps {
   params: {
@@ -52,6 +58,7 @@ export async function generateMetadata({
 
 const page = async ({ params: { slug } }: PageProps) => {
   const session = await getSession();
+  const role = session?.user.role;
   let checkJabatanPending;
   const user = session?.user;
   if (!session) {
@@ -78,11 +85,33 @@ const page = async ({ params: { slug } }: PageProps) => {
   }
 
   return (
-    <main className="max-w-5xl m-auto px-3 my-10 flex flex-col sm:flex-row items-center gap-5 md:items-start">
-      <DetailJobPage job={job} />
+    <main className="max-w-5xl m-auto px-3 my-4 space-y-5 flex flex-col sm:flex-row justify-between items-center gap-5 md:items-start">
+      <div className="flex flex-col gap-5">
+        {role?.toLowerCase() === "hr" ||
+        role?.toLowerCase() === "user" ||
+        role?.toLowerCase() === "pelamar" ||
+        !session ? (
+          <>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Detail Lowongan {job.title}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </>
+        ) : null}
+        <DetailJobPage job={job} />
+      </div>
+
       <aside>
-        {session ? (
-          user?.role === "pelamar" && checkJabatanPending?.id_job === null ? (
+        {session && user?.role === "pelamar" ? (
+          checkJabatanPending?.id_job === null ? (
             <ButtonLamar id_job={job.id} />
           ) : (
             <Button>Anda sudah melamar</Button>

@@ -36,7 +36,7 @@ function ApproveSubmissionButton({ jobId }: adminButtonProps) {
   return (
     <form action={actionClient} className="space-y-1">
       <input hidden id="jobId" name="jobId" value={jobId} />
-      <FormSubmitButton className="w-full bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+      <FormSubmitButton className="w-full bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600">
         Approve
       </FormSubmitButton>
     </form>
@@ -59,7 +59,7 @@ function DeletedJobButton({ jobId }: adminButtonProps) {
   return (
     <form action={actionClient} className="space-y-1">
       <input hidden id="jobId" name="jobId" value={jobId} />
-      <FormSubmitButton className="w-full bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+      <FormSubmitButton className="w-full bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600">
         Delete
       </FormSubmitButton>
     </form>
