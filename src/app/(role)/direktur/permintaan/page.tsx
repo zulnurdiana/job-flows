@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -47,50 +46,70 @@ const page = async () => {
   });
 
   return (
-    <div className="max-w-5xl m-auto my-4 space-y-6 min-h-[400px]">
-      <Breadcrumb>
-        <BreadcrumbList>
+    <div className="max-w-5xl mx-auto my-4 space-y-6 min-h-[400px] px-4">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-
           <BreadcrumbItem>
             <BreadcrumbPage>Daftar Permintaan</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
-      <H1 className="text-center">Daftar Permintaan Pegawai</H1>
+      <H1 className="text-3xl font-extrabold text-center text-gray-800">
+        Daftar Permintaan Pegawai
+      </H1>
 
       {unapprovedPermintaan.length !== 0 ? (
-        <Table>
-          <TableHeader>
+        <Table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <TableHeader className="bg-gray-200">
             <TableRow>
-              <TableHead className="text-center font-bold">No</TableHead>
-              <TableHead className="text-center">Jabatan</TableHead>
-              <TableHead className="text-center">Divisi</TableHead>
-              <TableHead className="text-center">Jumlah Permintaan</TableHead>
-              <TableHead className="text-center">Tanggal Permintaan</TableHead>
-              <TableHead className="text-center">Nama Peminta</TableHead>
-              <TableHead className="text-center">Action</TableHead>
+              <TableHead className="text-center font-bold p-2">No</TableHead>
+              <TableHead className="text-center font-bold p-2">
+                Jabatan
+              </TableHead>
+              <TableHead className="text-center font-bold p-2">
+                Divisi
+              </TableHead>
+              <TableHead className="text-center font-bold p-2">
+                Jumlah Permintaan
+              </TableHead>
+              <TableHead className="text-center font-bold p-2">
+                Tanggal Permintaan
+              </TableHead>
+              <TableHead className="text-center font-bold p-2">
+                Nama Peminta
+              </TableHead>
+              <TableHead className="text-center font-bold p-2">
+                Action
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {unapprovedPermintaan.map((permintaan, index) => (
-              <TableRow key={permintaan.id_permintaan} className="text-center">
-                <TableCell className="font-bold">{index + 1}</TableCell>
-                <TableCell>{permintaan.jabatan.nama_jabatan}</TableCell>
-                <TableCell>{permintaan.jabatan.divisi.nama_divisi}</TableCell>
-                <TableCell>{permintaan.jumlah_pegawai} Pegawai</TableCell>
-
-                <TableCell className="text-center">
-                  {permintaan.tanggal_permintaan.toLocaleDateString()}
+              <TableRow
+                key={permintaan.id_permintaan}
+                className="text-center hover:bg-gray-100"
+              >
+                <TableCell className="font-bold p-2">{index + 1}</TableCell>
+                <TableCell className="p-2">
+                  {permintaan.jabatan.nama_jabatan}
                 </TableCell>
-
-                <TableCell>{permintaan.user.name}</TableCell>
-                <TableCell>
-                  <div className="flex gap-3 items-center">
+                <TableCell className="p-2">
+                  {permintaan.jabatan.divisi.nama_divisi}
+                </TableCell>
+                <TableCell className="p-2">
+                  {permintaan.jumlah_pegawai} Pegawai
+                </TableCell>
+                <TableCell className="p-2">
+                  {new Date(permintaan.tanggal_permintaan).toLocaleDateString()}
+                </TableCell>
+                <TableCell className="p-2">{permintaan.user.name}</TableCell>
+                <TableCell className="p-2">
+                  <div className="flex justify-center gap-3 items-center">
                     <ButtonPermintaan permintaan={permintaan} />
                   </div>
                 </TableCell>
@@ -99,7 +118,9 @@ const page = async () => {
           </TableBody>
         </Table>
       ) : (
-        <p className="text-center">Tidak ada permintaan yang pending</p>
+        <p className="text-center text-gray-500">
+          Tidak ada permintaan yang pending
+        </p>
       )}
     </div>
   );

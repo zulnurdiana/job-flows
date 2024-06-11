@@ -33,13 +33,12 @@ const page = async () => {
   });
 
   return (
-    <div className="max-w-5xl m-auto my-4 space-y-5 min-h-[400px]">
-      <Breadcrumb>
+    <div className="max-w-5xl m-auto my-4 px-4 space-y-5 min-h-[400px]">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
-
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>Daftar Lowongan</BreadcrumbPage>
@@ -47,29 +46,30 @@ const page = async () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <H1 className="text-center text-lg font-bold">
-        Daftar Pembukaan Lowongan
-      </H1>
+      <div className="text-center">
+        <H1>Daftar Pembukaan Lowongan</H1>
+      </div>
 
-      {user?.role !== "direktur" ? (
-        <p className="text-center">Anda bukan Direktur</p>
-      ) : (
+      {user?.role === "direktur" ? (
         <div className="space-y-5">
-          {unapprovedJobs.map((job) => (
-            <Link
-              href={`/direktur/job/${job.slug}`}
-              key={job.id}
-              className="block"
-            >
-              <JobListItem job={job} />
-            </Link>
-          ))}
-          {unapprovedJobs.length === 0 && (
-            <p className="text-center mt-44">
+          {unapprovedJobs.length > 0 ? (
+            unapprovedJobs.map((job) => (
+              <Link
+                href={`/direktur/job/${job.slug}`}
+                key={job.id}
+                className="block"
+              >
+                <JobListItem job={job} />
+              </Link>
+            ))
+          ) : (
+            <p className="text-center">
               Tidak ada daftar lowongan yang pending
             </p>
           )}
         </div>
+      ) : (
+        <p className="text-center">Anda bukan Direktur</p>
       )}
     </div>
   );

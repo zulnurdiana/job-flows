@@ -81,7 +81,7 @@ export async function deletePermintaan(formData: FormData) {
     if (permintaan) {
       return {
         code: 200,
-        message: `Berhasil Delete Permintaan Untuk Jabatan ${permintaan.jabatan.nama_jabatan}`,
+        message: `Berhasil Rejected Permintaan Untuk Jabatan ${permintaan.jabatan.nama_jabatan}`,
       };
     }
   } catch (error) {

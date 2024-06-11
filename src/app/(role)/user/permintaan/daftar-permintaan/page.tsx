@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -43,9 +42,9 @@ const page = async () => {
   });
 
   return (
-    <div className="max-w-5xl m-auto my-4 space-y-5 min-h-[400px]">
-      <Breadcrumb>
-        <BreadcrumbList>
+    <div className="max-w-5xl mx-auto my-4 space-y-6 min-h-[400px] px-4">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -56,28 +55,44 @@ const page = async () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <H1 className="text-center">Daftar Permintaan Pegawai</H1>
+      <H1 className="text-3xl font-extrabold text-center text-gray-800">
+        Daftar Permintaan Pegawai
+      </H1>
+
       {permintaanByUser.length === 0 ? (
-        <div className="text-center">
+        <div className="text-center text-gray-500">
           Tidak ada daftar permintaan yang pending
         </div>
       ) : (
-        <Table>
-          <TableHeader>
+        <Table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <TableHeader className="bg-gray-200">
             <TableRow>
-              <TableHead className="text-center font-bold">No</TableHead>
-              <TableHead className="text-center">Jabatan</TableHead>
-              <TableHead className="text-center">Jumlah Permintaan</TableHead>
-              <TableHead className="text-center">Status Permintaan</TableHead>
+              <TableHead className="text-center font-bold p-2">No</TableHead>
+              <TableHead className="text-center font-bold p-2">
+                Jabatan
+              </TableHead>
+              <TableHead className="text-center font-bold p-2">
+                Jumlah Permintaan
+              </TableHead>
+              <TableHead className="text-center font-bold p-2">
+                Status Permintaan
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {permintaanByUser.map((permintaan, index) => (
-              <TableRow key={permintaan.id_permintaan} className="text-center">
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{permintaan.jabatan.nama_jabatan}</TableCell>
-                <TableCell>{permintaan.jumlah_pegawai}</TableCell>
-                <TableCell>
+              <TableRow
+                key={permintaan.id_permintaan}
+                className="text-center hover:bg-gray-100"
+              >
+                <TableCell className="p-2">{index + 1}</TableCell>
+                <TableCell className="p-2">
+                  {permintaan.jabatan.nama_jabatan}
+                </TableCell>
+                <TableCell className="p-2">
+                  {permintaan.jumlah_pegawai}
+                </TableCell>
+                <TableCell className="p-2">
                   {permintaan.approved === false ? (
                     "Pending"
                   ) : (

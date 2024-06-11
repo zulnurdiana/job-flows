@@ -1,6 +1,7 @@
 const { divisi, jabatan, pegawai } = require("./divisi-jabatan-pegawai-data");
 const { PrismaClient } = require("@prisma/client");
 const { placeholderJobs } = require("./placeholder-data");
+const { kriteria } = require("./kriteria-data");
 const prisma = new PrismaClient();
 
 async function main() {
@@ -12,6 +13,18 @@ async function main() {
         },
         update: job,
         create: job,
+      });
+    }),
+  );
+
+  await Promise.all(
+    kriteria.map(async (kriter) => {
+      await prisma.kriteria.upsert({
+        where: {
+          nama_kriteria: kriter.nama_kriteria,
+        },
+        update: kriter,
+        create: kriter,
       });
     }),
   );
@@ -106,6 +119,7 @@ async function main() {
 main()
   .then(async () => {
     await prisma.$disconnect();
+    console.log("Database seeded successfully");
   })
   .catch(async (e) => {
     console.error("Error while seeding database:", e);

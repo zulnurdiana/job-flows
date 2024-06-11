@@ -113,26 +113,29 @@ const page = async () => {
   const jobDetails = await getJobDetails();
 
   return (
-    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-4">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Daftar Pelamar</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <div className="max-w-5xl mx-auto my-4 space-y-6 px-4 rounded-lg min-h-[400px]">
+      <div className="max-w-5xl mx-auto">
+        <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+          <BreadcrumbList className="flex space-x-2 text-gray-600">
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Daftar Pelamar</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
 
-      <H1 className="text-center">
-        Daftar Pelamar <br />
-        Setiap Jabatan
-      </H1>
+      <div className="text-center">
+        <H1 className="text-3xl font-extrabold text-gray-800">
+          Daftar Pelamar <br /> Setiap Jabatan
+        </H1>
+      </div>
 
-      <Table>
-        <TableHeader>
+      <Table className="w-full border-collapse">
+        <TableHeader className="bg-gray-200">
           <TableRow>
             <TableHead className="text-center font-bold">No</TableHead>
             <TableHead className="text-center">Jabatan</TableHead>

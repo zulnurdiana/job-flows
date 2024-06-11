@@ -98,9 +98,9 @@ const NewPersyaratanForm = ({
   }
 
   return (
-    <main className="m-auto max-w-5xl my-4 space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
+    <main className="max-w-5xl mx-auto my-4 space-y-4 px-4">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -117,13 +117,17 @@ const NewPersyaratanForm = ({
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="space-y-5 text-center">
-        <H1>
+      <div className="text-center">
+        <H1 className="text-3xl font-extrabold text-gray-800">
           Formulir Persyaratan <br /> {nama_jabatan}
         </H1>
       </div>
+
       <Form {...form}>
-        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="space-y-6 max-w-3xl m-auto"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <FormField
             control={control}
             name="pengalaman_kerja"
@@ -206,6 +210,7 @@ const NewPersyaratanForm = ({
               </FormItem>
             )}
           />
+
           <LoadingButton
             type="submit"
             className="w-full"

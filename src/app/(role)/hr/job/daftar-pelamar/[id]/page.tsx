@@ -43,40 +43,44 @@ const page = async ({ params: { id } }: PageProps) => {
   });
 
   return (
-    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/hr/job/daftar-pelamar">
-              Daftar Pelamar
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>
-              {getPelamarPerJabatan.length > 0
-                ? getPelamarPerJabatan[0].job?.title
-                : ""}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+    <div className="max-w-5xl mx-auto my-4 space-y-6 px-4 rounded-lg min-h-[400px]">
+      <div className="max-w-5xl mx-auto">
+        <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+          <BreadcrumbList className="flex space-x-2 text-gray-600">
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/hr/job/daftar-pelamar">
+                Daftar Pelamar
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>
+                {getPelamarPerJabatan.length > 0
+                  ? getPelamarPerJabatan[0].job?.title
+                  : ""}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
 
-      <H1 className="text-center">
-        Daftar Pelamar <br />
-        Jabatan{" "}
-        {getPelamarPerJabatan.length > 0
-          ? getPelamarPerJabatan[0].job?.title
-          : ""}
-      </H1>
+      <div className="text-center">
+        <H1 className="text-3xl font-extrabold text-gray-800">
+          Daftar Pelamar <br />
+          Jabatan{" "}
+          {getPelamarPerJabatan.length > 0
+            ? getPelamarPerJabatan[0].job?.title
+            : ""}
+        </H1>
+      </div>
 
       {getPelamarPerJabatan.length > 0 ? (
-        <Table>
-          <TableHeader>
+        <Table className="w-full border-collapse">
+          <TableHeader className="bg-gray-200">
             <TableRow>
               <TableHead className="text-center font-bold">No</TableHead>
               <TableHead className="text-center">Nama Pelamar</TableHead>

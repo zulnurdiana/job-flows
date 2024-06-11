@@ -1,7 +1,4 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createKriteriaSchema, createKriteriaValues } from "@/lib/validation";
 import {
   Form,
   FormControl,
@@ -11,10 +8,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import H1 from "@/components/ui/h1";
-import { Textarea } from "@/components/ui/textarea";
 import Select from "@/components/ui/select";
 import LoadingButton from "@/components/LoadingButton";
+import H1 from "@/components/ui/h1";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createKriteriaSchema, createKriteriaValues } from "@/lib/validation";
 import { updateKriteria } from "../actions";
 import { Kriteria } from "@prisma/client";
 import { toast } from "@/components/ui/use-toast";
@@ -81,9 +80,9 @@ const UpdateKriteriaForm = ({
   }
 
   return (
-    <div className="max-w-5xl mx-auto my-4 rounded-lg">
-      <Breadcrumb>
-        <BreadcrumbList>
+    <div className="max-w-5xl mx-auto my-4 space-y-4 rounded-lg min-h-[400px] px-4">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -104,7 +103,10 @@ const UpdateKriteriaForm = ({
         Formulir Ubah <br /> Kriteria Penilaian
       </H1>
       <Form {...form}>
-        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="space-y-6 max-w-3xl m-auto"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <FormField
             control={form.control}
             name="nama_kriteria"
@@ -126,7 +128,7 @@ const UpdateKriteriaForm = ({
               <FormItem>
                 <FormLabel>Deskripsi Kriteria</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Isi Deskripsi Kriteria" {...field} />
+                  <Input placeholder="Isi Deskripsi Kriteria" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -158,7 +160,7 @@ const UpdateKriteriaForm = ({
               <FormItem>
                 <FormLabel>Jenis Kriteria</FormLabel>
                 <FormControl>
-                  <Select {...field}>
+                  <Select {...field} defaultValue="">
                     <option value="" hidden>
                       Pilih Jenis Kriteria
                     </option>
@@ -172,7 +174,7 @@ const UpdateKriteriaForm = ({
           />
           <LoadingButton
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-300"
+            className="w-full"
             loading={isSubmitting}
           >
             Submit

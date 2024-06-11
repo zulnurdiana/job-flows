@@ -21,10 +21,15 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const page = async () => {
+const ITEMS_PER_PAGE = 10;
+
+const page = async ({ searchParams }: any) => {
   const session = await getSession();
   if (!session || session.user.role?.toLowerCase() !== "direktur")
     redirect("/");
+
+  const page = parseInt(searchParams.page || "1");
+
   const daftarPegawaiPerjabatan = await prisma.jabatan.findMany({
     include: {
       divisi: true,
@@ -35,19 +40,26 @@ const page = async () => {
         nama_divisi: "asc",
       },
     },
+    skip: (page - 1) * ITEMS_PER_PAGE,
+    take: ITEMS_PER_PAGE,
   });
 
-  const result = daftarPegawaiPerjabatan.map((jabatan) => ({
+  const totalItems = await prisma.jabatan.count();
+
+  const result = daftarPegawaiPerjabatan.map((jabatan, index) => ({
     id_jabatan: jabatan.id_jabatan,
     nama_jabatan: jabatan.nama_jabatan,
     nama_divisi: jabatan.divisi.nama_divisi,
     jumlah_pegawai: jabatan.pegawai.length,
+    index: (page - 1) * ITEMS_PER_PAGE + index + 1, // Calculate the correct index
   }));
 
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
   return (
-    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
+    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-6 px-4">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -58,40 +70,59 @@ const page = async () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <H1 className="text-center">
+      <H1 className="text-center text-3xl font-extrabold text-gray-800">
         Daftar Pegawai Untuk <br />
         Setiap Jabatan
       </H1>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-center font-bold">No</TableHead>
-            <TableHead className="text-center">Jabatan</TableHead>
-            <TableHead className="text-center">Divisi</TableHead>
-            <TableHead className="text-center">Jumlah Pegawai</TableHead>
-            <TableHead className="text-center">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {result.map((res, index) => (
-            <TableRow key={res.id_jabatan} className="text-center">
-              <TableCell className="font-bold">{index + 1}</TableCell>
-              <TableCell>{res.nama_jabatan}</TableCell>
-              <TableCell>{res.nama_divisi}</TableCell>
-              <TableCell>{res.jumlah_pegawai} Pegawai</TableCell>
-
-              <TableCell>
-                <Button asChild>
-                  <Link href={`/direktur/pegawai/${res.id_jabatan}`}>
-                    Lihat Pegawai
-                  </Link>
-                </Button>
-              </TableCell>
+      <div className="bg-white shadow overflow-hidden rounded-lg">
+        <Table className="min-w-full bg-white">
+          <TableHeader className="bg-gray-50">
+            <TableRow>
+              <TableHead className="text-center font-bold p-4">No</TableHead>
+              <TableHead className="text-center p-4">Jabatan</TableHead>
+              <TableHead className="text-center p-4">Divisi</TableHead>
+              <TableHead className="text-center p-4">Jumlah Pegawai</TableHead>
+              <TableHead className="text-center p-4">Action</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {result.map((res) => (
+              <TableRow
+                key={res.id_jabatan}
+                className="text-center even:bg-gray-50"
+              >
+                <TableCell className="font-bold p-4">{res.index}</TableCell>
+                <TableCell className="p-4">{res.nama_jabatan}</TableCell>
+                <TableCell className="p-4">{res.nama_divisi}</TableCell>
+                <TableCell className="p-4">
+                  {res.jumlah_pegawai} Pegawai
+                </TableCell>
+                <TableCell className="p-4">
+                  <Button variant="outline" className="w-full">
+                    <Link href={`/direktur/pegawai/${res.id_jabatan}`}>
+                      Lihat Pegawai
+                    </Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex justify-center space-x-4 mt-4">
+        {page > 1 && (
+          <Button asChild variant="outline">
+            <Link href={`?page=${page - 1}`}>Previous</Link>
+          </Button>
+        )}
+        {page < totalPages && (
+          <Button asChild variant="outline">
+            <Link href={`?page=${page + 1}`}>Next</Link>
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

@@ -37,9 +37,9 @@ const page = async ({ params: { id } }: PageProps) => {
   });
 
   return (
-    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
+    <div className="max-w-5xl mx-auto my-4 space-y-6">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>

@@ -119,13 +119,13 @@ enum JenisKriteria {
 
 model Kriteria {
   id_kriteria Int @id @default(autoincrement())
+  nama_kriteria String @unique
   deskripsi_kriteria String
-  nama_kriteria String
   bobot Float @default(0.0)
   kepentingan Float?
   jenis_kriteria JenisKriteria 
-  id_user String
-  user User @relation(fields: [id_user],references: [id])
+  id_user String?
+  user User? @relation(fields: [id_user],references: [id])
 
 
   createdAt DateTime @default(now())

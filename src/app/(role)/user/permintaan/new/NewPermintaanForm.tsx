@@ -87,13 +87,12 @@ const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
   }
 
   return (
-    <main className="m-auto max-w-5xl my-4 space-y-4">
-      <Breadcrumb>
-        <BreadcrumbList>
+    <main className="m-auto max-w-5xl my-4 space-y-4 px-4">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
-
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage>Formulir Permintaan</BreadcrumbPage>
@@ -101,13 +100,16 @@ const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="space-y-5 text-center">
-        <H1>
+      <div className="text-center">
+        <H1 className="text-3xl font-extrabold text-gray-800">
           Formulir Tambah <br /> Permintaan Pegawai
         </H1>
       </div>
       <Form {...form}>
-        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="space-y-6 max-w-3xl m-auto"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <FormField
             control={control}
             name="jumlah_pegawai"
@@ -115,7 +117,11 @@ const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
               <FormItem>
                 <FormLabel>Jumlah Pegawai</FormLabel>
                 <FormControl>
-                  <Input {...field} type="number" />
+                  <Input
+                    {...field}
+                    type="number"
+                    className="mt-1 p-2 border rounded-md"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -133,6 +139,7 @@ const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
                     {...field}
                     defaultValue=""
                     onChange={handleDivisiChange}
+                    className="mt-1 p-2 border rounded-md"
                   >
                     <option value="" hidden>
                       Select Division
@@ -156,7 +163,11 @@ const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
               <FormItem>
                 <FormLabel>Job type</FormLabel>
                 <FormControl>
-                  <Select {...field} defaultValue="">
+                  <Select
+                    {...field}
+                    defaultValue=""
+                    className="mt-1 p-2 border rounded-md"
+                  >
                     <option value="" hidden>
                       Select Job
                     </option>

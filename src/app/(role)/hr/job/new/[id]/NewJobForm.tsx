@@ -142,8 +142,8 @@ const NewJobForm = ({
 
   return (
     <main className="m-auto my-4 max-w-5xl space-y-10">
-      <Breadcrumb>
-        <BreadcrumbList>
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -161,18 +161,22 @@ const NewJobForm = ({
       </Breadcrumb>
 
       <div className="space-y-5 text-center">
-        <H1>Find your perfect developer</H1>
+        <H1 className="text-3xl font-extrabold text-gray-800">
+          Find your perfect developer
+        </H1>
         <p className="text-muted-foreground">
           Get your job posting seen by thousands of job seekers.
         </p>
       </div>
-      <div className="space-y-6 m-auto rounded-lg border p-4  max-w-3xl">
+
+      <div className="space-y-6 m-auto rounded-lg border p-4 max-w-3xl bg-white shadow-md">
         <div>
-          <h2 className="font-semibold">Job details</h2>
+          <h2 className="font-semibold text-lg">Job details</h2>
           <p className="text-muted-foreground">
             Provide a job description and details
           </p>
         </div>
+
         <Form {...form}>
           <form
             className="space-y-4"
@@ -196,6 +200,7 @@ const NewJobForm = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={control}
               name="type"
@@ -218,6 +223,7 @@ const NewJobForm = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={control}
               name="companyName"
@@ -231,6 +237,7 @@ const NewJobForm = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={control}
               name="companyLogo"
@@ -252,6 +259,7 @@ const NewJobForm = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={control}
               name="locationType"
@@ -264,9 +272,8 @@ const NewJobForm = ({
                       defaultValue=""
                       onChange={(e) => {
                         field.onChange(e);
-                        if (e.currentTarget.value === "Remote") {
+                        if (e.currentTarget.value === "Remote")
                           trigger("location");
-                        }
                       }}
                     >
                       <option value="" hidden>
@@ -283,6 +290,7 @@ const NewJobForm = ({
                 </FormItem>
               )}
             />
+
             <FormField
               control={control}
               name="location"
@@ -312,6 +320,7 @@ const NewJobForm = ({
                 </FormItem>
               )}
             />
+
             <div className="space-y-2">
               <Label htmlFor="applicationEmail">How to apply</Label>
               <div className="flex justify-between">
@@ -369,9 +378,7 @@ const NewJobForm = ({
                       <CalendarDays width={24} height={24} />
                       <DatePicker
                         selected={field.value ? new Date(field.value) : null}
-                        onChange={(date: Date) =>
-                          field.onChange(date.toISOString())
-                        }
+                        onChange={(date) => field.onChange(date?.toISOString())}
                         showTimeSelect
                         timeInputLabel="Time:"
                         dateFormat={"MM/dd/yyyy h:mm aa"}
@@ -394,9 +401,7 @@ const NewJobForm = ({
                       <CalendarDays width={24} height={24} />
                       <DatePicker
                         selected={field.value ? new Date(field.value) : null}
-                        onChange={(date: Date) =>
-                          field.onChange(date.toISOString())
-                        }
+                        onChange={(date) => field.onChange(date?.toISOString())}
                         showTimeSelect
                         timeInputLabel="Time:"
                         dateFormat={"MM/dd/yyyy h:mm aa"}
@@ -445,6 +450,7 @@ const NewJobForm = ({
                 </FormItem>
               )}
             />
+
             <LoadingButton type="submit" loading={isSubmitting}>
               Submit
             </LoadingButton>

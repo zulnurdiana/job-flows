@@ -1,7 +1,4 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createKriteriaSchema, createKriteriaValues } from "@/lib/validation";
 import {
   Form,
   FormControl,
@@ -11,10 +8,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import H1 from "@/components/ui/h1";
-import { Textarea } from "@/components/ui/textarea";
 import Select from "@/components/ui/select";
 import LoadingButton from "@/components/LoadingButton";
+import H1 from "@/components/ui/h1";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createKriteriaSchema, createKriteriaValues } from "@/lib/validation";
 import { createKriteria } from "../actions";
 import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
@@ -66,9 +65,9 @@ const NewKriteriaForm = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto my-4 space-y-6 rounded-lg min-h-[400px]">
-      <Breadcrumb>
-        <BreadcrumbList>
+    <div className="max-w-5xl mx-auto my-4 space-y-4 rounded-lg min-h-[400px] px-4">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -85,7 +84,7 @@ const NewKriteriaForm = () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <H1 className="text-center text-2xl font-bold mb-6">
+      <H1 className="text-center text-2xl font-bold">
         Formulir Tambah <br /> Kriteria Penilaian
       </H1>
       <Form {...form}>
@@ -114,7 +113,7 @@ const NewKriteriaForm = () => {
               <FormItem>
                 <FormLabel>Deskripsi Kriteria</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Isi Deskripsi Kriteria" {...field} />
+                  <Input placeholder="Isi Deskripsi Kriteria" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -146,7 +145,7 @@ const NewKriteriaForm = () => {
               <FormItem>
                 <FormLabel>Jenis Kriteria</FormLabel>
                 <FormControl>
-                  <Select {...field} defaultValue={""}>
+                  <Select {...field} defaultValue="">
                     <option value="" hidden>
                       Pilih Jenis Kriteria
                     </option>
@@ -160,7 +159,7 @@ const NewKriteriaForm = () => {
           />
           <LoadingButton
             type="submit"
-            className="w-full  text-white py-2 rounded-md  transition duration-300"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
             loading={isSubmitting}
           >
             Submit

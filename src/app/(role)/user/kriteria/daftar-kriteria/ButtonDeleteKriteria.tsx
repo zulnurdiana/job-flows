@@ -7,7 +7,7 @@ interface FormProps {
   id: number;
 }
 
-const FormKriteria = ({ id }: FormProps) => {
+const ButtonDeleteKriteria = ({ id }: FormProps) => {
   async function clientAction(formData: FormData) {
     const result = await deleteKriteria(formData);
     if (!result?.error) {
@@ -27,4 +27,4 @@ const FormKriteria = ({ id }: FormProps) => {
   );
 };
 
-export default FormKriteria;
+export default ButtonDeleteKriteria;

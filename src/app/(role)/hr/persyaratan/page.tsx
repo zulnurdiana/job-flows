@@ -1,6 +1,5 @@
 import getSession from "@/lib/getSession";
 import prisma from "@/lib/prisma";
-import { Span } from "next/dist/trace";
 import { redirect } from "next/navigation";
 import {
   Table,
@@ -49,10 +48,10 @@ const page = async () => {
   if (!session || user?.role?.toLowerCase() !== "hr") return redirect("/");
 
   return (
-    <div className="max-w-6xl min-h-[400px] m-auto my-4 space-y-6">
-      <div className="max-w-5xl m-auto">
-        <Breadcrumb>
-          <BreadcrumbList>
+    <div className="max-w-5xl mx-auto my-4 space-y-6 px-4 min-h-[400px]">
+      <div className="max-w-5xl mx-auto">
+        <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+          <BreadcrumbList className="flex space-x-2 text-gray-600">
             <BreadcrumbItem>
               <BreadcrumbLink href="/">Home</BreadcrumbLink>
             </BreadcrumbItem>
@@ -64,24 +63,27 @@ const page = async () => {
         </Breadcrumb>
       </div>
 
-      <H1 className="text-center">
-        Daftar Persyaratan <br /> Calon Pegawai
-      </H1>
+      <div className="text-center">
+        <H1 className="text-3xl font-extrabold text-gray-800">
+          Daftar Persyaratan <br /> Calon Pegawai
+        </H1>
+      </div>
+
       {persyaratans.length === 0 ? (
         <div className="text-center">Tidak ada persyaratan</div>
       ) : (
-        <Table>
-          <TableHeader>
+        <Table className="w-full border-collapse">
+          <TableHeader className="bg-gray-200">
             <TableRow>
               <TableHead className="text-center font-bold">No</TableHead>
+              <TableHead className="text-center">Jabatan</TableHead>
+              <TableHead className="text-center">Divisi</TableHead>
+              <TableHead className="text-center">Jumlah Kebutuhan</TableHead>
               <TableHead className="text-center">Pendidikan</TableHead>
               <TableHead className="text-center">Status Pernikahan</TableHead>
               <TableHead className="text-center">Pengalaman</TableHead>
               <TableHead className="text-center">Minimal Umur</TableHead>
-              <TableHead className="text-center">Tanggal Permintaan</TableHead>
-              <TableHead className="text-center">Jumlah Kebutuhan</TableHead>
-              <TableHead className="text-center">Jabatan</TableHead>
-              <TableHead className="text-center">Divisi</TableHead>
+
               <TableHead className="text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -92,25 +94,20 @@ const page = async () => {
                 className="text-center"
               >
                 <TableCell className="font-bold">{index + 1}</TableCell>
-                <TableCell>{persyaratan.pendidikan}</TableCell>
-                <TableCell>{persyaratan.status_pernikahan}</TableCell>
-                <TableCell>{persyaratan.pengalaman_kerja} Tahun</TableCell>
-
-                <TableCell>{persyaratan.umur} Tahun</TableCell>
-
-                <TableCell>
-                  {persyaratan.createdAt.toLocaleDateString()}
-                </TableCell>
-
-                <TableCell>
-                  {persyaratan.permintaan.jumlah_pegawai} Pegawai
-                </TableCell>
                 <TableCell>
                   {persyaratan.permintaan?.jabatan.nama_jabatan}
                 </TableCell>
                 <TableCell>
                   {persyaratan.permintaan?.jabatan.divisi.nama_divisi}
                 </TableCell>
+                <TableCell>
+                  {persyaratan.permintaan.jumlah_pegawai} Pegawai
+                </TableCell>
+                <TableCell>{persyaratan.pendidikan}</TableCell>
+                <TableCell>{persyaratan.status_pernikahan}</TableCell>
+                <TableCell>{persyaratan.pengalaman_kerja}</TableCell>
+                <TableCell>{persyaratan.umur} Tahun</TableCell>
+
                 <TableCell>
                   <Button asChild>
                     <Link href={`/hr/job/new/${persyaratan.id_persyaratan}`}>

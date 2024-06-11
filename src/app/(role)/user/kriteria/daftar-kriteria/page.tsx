@@ -1,3 +1,4 @@
+import prisma from "@/lib/prisma";
 import {
   Table,
   TableBody,
@@ -6,13 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import getSession from "@/lib/getSession";
-import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
 import H1 from "@/components/ui/h1";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import ButtonDeleteKriteria from "./ButtonDeleteKriteria";
+import getSession from "@/lib/getSession";
+import { redirect } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -21,21 +20,30 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import ButtonDeleteKriteria from "./ButtonDeleteKriteria";
 
-const page = async () => {
+const ITEMS_PER_PAGE = 5; // Ubah jumlah item per halaman menjadi 5
+
+const page = async ({ searchParams }: any) => {
   const session = await getSession();
-  const user = session?.user;
-  if (!session) redirect("/");
-  if (user?.role?.toLowerCase() !== "user") redirect("/");
+  if (!session || session.user.role?.toLowerCase() !== "user") redirect("/");
+
+  const page = parseInt(searchParams.page || "1");
 
   const kriteriaList = await prisma.kriteria.findMany({
     orderBy: { updatedAt: "desc" },
+    skip: (page - 1) * ITEMS_PER_PAGE,
+    take: ITEMS_PER_PAGE,
   });
 
+  const totalItems = await prisma.kriteria.count();
+
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
   return (
-    <div className="max-w-5xl m-auto my-4 space-y-5 min-h-[400px]">
-      <Breadcrumb>
-        <BreadcrumbList>
+    <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-6 px-4">
+      <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
+        <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
             <BreadcrumbLink href="/">Home</BreadcrumbLink>
           </BreadcrumbItem>
@@ -46,45 +54,81 @@ const page = async () => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <H1 className="text-center">Daftar Kriteria Penilaian</H1>
+      <H1 className="text-center text-3xl font-extrabold text-gray-800">
+        Daftar Kriteria Penilaian
+      </H1>
+
       <Button asChild>
         <Link href={"/user/kriteria/new"}>Tambah Kriteria</Link>
       </Button>
+
       {kriteriaList.length === 0 ? (
-        <div className="text-center">Tidak ada daftar kriteria</div>
+        <div className="text-center text-gray-500">
+          Tidak ada daftar kriteria
+        </div>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-center font-bold">No</TableHead>
-              <TableHead className="text-center">Nama Kriteria</TableHead>
-              <TableHead className="text-center">Deskripsi Kriteria</TableHead>
-              <TableHead className="text-center">Bobot</TableHead>
-              <TableHead className="text-center">Jenis Kriteria</TableHead>
-              <TableHead className="text-center">Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {kriteriaList.map((kriteria, index) => (
-              <TableRow key={kriteria.id_kriteria} className="text-center">
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{kriteria.nama_kriteria}</TableCell>
-                <TableCell>{kriteria.deskripsi_kriteria}</TableCell>
-                <TableCell>{kriteria.bobot}</TableCell>
-                <TableCell>{kriteria.jenis_kriteria}</TableCell>
-                <TableCell className="flex items-center gap-3 justify-center">
-                  <Button asChild>
-                    <Link href={`/user/kriteria/${kriteria.id_kriteria}`}>
-                      Update
-                    </Link>
-                  </Button>
-                  <ButtonDeleteKriteria id={kriteria.id_kriteria} />
-                </TableCell>
+        <div className="bg-white shadow overflow-hidden rounded-lg">
+          <Table className="min-w-full bg-white">
+            <TableHeader className="bg-gray-50">
+              <TableRow>
+                <TableHead className="text-center font-bold p-4">No</TableHead>
+                <TableHead className="text-center p-4">Nama Kriteria</TableHead>
+                <TableHead className="text-center p-4">
+                  Deskripsi Kriteria
+                </TableHead>
+                <TableHead className="text-center p-4">Bobot</TableHead>
+                <TableHead className="text-center p-4">
+                  Jenis Kriteria
+                </TableHead>
+                <TableHead className="text-center p-4">Action</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {kriteriaList.map((kriteria, index) => (
+                <TableRow
+                  key={kriteria.id_kriteria}
+                  className="text-center even:bg-gray-50"
+                >
+                  <TableCell className="font-bold p-4">
+                    {(page - 1) * ITEMS_PER_PAGE + index + 1}
+                  </TableCell>
+                  <TableCell className="p-4">
+                    {kriteria.nama_kriteria}
+                  </TableCell>
+                  <TableCell className="p-4">
+                    {kriteria.deskripsi_kriteria}
+                  </TableCell>
+                  <TableCell className="p-4">{kriteria.bobot}</TableCell>
+                  <TableCell className="p-4">
+                    {kriteria.jenis_kriteria}
+                  </TableCell>
+                  <TableCell className="p-4 flex items-center justify-center gap-3">
+                    <Button asChild>
+                      <Link href={`/user/kriteria/${kriteria.id_kriteria}`}>
+                        Update
+                      </Link>
+                    </Button>
+                    <ButtonDeleteKriteria id={kriteria.id_kriteria} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
+
+      <div className="flex justify-center space-x-4 mt-4">
+        {page > 1 && (
+          <Button asChild variant="outline">
+            <Link href={`?page=${page - 1}`}>Previous</Link>
+          </Button>
+        )}
+        {page < totalPages && (
+          <Button asChild variant="outline">
+            <Link href={`?page=${page + 1}`}>Next</Link>
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
