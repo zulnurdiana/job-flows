@@ -10,10 +10,8 @@ export default async function LoginPage() {
   }
 
   return (
-    <section className="bg-black h-screen flex items-center justify-center">
-      <div className="w-[600px]">
-        <LoginForm />;
-      </div>
+    <section className="min-h-[400px]">
+      <LoginForm />
     </section>
   );
 }

@@ -33,6 +33,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
   },
+  pages: {
+    signIn: "/login",
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -63,7 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password: response.password,
           };
         }
-        console.log("password not match");
+
         return null;
       },
     }),

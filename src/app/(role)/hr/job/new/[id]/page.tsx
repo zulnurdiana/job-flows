@@ -15,7 +15,7 @@ export default async function Page({ params: { id } }: PageProps) {
   const id_persyaratan = parseInt(id);
   const persyaratan = await prisma.persyaratan.findUnique({
     where: {
-      id_persyaratan: id_persyaratan,
+      id_persyaratan: id_persyaratan
     },
     include: {
       permintaan: {

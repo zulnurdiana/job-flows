@@ -99,7 +99,7 @@ const DetailJobPage = async ({
               </p>
               <p className="flex items-center gap-1.5 ">
                 <Clock className="shrink-0" size={16} />{" "}
-                {isExpired ? "Expired" : formatDateTime(tanggal_mulai).dateOnly}
+                {formatDateTime(tanggal_mulai).dateOnly}
               </p>
             </div>
           </div>

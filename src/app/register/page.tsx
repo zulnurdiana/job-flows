@@ -11,7 +11,7 @@ export default async function RegisterPage() {
   }
 
   return (
-    <section className="max-w-5xl m-auto my-10 space-y-6">
+    <section>
       <FormPage />
     </section>
   );

@@ -19,6 +19,7 @@ const JobListItem = ({
     salary,
     location,
     createdAt,
+    tanggal_selesai,
   },
 }: JobListProps) => {
   return (

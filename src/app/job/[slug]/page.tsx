@@ -84,6 +84,8 @@ const page = async ({ params: { slug } }: PageProps) => {
     notFound();
   }
 
+  const isExpired = new Date(job.tanggal_selesai) < new Date();
+
   return (
     <main className="max-w-5xl m-auto px-3 my-4 space-y-5 flex flex-col sm:flex-row justify-between items-center gap-5 md:items-start">
       <div className="flex flex-col gap-5">
@@ -111,7 +113,9 @@ const page = async ({ params: { slug } }: PageProps) => {
 
       <aside>
         {session && user?.role === "pelamar" ? (
-          checkJabatanPending?.id_job === null ? (
+          isExpired ? (
+            <Button>Lowongan sudah ditutup</Button>
+          ) : checkJabatanPending?.id_job === null ? (
             <ButtonLamar id_job={job.id} />
           ) : (
             <Button>Anda sudah melamar</Button>

@@ -21,6 +21,8 @@ model Divisi {
   @@map("divisi")
 }
 
+
+
 model Jabatan {
   id_jabatan        Int       @id @default(autoincrement())
   id_divisi         Int

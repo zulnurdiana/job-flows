@@ -64,7 +64,7 @@ interface Permintaan {
 // Interface untuk model Persyaratan
 interface Persyaratan {
   id_persyaratan: number;
-  pengalaman_kerja: number;
+  pengalaman_kerja: String;
   pendidikan: string;
   umur: number;
   status_pernikahan: string;

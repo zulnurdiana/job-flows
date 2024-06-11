@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 import { JobFilterValues } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
 
 interface jobResultsProps {

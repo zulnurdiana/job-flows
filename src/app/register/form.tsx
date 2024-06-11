@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,6 +16,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import logo from "@/assets/logo.png";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -82,9 +84,14 @@ export default function FormPage() {
   };
 
   return (
-    <div className="flex justify-center items-center mih-h-[400px]">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <Link href="/" className="flex justify-center items-center gap-3 mb-6">
+          <Image src={logo} alt="logo" width={100} height={100} />
+        </Link>
+        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+          Register
+        </h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
@@ -94,7 +101,11 @@ export default function FormPage() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name" {...field} />
+                    <Input
+                      placeholder="Name"
+                      {...field}
+                      className="text-black"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -107,7 +118,12 @@ export default function FormPage() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Email" type="email" {...field} />
+                    <Input
+                      placeholder="Email"
+                      type="email"
+                      {...field}
+                      className="text-black"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,16 +136,33 @@ export default function FormPage() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Password" {...field} type="password" />
+                    <Input
+                      placeholder="Password"
+                      {...field}
+                      type="password"
+                      className="text-black"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
-              Submit
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting ? "Registering..." : "Register"}
             </Button>
           </form>
+          <div className="text-center text-sm text-gray-600 mt-6">
+            <p>
+              Sudah mempunyai akun? <br />
+              <Link href="/login" className="text-blue-600 hover:underline">
+                Masuk sekarang
+              </Link>
+            </p>
+          </div>
         </Form>
       </div>
     </div>
