@@ -89,7 +89,6 @@ async function main() {
         return;
       }
 
-      // Anda perlu menentukan id_pegawai untuk upsert
       const existingPegawai = await prisma.pegawai.findUnique({
         where: { nama_pegawai: p.nama_pegawai }, // Pastikan nama_pegawai unik atau gunakan id_pegawai jika ada
       });
@@ -101,14 +100,14 @@ async function main() {
         update: {
           status_pegawai: p.status_pegawai,
           id_jabatan: jabatan.id_jabatan,
-          email: p.email,
+          email: p.email || undefined,
           tanggal_gabung: p.tanggal_gabung || undefined,
         },
         create: {
           nama_pegawai: p.nama_pegawai,
           status_pegawai: p.status_pegawai,
           id_jabatan: jabatan.id_jabatan,
-          email: p.email,
+          email: p.email || undefined,
           tanggal_gabung: p.tanggal_gabung || undefined,
         },
       });
