@@ -108,7 +108,7 @@ const NewBiodataForm = ({
             name="umur"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Minimal Umur</FormLabel>
+                <FormLabel>Umur</FormLabel>
                 <FormControl>
                   <Input {...field} type="number" />
                 </FormControl>

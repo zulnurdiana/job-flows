@@ -16,6 +16,21 @@ export async function lamarLowongan(formData: FormData) {
       throw new Error("Not Unauthorized");
     }
 
+    const pelamar = await prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+      include: {
+        job: true,
+      },
+    });
+
+    if (!pelamar?.cv) {
+      return {
+        message: "Silahkan upload CV dan lengkapi biodata terlebih dahulu",
+      };
+    }
+
     const userUpdate = await prisma.user.update({
       data: {
         id_job: id_job,
@@ -27,7 +42,7 @@ export async function lamarLowongan(formData: FormData) {
         id: user.id,
       },
     });
-    
+
     revalidatePath("/");
 
     if (userUpdate) {

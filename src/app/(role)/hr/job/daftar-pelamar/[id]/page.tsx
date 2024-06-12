@@ -88,6 +88,7 @@ const page = async ({ params: { id } }: PageProps) => {
               <TableHead className="text-center">Pendidikan</TableHead>
               <TableHead className="text-center">Alamat</TableHead>
               <TableHead className="text-center">Jenis Kelamin</TableHead>
+              <TableHead className="text-center">Curriculum Vitae</TableHead>
               <TableHead className="text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -100,6 +101,10 @@ const page = async ({ params: { id } }: PageProps) => {
                 <TableCell>{pelamar.pendidikan}</TableCell>
                 <TableCell>{pelamar.alamat}</TableCell>
                 <TableCell>{pelamar.jenis_kelamin}</TableCell>
+                <TableCell>
+                  {pelamar.cv && <Link href={pelamar.cv}>Lihat CV</Link>}
+                </TableCell>
+
                 <TableCell>
                   <Button asChild>
                     <Link href={`/hr/nilai/${pelamar.id}`}>Nilai Pelamar</Link>
