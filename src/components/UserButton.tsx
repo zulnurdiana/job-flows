@@ -59,6 +59,16 @@ export default function UserButton({ user }: UserButtonProps) {
           </DropdownMenuItem> */}
 
           {/* TODO: Show this only for HR */}
+          {user.role?.toLocaleLowerCase() === "pelamar" && (
+            <>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/pelamar/biodata">
+                  <FilePen className="mr-2 h-4 w-4" />
+                  Formulir Biodata
+                </Link>
+              </DropdownMenuItem>
+            </>
+          )}
           {user.role?.toLocaleLowerCase() === "hr" && (
             <>
               <DropdownMenuItem asChild className="cursor-pointer">

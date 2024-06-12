@@ -112,6 +112,8 @@ model Persyaratan {
   @@map("persyaratan")
 }
 
+
+
 enum JenisKriteria {
   COST
   BENEFIT
@@ -135,6 +137,8 @@ model Kriteria {
 
 }
 
+
+
 model User {
   id            String          @id @default(cuid())
   name          String?
@@ -142,6 +146,12 @@ model User {
   email         String          @unique
   emailVerified DateTime?
   image         String?
+  umur          Int?
+  pendidikan    String?
+  alamat        String?
+  jenis_kelamin String?
+  status_pernikahan String?
+  cv            String?
   role          String? @default("pelamar")
   permintaan    Permintaan[]
   persyaratan   Persyaratan[]

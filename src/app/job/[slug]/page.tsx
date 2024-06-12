@@ -87,31 +87,29 @@ const page = async ({ params: { slug } }: PageProps) => {
   const isExpired = new Date(job.tanggal_selesai) < new Date();
 
   return (
-    <main className="max-w-5xl m-auto px-3 my-4 space-y-5 flex flex-col sm:flex-row justify-between items-center gap-5 md:items-start">
-      <div className="flex flex-col gap-5">
-        {role?.toLowerCase() === "hr" ||
-        role?.toLowerCase() === "user" ||
-        role?.toLowerCase() === "pelamar" ||
-        !session ? (
-          <>
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                </BreadcrumbItem>
+    <main className="max-w-5xl m-auto px-3 my-4 space-y-8 flex flex-col sm:flex-col justify-between items-center md:items-start">
+      {role?.toLowerCase() === "hr" ||
+      role?.toLowerCase() === "user" ||
+      role?.toLowerCase() === "pelamar" ||
+      !session ? (
+        <>
+          <Breadcrumb className="bg-gray-100 p-4 rounded-lg w-full">
+            <BreadcrumbList className="flex space-x-2 text-gray-600">
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
 
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Detail Lowongan {job.title}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </>
-        ) : null}
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Detail Lowongan {job.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </>
+      ) : null}
+
+      <aside className="flex  w-full flex-col sm:flex-row justify-between">
         <DetailJobPage job={job} />
-      </div>
-
-      <aside>
         {session && user?.role === "pelamar" ? (
           isExpired ? (
             <Button>Lowongan sudah ditutup</Button>

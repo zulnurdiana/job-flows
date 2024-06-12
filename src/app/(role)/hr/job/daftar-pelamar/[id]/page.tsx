@@ -84,6 +84,10 @@ const page = async ({ params: { id } }: PageProps) => {
             <TableRow>
               <TableHead className="text-center font-bold">No</TableHead>
               <TableHead className="text-center">Nama Pelamar</TableHead>
+              <TableHead className="text-center">Umur</TableHead>
+              <TableHead className="text-center">Pendidikan</TableHead>
+              <TableHead className="text-center">Alamat</TableHead>
+              <TableHead className="text-center">Jenis Kelamin</TableHead>
               <TableHead className="text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -92,6 +96,10 @@ const page = async ({ params: { id } }: PageProps) => {
               <TableRow key={pelamar.id} className="text-center">
                 <TableCell className="font-bold">{index + 1}</TableCell>
                 <TableCell>{pelamar.name}</TableCell>
+                <TableCell>{pelamar.umur}</TableCell>
+                <TableCell>{pelamar.pendidikan}</TableCell>
+                <TableCell>{pelamar.alamat}</TableCell>
+                <TableCell>{pelamar.jenis_kelamin}</TableCell>
                 <TableCell>
                   <Button asChild>
                     <Link href={`/hr/nilai/${pelamar.id}`}>Nilai Pelamar</Link>

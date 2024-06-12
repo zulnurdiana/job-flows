@@ -7,3 +7,4 @@ export const pengalamanKerjaList = [
   "4 - 6 Tahun",
   "> 6 Tahun",
 ];
+export const jenisKelamin = ["Laki-laki", "Perempuan"];

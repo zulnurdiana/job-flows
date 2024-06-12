@@ -102,8 +102,30 @@ export const createKriteriaSchema = z.object({
   jenis_kriteria: z.enum(["COST", "BENEFIT"]),
 });
 
+const cvSchema = z
+  .custom<File | undefined>()
+  .refine(
+    (file) =>
+      !file || (file instanceof File && file.type === "application/pdf"),
+    "CV harus berupa file PDF yang valid",
+  )
+  .refine(
+    (file) => !file || file.size < 1024 * 1024 * 5,
+    "File harus lebih kecil dari 5MB",
+  );
+
+export const createBiodataSchema = z.object({
+  umur: numericRequiredString.max(2, "Number cant be longer than 3 digits"),
+  pendidikan: requiredString,
+  status_pernikahan: requiredString,
+  alamat: z.string().max(5000).optional(),
+  jenis_kelamin: requiredString,
+  cv: cvSchema.optional(),
+});
+
 export type createKriteriaValues = z.infer<typeof createKriteriaSchema>;
 export type createPersyaratanValues = z.infer<typeof createPersyaratanSchema>;
 export type createJobValue = z.infer<typeof createJobsSchema>;
 export type JobFilterValues = z.infer<typeof jobFilterSchema>;
 export type createPermintaanValues = z.infer<typeof createPermintaanSchema>;
+export type createBiodataValues = z.infer<typeof createBiodataSchema>;
