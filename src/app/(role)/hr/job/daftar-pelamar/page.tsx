@@ -37,6 +37,11 @@ const getJobDetails = async () => {
           persyaratan: {
             select: {
               id_job: true,
+              job: {
+                select: {
+                  approved: true,
+                },
+              },
             },
           },
         },
@@ -47,6 +52,7 @@ const getJobDetails = async () => {
   const jobIds = jobDetails.flatMap((jabatan) =>
     jabatan.permintaans.flatMap((permintaan) =>
       permintaan.persyaratan
+        .filter((persyaratan) => persyaratan.job?.approved === true)
         .map((persyaratan) => persyaratan.id_job)
         .filter((id): id is number => id !== null),
     ),
@@ -77,6 +83,7 @@ const getJobDetails = async () => {
   const formattedResult = jobDetails.map((jabatan) => {
     const jobIdsForJabatan = jabatan.permintaans.flatMap((permintaan) =>
       permintaan.persyaratan
+        .filter((persyaratan) => persyaratan.job?.approved === true)
         .map((persyaratan) => persyaratan.id_job)
         .filter((id): id is number => id !== null),
     );

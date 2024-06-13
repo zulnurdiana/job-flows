@@ -97,11 +97,11 @@ const page = async ({ params: { id } }: PageProps) => {
               <TableRow key={pelamar.id} className="text-center">
                 <TableCell className="font-bold">{index + 1}</TableCell>
                 <TableCell>{pelamar.name}</TableCell>
-                <TableCell>{pelamar.umur}</TableCell>
+                <TableCell>{pelamar.umur} Tahun</TableCell>
                 <TableCell>{pelamar.pendidikan}</TableCell>
                 <TableCell>{pelamar.alamat}</TableCell>
                 <TableCell>{pelamar.jenis_kelamin}</TableCell>
-                <TableCell>
+                <TableCell className="underline">
                   {pelamar.cv && <Link href={pelamar.cv}>Lihat CV</Link>}
                 </TableCell>
 

@@ -31,7 +31,6 @@ export async function createJobPosting(
 
   const slug = `${createSlug(title)}-${nanoid(10)}`;
 
-  console.log(tanggal_mulai);
 
   let companyLogoUrl: string | undefined = undefined;
 
