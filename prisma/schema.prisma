@@ -153,6 +153,7 @@ model User {
   status_pernikahan String?
   cv            String?
   role          String? @default("pelamar")
+  screening_approved Boolean?
   permintaan    Permintaan[]
   persyaratan   Persyaratan[]
   kriteria      Kriteria[]

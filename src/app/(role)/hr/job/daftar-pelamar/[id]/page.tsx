@@ -20,6 +20,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import ButtonScreening from "./ButtonScreening";
 
 interface PageProps {
   params: {
@@ -39,6 +40,13 @@ const page = async ({ params: { id } }: PageProps) => {
     },
     where: {
       id_job: parseInt(id),
+      screening_approved: false,
+    },
+  });
+
+  const getPersyaratan = await prisma.persyaratan.findFirst({
+    where: {
+      id_job: parseInt(id),
     },
   });
 
@@ -53,7 +61,7 @@ const page = async ({ params: { id } }: PageProps) => {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink href="/hr/job/daftar-pelamar">
-                Daftar Pelamar
+                Screening Daftar Pelamar
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -68,9 +76,28 @@ const page = async ({ params: { id } }: PageProps) => {
         </Breadcrumb>
       </div>
 
+      <Table className="w-full border-collapse">
+        <TableHeader className="bg-gray-200">
+          <TableRow>
+            <TableHead className="text-center">Pengalaman Kerja</TableHead>
+            <TableHead className="text-center">Pendidikan</TableHead>
+            <TableHead className="text-center">Umur</TableHead>
+            <TableHead className="text-center">Status Pernikahan</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow className="text-center">
+            <TableCell>{getPersyaratan?.pengalaman_kerja}</TableCell>
+            <TableCell>{getPersyaratan?.pendidikan}</TableCell>
+            <TableCell>{getPersyaratan?.umur}</TableCell>
+            <TableCell>{getPersyaratan?.status_pernikahan}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+
       <div className="text-center">
         <H1 className="text-3xl font-extrabold text-gray-800">
-          Daftar Pelamar <br />
+          Screening Pelamar <br />
           Jabatan{" "}
           {getPelamarPerJabatan.length > 0
             ? getPelamarPerJabatan[0].job?.title
@@ -86,10 +113,10 @@ const page = async ({ params: { id } }: PageProps) => {
               <TableHead className="text-center">Nama Pelamar</TableHead>
               <TableHead className="text-center">Umur</TableHead>
               <TableHead className="text-center">Pendidikan</TableHead>
-              <TableHead className="text-center">Alamat</TableHead>
+              <TableHead className="text-center">Status Pernikahan</TableHead>
               <TableHead className="text-center">Jenis Kelamin</TableHead>
               <TableHead className="text-center">Curriculum Vitae</TableHead>
-              <TableHead className="text-center">Action</TableHead>
+              <TableHead className="text-center">Screening</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -99,16 +126,14 @@ const page = async ({ params: { id } }: PageProps) => {
                 <TableCell>{pelamar.name}</TableCell>
                 <TableCell>{pelamar.umur} Tahun</TableCell>
                 <TableCell>{pelamar.pendidikan}</TableCell>
-                <TableCell>{pelamar.alamat}</TableCell>
+                <TableCell>{pelamar.status_pernikahan}</TableCell>
                 <TableCell>{pelamar.jenis_kelamin}</TableCell>
                 <TableCell className="underline">
                   {pelamar.cv && <Link href={pelamar.cv}>Lihat CV</Link>}
                 </TableCell>
 
                 <TableCell>
-                  <Button asChild>
-                    <Link href={`/hr/nilai/${pelamar.id}`}>Nilai Pelamar</Link>
-                  </Button>
+                  <ButtonScreening user={pelamar} />
                 </TableCell>
               </TableRow>
             ))}

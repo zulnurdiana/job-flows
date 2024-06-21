@@ -129,7 +129,7 @@ const page = async () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Daftar Pelamar</BreadcrumbPage>
+              <BreadcrumbPage>Screening Daftar Pelamar</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -137,7 +137,7 @@ const page = async () => {
 
       <div className="text-center">
         <H1 className="text-3xl font-extrabold text-gray-800">
-          Daftar Pelamar <br /> Setiap Jabatan
+          Screening Daftar Pelamar <br /> Setiap Jabatan
         </H1>
       </div>
 
