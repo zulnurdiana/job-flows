@@ -133,6 +133,12 @@ export default function UserButton({ user }: UserButtonProps) {
                   Daftar Kriteria
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/user/pegawai/daftar-pegawai">
+                  <BookUser className="mr-2 h-4 w-4" />
+                  Daftar Pegawai
+                </Link>
+              </DropdownMenuItem>
             </>
           )}
         </DropdownMenuGroup>

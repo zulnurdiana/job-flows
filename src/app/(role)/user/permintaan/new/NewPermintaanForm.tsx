@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Select from "@/components/ui/select";
-import { Divisi, Jabatan } from "@prisma/client";
+import { Divisi, Jabatan, Pegawai, User } from "@prisma/client";
 import LoadingButton from "@/components/LoadingButton";
 import createPermintaan from "./actions";
 import { useState } from "react";
@@ -30,18 +30,80 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-interface NewPermintaanFormProps {
-  jabatan: Jabatan[];
-  divisi: Divisi[];
+interface IPegawai {
+  id_pegawai: number;
+  nama_pegawai: string;
+  email?: string | null;
+  status_pegawai: string;
+  tanggal_gabung?: Date | null;
+  id_jabatan: number;
+  jabatan: IJabatan;
+  user?: IUser | null;
 }
 
-const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
-  const [selectedDivisi, setSelectedDivisi] = useState<number | null>(null);
+interface IJabatan {
+  id_jabatan: number;
+  id_divisi: number;
+  nama_jabatan: string;
+  deskripsi_jabatan?: string | null;
+  divisi: IDivisi;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface IDivisi {
+  id_divisi: number;
+  nama_divisi: string;
+  deskripsi_divisi?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface IUser {
+  id: string;
+  name?: string | null;
+  password?: string | null;
+  email: string;
+  emailVerified?: Date | null;
+  image?: string | null;
+  umur?: number | null;
+  pendidikan?: string | null;
+  alamat?: string | null;
+  jenis_kelamin?: string | null;
+  status_pernikahan?: string | null;
+  cv?: string | null;
+  role?: string | null;
+  screening_approved?: boolean | null;
+  pegawai?: IPegawai | null; // Perbarui ini
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface NewPermintaanFormProps {
+  jabatan: IJabatan[];
+  divisi: IDivisi[];
+  user: IUser;
+  pegawai: IPegawai[];
+}
+
+const NewPermintaanForm = ({
+  jabatan,
+  divisi,
+  user,
+  pegawai,
+}: NewPermintaanFormProps) => {
+  const id_divisi = user.pegawai?.jabatan.id_divisi;
+  const id_jabatan = user.pegawai?.jabatan.id_jabatan;
+
+  // Filter pegawai berdasarkan id_divisi
+  const filteredPegawai = pegawai.filter(
+    (p) => p.jabatan.id_jabatan === id_jabatan,
+  );
+
   const form = useForm<createPermintaanValues>({
     resolver: zodResolver(createPermintaanSchema),
     defaultValues: {
       jumlah_pegawai: "0",
-      id_divisi: "0",
       id_jabatan: "0",
     },
   });
@@ -56,16 +118,9 @@ const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
     formState: { isSubmitting },
   } = form;
 
-  const filteredJabatan = selectedDivisi
-    ? jabatan.filter((jab) => jab.id_divisi === selectedDivisi)
+  const filteredJabatan = id_divisi
+    ? jabatan.filter((jab) => jab.id_divisi === id_divisi)
     : [];
-
-  const handleDivisiChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedId = e.target.value; // Keep it as string
-    setSelectedDivisi(parseInt(selectedId)); // Parse to number for local state
-    setValue("id_divisi", selectedId); // Set value in the form state as string
-    setValue("id_jabatan", ""); // Reset the job type when division changes
-  };
 
   async function onSubmit(values: createPermintaanValues) {
     const formData = new FormData();
@@ -122,34 +177,6 @@ const NewPermintaanForm = ({ jabatan, divisi }: NewPermintaanFormProps) => {
                     type="number"
                     className="mt-1 p-2 border rounded-md"
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="id_divisi"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Division</FormLabel>
-                <FormControl>
-                  <Select
-                    {...field}
-                    defaultValue=""
-                    onChange={handleDivisiChange}
-                    className="mt-1 p-2 border rounded-md"
-                  >
-                    <option value="" hidden>
-                      Select Division
-                    </option>
-                    {divisi.map((div) => (
-                      <option key={div.id_divisi} value={div.id_divisi}>
-                        {div.nama_divisi}
-                      </option>
-                    ))}
-                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>

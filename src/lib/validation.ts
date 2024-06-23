@@ -77,7 +77,6 @@ export const createPermintaanSchema = z.object({
   ),
   tanggal_permintaan: z.date().optional(),
   id_jabatan: z.string(),
-  id_divisi: numericRequiredString,
 });
 
 export const createPersyaratanSchema = z.object({

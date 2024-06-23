@@ -45,6 +45,7 @@ model Pegawai{
   tanggal_gabung DateTime?
   id_jabatan Int
   jabatan Jabatan @relation(fields: [id_jabatan], references: [id_jabatan])
+  user User?
 
 }
 
@@ -161,6 +162,8 @@ model User {
   sessions      Session[]
   id_job        Int?
   job Job? @relation(fields: [id_job],references: [id])
+  id_pegawai    Int? @unique
+  pegawai Pegawai? @relation(fields: [id_pegawai],references: [id_pegawai])
  
  
   createdAt DateTime @default(now())
