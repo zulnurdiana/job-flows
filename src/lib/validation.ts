@@ -84,6 +84,7 @@ export const createPersyaratanSchema = z.object({
   pendidikan: requiredString,
   umur: numericRequiredString.max(3, "Number cant be longer than 3 digits"),
   status_pernikahan: requiredString,
+  description: z.string().max(5000).optional(),
 });
 
 export const createKriteriaSchema = z.object({

@@ -32,6 +32,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import RichTextEditor from "@/components/RichTextEditor";
+import { draftToMarkdown } from "markdown-draft-js";
+import { Label } from "@/components/ui/label";
 
 interface Jabatan {
   id_jabatan: number;
@@ -78,7 +81,11 @@ const NewPersyaratanForm = ({
 
   const {
     handleSubmit,
+    watch,
+    trigger,
     control,
+    setValue,
+    setFocus,
     formState: { isSubmitting },
   } = form;
 
@@ -205,6 +212,25 @@ const NewPersyaratanForm = ({
                       </option>
                     ))}
                   </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <Label onClick={() => setFocus("description")}>
+                  Description
+                </Label>
+                <FormControl>
+                  <RichTextEditor
+                    onChange={(draft) => field.onChange(draftToMarkdown(draft))}
+                    ref={field.ref}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

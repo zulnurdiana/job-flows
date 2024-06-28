@@ -40,7 +40,6 @@ const page = async ({ params: { id } }: PageProps) => {
     },
     where: {
       id_job: parseInt(id),
-      screening_approved: false,
     },
   });
 
@@ -76,6 +75,16 @@ const page = async ({ params: { id } }: PageProps) => {
         </Breadcrumb>
       </div>
 
+      <div className="text-center">
+        <H1 className="text-3xl font-extrabold text-gray-800">
+          Screening Pelamar <br />
+          Jabatan{" "}
+          {getPelamarPerJabatan.length > 0
+            ? getPelamarPerJabatan[0].job?.title
+            : ""}
+        </H1>
+      </div>
+
       <Table className="w-full border-collapse">
         <TableHeader className="bg-gray-200">
           <TableRow>
@@ -94,16 +103,6 @@ const page = async ({ params: { id } }: PageProps) => {
           </TableRow>
         </TableBody>
       </Table>
-
-      <div className="text-center">
-        <H1 className="text-3xl font-extrabold text-gray-800">
-          Screening Pelamar <br />
-          Jabatan{" "}
-          {getPelamarPerJabatan.length > 0
-            ? getPelamarPerJabatan[0].job?.title
-            : ""}
-        </H1>
-      </div>
 
       {getPelamarPerJabatan.length > 0 ? (
         <Table className="w-full border-collapse">

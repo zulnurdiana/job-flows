@@ -14,10 +14,11 @@ const Editor = dynamic(
 
 interface RichTextEditorProps extends EditorProps {
   defaultValue?: string;
+  disabled?: boolean; // Add disabled prop
 }
 
 export default forwardRef<Object, RichTextEditorProps>(function RichTextEditor(
-  { defaultValue, ...props },
+  { defaultValue, disabled, ...props },
   ref,
 ) {
   const [editorState, setEditorState] = useState(() =>
@@ -35,12 +36,14 @@ export default forwardRef<Object, RichTextEditorProps>(function RichTextEditor(
     <Editor
       editorState={editorState}
       onEditorStateChange={setEditorState}
+      readOnly={disabled} // Use disabled prop to set readOnly attribute
       editorClassName={cn(
         "border rounded-md px-3 min-h-[150px] cursor-text ring-offset-background focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
         props.editorClassName,
+        disabled && "cursor-not-allowed bg-gray-200", // Optionally add some styles for disabled state
       )}
       toolbar={{
-        options: ["inline", "list", "link", "history"],
+        options: disabled ? [] : ["inline", "list", "link", "history"], // Disable toolbar if readOnly
         inline: {
           options: ["bold", "italic", "underline"],
         },

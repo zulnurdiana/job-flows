@@ -101,6 +101,7 @@ model Persyaratan {
   umur Int
   status_pernikahan String
   status_persyaratan Boolean @default(false)
+  description String?
   id_user String
   user    User             @relation(fields: [id_user], references: [id])
   id_permintaan Int

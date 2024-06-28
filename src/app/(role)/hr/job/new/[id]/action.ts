@@ -31,7 +31,6 @@ export async function createJobPosting(
 
   const slug = `${createSlug(title)}-${nanoid(10)}`;
 
-
   let companyLogoUrl: string | undefined = undefined;
 
   if (companyLogo) {
@@ -46,6 +45,8 @@ export async function createJobPosting(
 
     companyLogoUrl = blog.url;
   }
+
+  console.log(description);
 
   const newJob = await prisma.job.create({
     data: {

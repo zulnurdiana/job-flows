@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import H1 from "@/components/ui/h1";
 import { createJobsSchema, createJobValue } from "@/lib/validation";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -68,6 +68,7 @@ interface Persyaratan {
   pendidikan: string;
   umur: number;
   status_pernikahan: string;
+  description?: string;
   id_user: string;
   // Properti user dapat didefinisikan jika diperlukan
   id_permintaan: number;
@@ -91,6 +92,7 @@ const NewJobForm = ({
     pendidikan,
     umur,
     status_pernikahan,
+    description,
     permintaan: {
       jabatan: { nama_jabatan },
     },
@@ -100,6 +102,7 @@ const NewJobForm = ({
     resolver: zodResolver(createJobsSchema),
     defaultValues: {
       title: nama_jabatan,
+      description: description,
     },
   });
 
@@ -112,6 +115,8 @@ const NewJobForm = ({
     setFocus,
     formState: { isSubmitting },
   } = form;
+
+  const [isDisabled, setIsDisabled] = useState(true);
 
   async function onSubmit(values: createJobValue) {
     const formData = new FormData();
@@ -134,11 +139,11 @@ const NewJobForm = ({
     }
   }
 
-  const defaultDescription = `**Kualifikasi**: 
-Pengalaman Kerja: ${pengalaman_kerja}
-Pendidikan: ${pendidikan} 
-Umur: ${umur} tahun 
-Status Pernikahan: ${status_pernikahan}`;
+  //   const defaultDescription = `**Kualifikasi**:
+  // Pengalaman Kerja: ${pengalaman_kerja}
+  // Pendidikan: ${pendidikan}
+  // Umur: ${umur} tahun
+  // Status Pernikahan: ${status_pernikahan}`;
 
   return (
     <main className="m-auto my-4 max-w-5xl space-y-10">
@@ -425,11 +430,12 @@ Status Pernikahan: ${status_pernikahan}`;
                   </Label>
                   <FormControl>
                     <RichTextEditor
-                      defaultValue={defaultDescription}
+                      defaultValue={description}
                       onChange={(draft) =>
                         field.onChange(draftToMarkdown(draft))
                       }
                       ref={field.ref}
+                      disabled={isDisabled} // Disable the editor if isDisabled is true
                     />
                   </FormControl>
                   <FormMessage />
