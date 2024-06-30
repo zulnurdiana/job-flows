@@ -82,8 +82,10 @@ export const createPermintaanSchema = z.object({
 export const createPersyaratanSchema = z.object({
   pengalaman_kerja: requiredString,
   pendidikan: requiredString,
-  umur: numericRequiredString.max(3, "Number cant be longer than 3 digits"),
+  umur_min: numericRequiredString.max(3, "Number cant be longer than 3 digits"),
+  umur_max: numericRequiredString.max(3, "Number cant be longer than 3 digits"),
   status_pernikahan: requiredString,
+  jenis_kelamin: requiredString,
   description: z.string().max(5000).optional(),
 });
 
@@ -115,7 +117,7 @@ const cvSchema = z
   );
 
 export const createBiodataSchema = z.object({
-  umur: numericRequiredString.max(2, "Number cant be longer than 3 digits"),
+  tanggal_lahir: dateISOString,
   pendidikan: requiredString,
   status_pernikahan: requiredString,
   alamat: z.string().max(5000).optional(),

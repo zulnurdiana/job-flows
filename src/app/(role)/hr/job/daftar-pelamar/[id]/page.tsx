@@ -28,6 +28,18 @@ interface PageProps {
   };
 }
 
+// Fungsi untuk menghitung umur
+function hitungUmur(tanggalLahir: any) {
+  const lahir = new Date(tanggalLahir);
+  const hariIni = new Date();
+  let umur = hariIni.getFullYear() - lahir.getFullYear();
+  const bulan = hariIni.getMonth() - lahir.getMonth();
+  if (bulan < 0 || (bulan === 0 && hariIni.getDate() < lahir.getDate())) {
+    umur--;
+  }
+  return umur;
+}
+
 const page = async ({ params: { id } }: PageProps) => {
   const session = await getSession();
   const user = session?.user;
@@ -40,6 +52,7 @@ const page = async ({ params: { id } }: PageProps) => {
     },
     where: {
       id_job: parseInt(id),
+      screening_approved: null,
     },
   });
 
@@ -88,18 +101,25 @@ const page = async ({ params: { id } }: PageProps) => {
       <Table className="w-full border-collapse">
         <TableHeader className="bg-gray-200">
           <TableRow>
-            <TableHead className="text-center">Pengalaman Kerja</TableHead>
-            <TableHead className="text-center">Pendidikan</TableHead>
             <TableHead className="text-center">Umur</TableHead>
+            <TableHead className="text-center">Pendidikan</TableHead>
+            <TableHead className="text-center">Pengalaman Kerja</TableHead>
+
             <TableHead className="text-center">Status Pernikahan</TableHead>
+            <TableHead className="text-center">Jenis Kelamin</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow className="text-center">
-            <TableCell>{getPersyaratan?.pengalaman_kerja}</TableCell>
+            <TableCell>
+              {getPersyaratan?.umur_min} - {getPersyaratan?.umur_max} Tahun
+            </TableCell>
             <TableCell>{getPersyaratan?.pendidikan}</TableCell>
-            <TableCell>{getPersyaratan?.umur}</TableCell>
+
+            <TableCell>{getPersyaratan?.pengalaman_kerja}</TableCell>
+
             <TableCell>{getPersyaratan?.status_pernikahan}</TableCell>
+            <TableCell>{getPersyaratan?.jenis_kelamin}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -123,7 +143,7 @@ const page = async ({ params: { id } }: PageProps) => {
               <TableRow key={pelamar.id} className="text-center">
                 <TableCell className="font-bold">{index + 1}</TableCell>
                 <TableCell>{pelamar.name}</TableCell>
-                <TableCell>{pelamar.umur} Tahun</TableCell>
+                <TableCell>{hitungUmur(pelamar.tanggal_lahir)} Tahun</TableCell>
                 <TableCell>{pelamar.pendidikan}</TableCell>
                 <TableCell>{pelamar.status_pernikahan}</TableCell>
                 <TableCell>{pelamar.jenis_kelamin}</TableCell>

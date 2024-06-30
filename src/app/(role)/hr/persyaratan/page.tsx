@@ -78,11 +78,11 @@ const page = async () => {
               <TableHead className="text-center font-bold">No</TableHead>
               <TableHead className="text-center">Jabatan</TableHead>
               <TableHead className="text-center">Divisi</TableHead>
-              <TableHead className="text-center">Jumlah Kebutuhan</TableHead>
-              <TableHead className="text-center">Pendidikan</TableHead>
-              <TableHead className="text-center">Status Pernikahan</TableHead>
+              <TableHead className="text-center">Kebutuhan</TableHead>
+              {/* <TableHead className="text-center">Pendidikan</TableHead>
+              <TableHead className="text-center">Pernikahan</TableHead>
               <TableHead className="text-center">Pengalaman</TableHead>
-              <TableHead className="text-center">Minimal Umur</TableHead>
+              <TableHead className="text-center">Umur</TableHead> */}
 
               <TableHead className="text-center">Action</TableHead>
             </TableRow>
@@ -103,10 +103,12 @@ const page = async () => {
                 <TableCell>
                   {persyaratan.permintaan.jumlah_pegawai} Pegawai
                 </TableCell>
-                <TableCell>{persyaratan.pendidikan}</TableCell>
+                {/* <TableCell>{persyaratan.pendidikan}</TableCell>
                 <TableCell>{persyaratan.status_pernikahan}</TableCell>
                 <TableCell>{persyaratan.pengalaman_kerja}</TableCell>
-                <TableCell>{persyaratan.umur} Tahun</TableCell>
+                <TableCell>
+                  {persyaratan.umur_min} - {persyaratan.umur_max} Tahun
+                </TableCell> */}
 
                 <TableCell>
                   <Button asChild>

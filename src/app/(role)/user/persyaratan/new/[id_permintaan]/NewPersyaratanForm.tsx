@@ -19,9 +19,10 @@ import { Input } from "@/components/ui/input";
 import Select from "@/components/ui/select";
 import LoadingButton from "@/components/LoadingButton";
 import {
+  jenisKelaminPersyaratan,
   pendidikanList,
   pengalamanKerjaList,
-  statusPernikahanList,
+  statusPernikahanPersyaratan,
 } from "@/lib/persyaratan-list";
 import createPersyaratan from "./actions";
 import {
@@ -75,7 +76,8 @@ const NewPersyaratanForm = ({
     resolver: zodResolver(createPersyaratanSchema),
     defaultValues: {
       pengalaman_kerja: "0",
-      umur: "0",
+      umur_min: "0",
+      umur_max: "0",
     },
   });
 
@@ -181,19 +183,36 @@ const NewPersyaratanForm = ({
             )}
           />
 
-          <FormField
-            control={control}
-            name="umur"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Minimal Umur</FormLabel>
-                <FormControl>
-                  <Input {...field} type="number" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-2">
+            <div className="flex justify-between gap-x-4">
+              <FormField
+                control={control}
+                name="umur_min"
+                render={({ field }) => (
+                  <FormItem className="flex-grow w-full">
+                    <FormLabel>Minimal Umur</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="number" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="umur_max"
+                render={({ field }) => (
+                  <FormItem className="flex-grow w-full">
+                    <FormLabel>Maksimal Umur</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="number" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
 
           <FormField
             control={control}
@@ -206,9 +225,32 @@ const NewPersyaratanForm = ({
                     <option value="" hidden>
                       Pilih Status Pernikahan
                     </option>
-                    {statusPernikahanList.map((pernikahan) => (
+                    {statusPernikahanPersyaratan.map((pernikahan) => (
                       <option key={pernikahan} value={pernikahan}>
                         {pernikahan}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="jenis_kelamin"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Jenis Kelamin</FormLabel>
+                <FormControl>
+                  <Select {...field} defaultValue="">
+                    <option value="" hidden>
+                      Pilih Jenis Kelamin
+                    </option>
+                    {jenisKelaminPersyaratan.map((kelamin) => (
+                      <option key={kelamin} value={kelamin}>
+                        {kelamin}
                       </option>
                     ))}
                   </Select>

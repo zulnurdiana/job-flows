@@ -17,14 +17,21 @@ export default async function createPersyaratan(
     throw new Error("User ID is missing");
   }
 
-  const { pengalaman_kerja, pendidikan, umur, status_pernikahan, description } =
-    createPersyaratanSchema.parse(values);
+  const {
+    pengalaman_kerja,
+    pendidikan,
+    umur_min,
+    umur_max,
+    status_pernikahan,
+    description,
+  } = createPersyaratanSchema.parse(values);
 
   const persyaratan = await prisma.persyaratan.create({
     data: {
       pengalaman_kerja: pengalaman_kerja,
       pendidikan: pendidikan,
-      umur: parseInt(umur),
+      umur_min: parseInt(umur_min),
+      umur_max: parseInt(umur_max),
       status_pernikahan: status_pernikahan,
       description: description?.trim(),
       id_user: id_user,

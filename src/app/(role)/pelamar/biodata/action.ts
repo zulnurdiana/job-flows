@@ -11,8 +11,14 @@ export async function createBiodata(formData: FormData, id_user: string) {
   try {
     const values = Object.fromEntries(formData.entries());
 
-    const { umur, pendidikan, status_pernikahan, alamat, jenis_kelamin, cv } =
-      createBiodataSchema.parse(values);
+    const {
+      tanggal_lahir,
+      pendidikan,
+      status_pernikahan,
+      alamat,
+      jenis_kelamin,
+      cv,
+    } = createBiodataSchema.parse(values);
 
     const pdf_name = `cv-${nanoid()}`;
     let cvUrl: string | undefined = undefined;
@@ -30,7 +36,7 @@ export async function createBiodata(formData: FormData, id_user: string) {
         id: id_user,
       },
       data: {
-        umur: parseInt(umur),
+        tanggal_lahir: new Date(tanggal_lahir),
         pendidikan: pendidikan,
         status_pernikahan: status_pernikahan,
         alamat: alamat,

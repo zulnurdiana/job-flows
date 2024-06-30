@@ -98,7 +98,9 @@ model Persyaratan {
   id_persyaratan Int @id @default(autoincrement())
   pengalaman_kerja String
   pendidikan String
-  umur Int
+  umur_min Int
+  umur_max Int
+  jenis_kelamin String?
   status_pernikahan String
   status_persyaratan Boolean @default(false)
   description String?
@@ -148,7 +150,7 @@ model User {
   email         String          @unique
   emailVerified DateTime?
   image         String?
-  umur          Int?
+  tanggal_lahir DateTime?
   pendidikan    String?
   alamat        String?
   jenis_kelamin String?
