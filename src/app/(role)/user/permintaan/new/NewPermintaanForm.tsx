@@ -6,7 +6,6 @@ import {
 } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
 import {
   Form,
   FormControl,
@@ -17,10 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Select from "@/components/ui/select";
-import { Divisi, Jabatan, Pegawai, User } from "@prisma/client";
 import LoadingButton from "@/components/LoadingButton";
 import createPermintaan from "./actions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -74,7 +72,7 @@ interface IUser {
   cv?: string | null;
   role?: string | null;
   screening_approved?: boolean | null;
-  pegawai?: IPegawai | null; // Perbarui ini
+  pegawai?: IPegawai | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -95,10 +93,10 @@ const NewPermintaanForm = ({
   const id_divisi = user.pegawai?.jabatan.id_divisi;
   const id_jabatan = user.pegawai?.jabatan.id_jabatan;
 
-  // Filter pegawai berdasarkan id_divisi
-  const filteredPegawai = pegawai.filter(
-    (p) => p.jabatan.id_jabatan === id_jabatan,
-  );
+  const [filteredPegawai, setFilteredPegawai] = useState<IPegawai[]>([]);
+  const [selectedJabatan, setSelectedJabatan] = useState<number | null>(null);
+  const [jumlahPegawai, setJumlahPegawai] = useState<number>(0);
+  const [penggantiPegawai, setPenggantiPegawai] = useState<number[]>([]);
 
   const form = useForm<createPermintaanValues>({
     resolver: zodResolver(createPermintaanSchema),
@@ -111,16 +109,37 @@ const NewPermintaanForm = ({
   const {
     handleSubmit,
     watch,
-    trigger,
     control,
-    setValue,
-    setFocus,
     formState: { isSubmitting },
   } = form;
 
   const filteredJabatan = id_divisi
     ? jabatan.filter((jab) => jab.id_divisi === id_divisi)
     : [];
+
+  useEffect(() => {
+    if (selectedJabatan) {
+      setFilteredPegawai(
+        pegawai.filter((p) => p.jabatan.id_jabatan === selectedJabatan),
+      );
+    } else {
+      setFilteredPegawai([]);
+    }
+  }, [selectedJabatan, pegawai]);
+
+  useEffect(() => {
+    const jumlah = parseInt(watch("jumlah_pegawai"), 10);
+    if (!isNaN(jumlah)) {
+      setJumlahPegawai(jumlah);
+      setPenggantiPegawai(Array(jumlah).fill(0));
+    }
+  }, [watch("jumlah_pegawai")]);
+
+  const handlePenggantiChange = (index: number, value: number) => {
+    const updatedPengganti = [...penggantiPegawai];
+    updatedPengganti[index] = value;
+    setPenggantiPegawai(updatedPengganti);
+  };
 
   async function onSubmit(values: createPermintaanValues) {
     const formData = new FormData();
@@ -135,7 +154,7 @@ const NewPermintaanForm = ({
     });
 
     try {
-      await createPermintaan(formData);
+      await createPermintaan(formData, penggantiPegawai); // Mengirimkan penggantiPegawai
     } catch (error) {
       alert("Something went wrong");
     }
@@ -194,6 +213,10 @@ const NewPermintaanForm = ({
                     {...field}
                     defaultValue=""
                     className="mt-1 p-2 border rounded-md"
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                      field.onChange(e);
+                      setSelectedJabatan(Number(e.target.value));
+                    }}
                   >
                     <option value="" hidden>
                       Select Job
@@ -209,6 +232,36 @@ const NewPermintaanForm = ({
               </FormItem>
             )}
           />
+
+          {jumlahPegawai > 0 && (
+            <div className="space-y-4">
+              {Array.from({ length: jumlahPegawai }).map((_, index) => (
+                <FormItem key={index}>
+                  <FormLabel>Pengganti Pegawai {index + 1}</FormLabel>
+                  <FormControl>
+                    <Select
+                      className="mt-1 p-2 border rounded-md"
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        handlePenggantiChange(index, Number(e.target.value));
+                      }}
+                    >
+                      <option value="" hidden>
+                        Select Pegawai
+                      </option>
+                      {filteredPegawai.map((pegawai) => (
+                        <option
+                          key={pegawai.id_pegawai}
+                          value={pegawai.id_pegawai}
+                        >
+                          {pegawai.nama_pegawai}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </FormItem>
+              ))}
+            </div>
+          )}
 
           <LoadingButton
             type="submit"

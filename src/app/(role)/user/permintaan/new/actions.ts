@@ -6,22 +6,27 @@ import { createPermintaanSchema } from "@/lib/validation";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export default async function createPermintaan(formData: FormData) {
+export default async function createPermintaan(
+  formData: FormData,
+  penggantiPegawai: number[] = [],
+) {
   const values = Object.fromEntries(formData.entries());
   const session = await getSession();
   const id_user = session?.user.id;
   const { jumlah_pegawai, id_jabatan } = createPermintaanSchema.parse(values);
 
+  // Membuat entri baru di tabel permintaan
   await prisma.permintaan.create({
     data: {
       jumlah_pegawai: parseInt(jumlah_pegawai),
-      // Tambahkan properti yang hilang
-      tanggal_permintaan: new Date(), // Atau gunakan tanggal yang sesuai
+      tanggal_permintaan: new Date(),
       id_jabatan: parseInt(id_jabatan),
       id_user: id_user as string,
+      pegawai: { connect: penggantiPegawai.map((id) => ({ id_pegawai: id })) }, // Menghubungkan dengan pegawai yang dipilih
     },
   });
 
+  // Mengarahkan ke halaman setelah permintaan berhasil dibuat
   redirect("/user/permintaan/submitted");
 }
 

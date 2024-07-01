@@ -46,6 +46,8 @@ model Pegawai{
   id_jabatan Int
   jabatan Jabatan @relation(fields: [id_jabatan], references: [id_jabatan])
   user User?
+  id_permintaan   Int?
+  permintaan      Permintaan? @relation(fields: [id_permintaan], references: [id_permintaan])
 
 }
 
@@ -63,6 +65,7 @@ model Permintaan {
   persyaratan        Persyaratan[]
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
+  pegawai            Pegawai[]   @relation()
 
 
   @@map("permintaan")

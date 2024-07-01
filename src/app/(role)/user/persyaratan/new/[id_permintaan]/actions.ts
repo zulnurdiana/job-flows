@@ -23,6 +23,7 @@ export default async function createPersyaratan(
     umur_min,
     umur_max,
     status_pernikahan,
+    jenis_kelamin,
     description,
   } = createPersyaratanSchema.parse(values);
 
@@ -33,6 +34,7 @@ export default async function createPersyaratan(
       umur_min: parseInt(umur_min),
       umur_max: parseInt(umur_max),
       status_pernikahan: status_pernikahan,
+      jenis_kelamin: jenis_kelamin,
       description: description?.trim(),
       id_user: id_user,
       id_permintaan: id_permintaan,
