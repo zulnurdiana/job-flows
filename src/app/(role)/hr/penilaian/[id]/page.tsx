@@ -20,7 +20,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import ButtonScreening from "./ButtonScreening";
 
 interface PageProps {
   params: {
@@ -48,17 +47,15 @@ const page = async ({ params: { id } }: PageProps) => {
   const getPelamarPerJabatan = await prisma.user.findMany({
     include: {
       job: true,
+      penilaian: true,
     },
     where: {
       id_job: parseInt(id),
+      screening_approved: true,
     },
   });
 
-  const getPersyaratan = await prisma.persyaratan.findFirst({
-    where: {
-      id_job: parseInt(id),
-    },
-  });
+  console.log(getPelamarPerJabatan[0].penilaian[0].total_nilai);
 
   return (
     <div className="max-w-5xl mx-auto my-4 space-y-6 px-4 rounded-lg min-h-[400px]">
@@ -70,8 +67,8 @@ const page = async ({ params: { id } }: PageProps) => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/hr/job/daftar-pelamar">
-                Screening Daftar Pelamar
+              <BreadcrumbLink href="/hr/penilaian">
+                Penilaian Pelamar
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -88,39 +85,13 @@ const page = async ({ params: { id } }: PageProps) => {
 
       <div className="text-center">
         <H1 className="text-3xl font-extrabold text-gray-800">
-          Screening Pelamar <br />
+          Penilaian Pelamar <br />
           Jabatan{" "}
           {getPelamarPerJabatan.length > 0
             ? getPelamarPerJabatan[0].job?.title
             : ""}
         </H1>
       </div>
-
-      <Table className="w-full border-collapse">
-        <TableHeader className="bg-gray-200">
-          <TableRow>
-            <TableHead className="text-center">Umur</TableHead>
-            <TableHead className="text-center">Pendidikan</TableHead>
-            <TableHead className="text-center">Pengalaman Kerja</TableHead>
-
-            <TableHead className="text-center">Status Pernikahan</TableHead>
-            <TableHead className="text-center">Jenis Kelamin</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow className="text-center">
-            <TableCell>
-              {getPersyaratan?.umur_min} - {getPersyaratan?.umur_max} Tahun
-            </TableCell>
-            <TableCell>{getPersyaratan?.pendidikan}</TableCell>
-
-            <TableCell>{getPersyaratan?.pengalaman_kerja}</TableCell>
-
-            <TableCell>{getPersyaratan?.status_pernikahan}</TableCell>
-            <TableCell>{getPersyaratan?.jenis_kelamin}</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
 
       {getPelamarPerJabatan.length > 0 ? (
         <Table className="w-full border-collapse">
@@ -133,7 +104,7 @@ const page = async ({ params: { id } }: PageProps) => {
               <TableHead className="text-center">Status Pernikahan</TableHead>
               <TableHead className="text-center">Jenis Kelamin</TableHead>
               <TableHead className="text-center">Curriculum Vitae</TableHead>
-              <TableHead className="text-center">Screening</TableHead>
+              <TableHead className="text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -148,14 +119,16 @@ const page = async ({ params: { id } }: PageProps) => {
                 <TableCell className="underline">
                   {pelamar.cv && <Link href={pelamar.cv}>Lihat CV</Link>}
                 </TableCell>
-
                 <TableCell>
-                  {pelamar.screening_approved === true ? (
-                    <span className="text-green-500">Lolos</span>
-                  ) : pelamar.screening_approved === false ? (
-                    <span className="text-red-500">Tidak Lolos Screening</span>
+                  {pelamar.penilaian?.length > 0 &&
+                  pelamar.penilaian[0].total_nilai !== null ? (
+                    "Sudah Dinilai"
                   ) : (
-                    <ButtonScreening user={pelamar} />
+                    <Button asChild>
+                      <Link href={`/hr/penilaian/input/${pelamar.id}`}>
+                        Nilai
+                      </Link>
+                    </Button>
                   )}
                 </TableCell>
               </TableRow>

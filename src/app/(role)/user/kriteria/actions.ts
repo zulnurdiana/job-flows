@@ -7,6 +7,39 @@ import getSession from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import { handleError } from "@/lib/utils";
 
+async function hitungKepentingan() {
+  const allKriteria = await prisma.kriteria.findMany({
+    select: {
+      id_kriteria: true,
+      bobot: true,
+    },
+  });
+
+  const pembagi = allKriteria.map((kriteria) => kriteria.bobot);
+  const totalPembagi = pembagi.reduce((a: number, b: number) => a + b, 0);
+  const kepentingan = pembagi.map((bobot) => bobot / totalPembagi);
+
+  // const totalKepentingan = kepentingan.reduce(
+  //   (a: number, b: number) => a + b,
+  //   0,
+  // );
+
+  // console.log(totalKepentingan);
+
+  console.log(totalPembagi);
+
+  kepentingan.map(async (kepentingan, index) => {
+    await prisma.kriteria.update({
+      where: {
+        id_kriteria: allKriteria[index].id_kriteria,
+      },
+      data: {
+        kepentingan: kepentingan,
+      },
+    });
+  });
+}
+
 export async function createKriteria(formData: FormData) {
   try {
     const values = Object.fromEntries(formData.entries());
@@ -28,8 +61,11 @@ export async function createKriteria(formData: FormData) {
       },
     });
 
+    await hitungKepentingan();
+
     if (!kriteria) {
       throw new Error("Failed to create kriteria");
+    } else {
     }
 
     revalidatePath("/");
@@ -69,6 +105,7 @@ export async function updateKriteria(formData: FormData, id_kriteria: number) {
       },
     });
     if (!kriteria) throw new Error("Failed to update kriteria");
+    await hitungKepentingan();
     revalidatePath("/");
 
     return {
@@ -96,6 +133,7 @@ export async function deleteKriteria(formData: FormData) {
     });
     if (kriteria) {
       revalidatePath("/");
+      await hitungKepentingan();
       return {
         message: `Berhasil Delete Kriteria ${kriteria.nama_kriteria}`,
         code: 200,

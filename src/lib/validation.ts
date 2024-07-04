@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { jobTypes, locationTypes } from "./job-types";
+import prisma from "./prisma";
 
 const requiredString = z.string().min(1, "Required");
 const numericRequiredString = requiredString.regex(/^\d+$/, "Must be a number");
@@ -125,9 +126,57 @@ export const createBiodataSchema = z.object({
   cv: cvSchema.optional(),
 });
 
+// Buat schema Zod secara dinamis
+export const createPenilaianSchema = z.object({
+  nama_pelamar: z.string(),
+  tes_tulis: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  tes_praktek: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  tes_teknis: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  tes_psikotes: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  pengalaman: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  pendidikan: z.string(),
+  komunikasi: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  minat: numericRequiredString.max(3, "Number cant be longer than 3 digits"),
+  pengetahuan_organisasi: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  kerja_sama: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  inisiatif: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+  manajemen_waktu: numericRequiredString.max(
+    3,
+    "Number cant be longer than 3 digits",
+  ),
+});
+
 export type createKriteriaValues = z.infer<typeof createKriteriaSchema>;
 export type createPersyaratanValues = z.infer<typeof createPersyaratanSchema>;
 export type createJobValue = z.infer<typeof createJobsSchema>;
 export type JobFilterValues = z.infer<typeof jobFilterSchema>;
 export type createPermintaanValues = z.infer<typeof createPermintaanSchema>;
 export type createBiodataValues = z.infer<typeof createBiodataSchema>;
+export type createPenilaianValues = z.infer<typeof createPenilaianSchema>;

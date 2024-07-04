@@ -1,4 +1,4 @@
-import { LogOut } from "lucide-react";
+import { LogOut, NotebookPen } from "lucide-react";
 import { User } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -81,6 +81,12 @@ export default function UserButton({ user }: UserButtonProps) {
                 <Link href="/hr/persyaratan">
                   <BookUser className="mr-2 h-4 w-4" />
                   Daftar Persyaratan
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/hr/penilaian">
+                  <NotebookPen className="mr-2 h-4 w-4" />
+                  Penilaian Pelamar
                 </Link>
               </DropdownMenuItem>
             </>

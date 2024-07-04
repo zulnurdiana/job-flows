@@ -1,4 +1,4 @@
-export const pendidikanList = ["SMA / SMK", "D1/D2/D3", "S1/D4"];
+export const pendidikanList = ["SMA/SMK", "D1/D2/D3", "S1/D4"];
 export const statusPernikahanPersyaratan = [
   "Menikah",
   "Lajang",

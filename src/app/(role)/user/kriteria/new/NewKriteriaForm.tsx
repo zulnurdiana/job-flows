@@ -147,7 +147,7 @@ const NewKriteriaForm = () => {
                 <FormControl>
                   <Select {...field} defaultValue="">
                     <option value="" hidden>
-                      Pilih Jenis Kriteria
+                      Pilih Kriteria
                     </option>
                     <option value="BENEFIT">Benefit</option>
                     <option value="COST">Cost</option>

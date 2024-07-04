@@ -135,6 +135,7 @@ model Kriteria {
   jenis_kriteria JenisKriteria 
   id_user String?
   user User? @relation(fields: [id_user],references: [id])
+  detail_penilaian Detail_Penilaian[]
 
 
   createdAt DateTime @default(now())
@@ -164,6 +165,7 @@ model User {
   permintaan    Permintaan[]
   persyaratan   Persyaratan[]
   kriteria      Kriteria[]
+  penilaian     Penilaian[]
   accounts      Account[]
   sessions      Session[]
   id_job        Int?
@@ -174,6 +176,24 @@ model User {
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Penilaian {
+  id_penilaian Int @id @default(autoincrement())
+  tanggal DateTime @default(now())
+  total_nilai   Float
+  detail_penilaian Detail_Penilaian[]
+  id_user String?
+  user User? @relation(fields: [id_user], references: [id])
+}
+
+model Detail_Penilaian{
+  id_detail_penilaian Int @id @default(autoincrement())
+  nilai Int
+  id_penilaian Int?
+  penilaian Penilaian? @relation(fields: [id_penilaian], references: [id_penilaian])
+  id_kriteria Int?
+  kriteria Kriteria? @relation(fields: [id_kriteria], references: [id_kriteria])
 }
  
 model Account {

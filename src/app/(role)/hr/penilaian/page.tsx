@@ -40,7 +40,7 @@ const getJobDetails = async () => {
               job: {
                 select: {
                   approved: true,
-                  tanggal_selesai: true, // Tambahkan ini untuk mendapatkan tanggal_selesai
+                  tanggal_selesai: true,
                 },
               },
             },
@@ -65,6 +65,7 @@ const getJobDetails = async () => {
       id_job: {
         in: jobIds,
       },
+      screening_approved: true, // Tambahkan kondisi ini
     },
     _count: {
       id: true,
@@ -115,15 +116,15 @@ const getJobDetails = async () => {
         0,
       ),
       jumlah_pelamar: jumlah_pelamar,
-      id_jobs: jobIdsForJabatan, // Tambahkan id_job ke hasil
-      tanggal_selesai: tanggal_selesai, // Tambahkan tanggal_selesai ke hasil
-      isExpired: isExpired, // Tambahkan isExpired ke hasil
+      id_jobs: jobIdsForJabatan,
+      tanggal_selesai: tanggal_selesai,
+      isExpired: isExpired,
     };
   });
 
-  // Filter jabatan yang memiliki pegawai
   return formattedResult.filter((jabatan) => jabatan.jumlah_pegawai > 0);
 };
+
 const page = async () => {
   const session = await getSession();
   const user = session?.user;
@@ -142,7 +143,7 @@ const page = async () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Screening Daftar Pelamar</BreadcrumbPage>
+              <BreadcrumbPage>Penilaian Pelamar</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -150,7 +151,7 @@ const page = async () => {
 
       <div className="text-center">
         <H1 className="text-3xl font-extrabold text-gray-800">
-          Screening Daftar Pelamar <br /> Setiap Jabatan
+          Penilaian Pelamar <br /> Setiap Jabatan
         </H1>
       </div>
 
@@ -177,11 +178,15 @@ const page = async () => {
                 <TableCell>{res.jumlah_pegawai} Pegawai</TableCell>
                 <TableCell>
                   {res.isExpired ? (
-                    <span className="text-red-500">Ditutup</span>
-                  ) : (
                     <Button asChild>
                       <Link href={`/hr/job/daftar-pelamar/${res.id_jobs}`}>
-                        Lihat Pelamar
+                        Lihat Keputusan
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button asChild>
+                      <Link href={`/hr/penilaian/${res.id_jobs}`}>
+                        Nilai Pelamar
                       </Link>
                     </Button>
                   )}
