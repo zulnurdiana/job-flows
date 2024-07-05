@@ -129,22 +129,54 @@ export const createBiodataSchema = z.object({
 // Buat schema Zod secara dinamis
 export const createPenilaianSchema = z.object({
   nama_pelamar: z.string(),
-  tes_tulis: numericRequiredString.max(
-    3,
-    "Number cant be longer than 3 digits",
-  ),
-  tes_praktek: numericRequiredString.max(
-    3,
-    "Number cant be longer than 3 digits",
-  ),
-  tes_teknis: numericRequiredString.max(
-    3,
-    "Number cant be longer than 3 digits",
-  ),
-  tes_psikotes: numericRequiredString.max(
-    3,
-    "Number cant be longer than 3 digits",
-  ),
+  tes_tulis: numericRequiredString
+    .max(3, "Number cant be longer than 3 digits")
+    .refine(
+      (val) => {
+        const num = parseInt(val);
+
+        return num >= 0 && num <= 100;
+      },
+      {
+        message: "Number must be between 0 and 100",
+      },
+    ),
+  tes_praktek: numericRequiredString
+    .max(3, "Number cant be longer than 3 digits")
+    .refine(
+      (val) => {
+        const num = parseInt(val);
+
+        return num >= 0 && num <= 100;
+      },
+      {
+        message: "Number must be between 0 and 100",
+      },
+    ),
+  tes_teknis: numericRequiredString
+    .max(3, "Number cant be longer than 3 digits")
+    .refine(
+      (val) => {
+        const num = parseInt(val);
+
+        return num >= 0 && num <= 100;
+      },
+      {
+        message: "Number must be between 0 and 100",
+      },
+    ),
+  tes_psikotes: numericRequiredString
+    .max(3, "Number cant be longer than 3 digits")
+    .refine(
+      (val) => {
+        const num = parseInt(val);
+
+        return num >= 0 && num <= 100;
+      },
+      {
+        message: "Number must be between 0 and 100",
+      },
+    ),
   pengalaman: numericRequiredString.max(
     3,
     "Number cant be longer than 3 digits",

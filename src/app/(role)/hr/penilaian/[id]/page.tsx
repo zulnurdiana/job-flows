@@ -55,8 +55,6 @@ const page = async ({ params: { id } }: PageProps) => {
     },
   });
 
-  console.log(getPelamarPerJabatan[0].penilaian[0].total_nilai);
-
   return (
     <div className="max-w-5xl mx-auto my-4 space-y-6 px-4 rounded-lg min-h-[400px]">
       <div className="max-w-5xl mx-auto">
@@ -121,7 +119,7 @@ const page = async ({ params: { id } }: PageProps) => {
                 </TableCell>
                 <TableCell>
                   {pelamar.penilaian?.length > 0 &&
-                  pelamar.penilaian[0].total_nilai !== null ? (
+                  pelamar.penilaian[0]?.total_nilai !== null ? (
                     "Sudah Dinilai"
                   ) : (
                     <Button asChild>

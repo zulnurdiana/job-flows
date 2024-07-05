@@ -46,8 +46,6 @@ export async function createJobPosting(
     companyLogoUrl = blog.url;
   }
 
-  console.log(description);
-
   const newJob = await prisma.job.create({
     data: {
       title: title.trim(),

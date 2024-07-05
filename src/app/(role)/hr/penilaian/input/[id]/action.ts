@@ -4,6 +4,7 @@ import { createPenilaianSchema } from "@/lib/validation";
 import prisma from "@/lib/prisma";
 import { handleError } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
+import { log } from "console";
 
 export async function PenilaianPelamar(formData: FormData, id_pelamar: string) {
   try {

@@ -26,7 +26,7 @@ async function hitungKepentingan() {
 
   // console.log(totalKepentingan);
 
-  console.log(totalPembagi);
+  // console.log(totalPembagi);
 
   kepentingan.map(async (kepentingan, index) => {
     await prisma.kriteria.update({

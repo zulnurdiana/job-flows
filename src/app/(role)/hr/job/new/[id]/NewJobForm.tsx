@@ -55,7 +55,6 @@ interface Permintaan {
   id_jabatan: number;
   jabatan: Jabatan;
   id_user: string;
-  // Properti user dapat didefinisikan jika diperlukan
   persyaratan?: Persyaratan[]; // Buat properti persyaratan bersifat opsional
   createdAt: Date;
   updatedAt: Date;
@@ -64,17 +63,16 @@ interface Permintaan {
 // Interface untuk model Persyaratan
 interface Persyaratan {
   id_persyaratan: number;
-  pengalaman_kerja: String;
+  pengalaman_kerja: string;
   pendidikan: string;
-  umur: number;
+  umur_min: number;
+  umur_max: number;
   status_pernikahan: string;
-  description?: string;
+  description?: string | null;
   id_user: string;
-  // Properti user dapat didefinisikan jika diperlukan
   id_permintaan: number;
   permintaan: Permintaan;
-  id_job?: number | null; // Perbarui tipe untuk mengakomodasi nilai null
-  // Properti job dapat didefinisikan jika diperlukan
+  id_job?: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -90,7 +88,8 @@ const NewJobForm = ({
     id_persyaratan,
     pengalaman_kerja,
     pendidikan,
-    umur,
+    umur_min,
+    umur_max,
     status_pernikahan,
     description,
     permintaan: {
@@ -102,7 +101,7 @@ const NewJobForm = ({
     resolver: zodResolver(createJobsSchema),
     defaultValues: {
       title: nama_jabatan,
-      description: description,
+      description: description || "",
     },
   });
 
@@ -430,7 +429,7 @@ const NewJobForm = ({
                   </Label>
                   <FormControl>
                     <RichTextEditor
-                      defaultValue={description}
+                      defaultValue={description || ""}
                       onChange={(draft) =>
                         field.onChange(draftToMarkdown(draft))
                       }
