@@ -60,7 +60,7 @@ function DeletedJobButton({ jobId }: adminButtonProps) {
     <form action={actionClient} className="space-y-1">
       <input hidden id="jobId" name="jobId" value={jobId} />
       <FormSubmitButton className="w-full bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600">
-        Delete
+        Reject
       </FormSubmitButton>
     </form>
   );

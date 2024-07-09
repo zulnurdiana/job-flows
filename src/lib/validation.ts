@@ -118,7 +118,7 @@ const cvSchema = z
   );
 
 export const createBiodataSchema = z.object({
-  tanggal_lahir: dateISOString,
+  tgl_lahir: dateISOString,
   pendidikan: requiredString,
   status_pernikahan: requiredString,
   alamat: z.string().max(5000).optional(),

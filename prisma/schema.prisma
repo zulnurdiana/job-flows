@@ -146,6 +146,24 @@ model Kriteria {
 }
 
 
+model Profile {
+
+  id_profile Int @id @default(autoincrement())
+  nama_lengkap String?
+  tgl_lahir DateTime
+  pendidikan    String?
+  alamat        String?
+  jenis_kelamin String?
+  status_pernikahan String?
+  cv            String?
+
+  id_user String? @unique
+  user User? @relation(fields: [id_user], references: [id])
+
+  @@map("profile")
+}
+
+
 
 model User {
   id            String          @id @default(cuid())
@@ -154,12 +172,6 @@ model User {
   email         String          @unique
   emailVerified DateTime?
   image         String?
-  tanggal_lahir DateTime?
-  pendidikan    String?
-  alamat        String?
-  jenis_kelamin String?
-  status_pernikahan String?
-  cv            String?
   role          String? @default("pelamar")
   screening_approved Boolean?
   permintaan    Permintaan[]
@@ -172,6 +184,8 @@ model User {
   job Job? @relation(fields: [id_job],references: [id])
   id_pegawai    Int? @unique
   pegawai Pegawai? @relation(fields: [id_pegawai],references: [id_pegawai])
+
+  profile Profile?
  
  
   createdAt DateTime @default(now())

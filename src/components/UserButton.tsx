@@ -120,6 +120,13 @@ export default function UserButton({ user }: UserButtonProps) {
           {user.role?.toLocaleLowerCase() === "user" && (
             <>
               <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/user/pegawai/daftar-pegawai">
+                  <BookUser className="mr-2 h-4 w-4" />
+                  Daftar Pegawai
+                </Link>
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href="/user/permintaan/new">
                   <FileInput className="mr-2 h-4 w-4" />
                   Form Permintaan
@@ -137,12 +144,6 @@ export default function UserButton({ user }: UserButtonProps) {
                 <Link href="/user/kriteria/daftar-kriteria">
                   <SmilePlus className="mr-2 h-4 w-4" />
                   Daftar Kriteria
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="cursor-pointer">
-                <Link href="/user/pegawai/daftar-pegawai">
-                  <BookUser className="mr-2 h-4 w-4" />
-                  Daftar Pegawai
                 </Link>
               </DropdownMenuItem>
             </>

@@ -40,24 +40,9 @@ interface NewBiodataFormProps {
   user: User;
 }
 
-const NewBiodataForm = ({
-  user: {
-    id,
-    tanggal_lahir,
-    pendidikan,
-    status_pernikahan,
-    alamat,
-    jenis_kelamin,
-  },
-}: NewBiodataFormProps) => {
+const NewBiodataForm = ({ user: { id } }: NewBiodataFormProps) => {
   const form = useForm<createBiodataValues>({
     resolver: zodResolver(createBiodataSchema),
-    defaultValues: {
-      pendidikan: pendidikan || undefined,
-      status_pernikahan: status_pernikahan || undefined,
-      alamat: alamat || undefined,
-      jenis_kelamin: jenis_kelamin || undefined,
-    },
   });
 
   const {
@@ -183,7 +168,7 @@ const NewBiodataForm = ({
 
           <FormField
             control={form.control}
-            name="tanggal_lahir"
+            name="tgl_lahir"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Tanggal Lahir</FormLabel>
