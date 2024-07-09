@@ -40,11 +40,13 @@ import { PenilaianPelamar } from "./action";
 interface NewPenilaianFormProps {
   user: User;
   jabatan: String;
+  pendidikan: string;
 }
 
 const NewPenilaianForm = ({
-  user: { id, name, id_job, pendidikan },
+  user: { id, name, id_job },
   jabatan,
+  pendidikan,
 }: NewPenilaianFormProps) => {
   const form = useForm<createPenilaianValues>({
     resolver: zodResolver(createPenilaianSchema),

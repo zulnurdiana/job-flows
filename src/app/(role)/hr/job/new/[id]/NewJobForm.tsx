@@ -34,53 +34,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from "next/image";
 import { CalendarDays } from "lucide-react";
-
-// Interface untuk model Jabatan
-interface Jabatan {
-  id_jabatan: number;
-  id_divisi: number;
-  nama_jabatan: string;
-  deskripsi_jabatan?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// Interface untuk model Permintaan
-interface Permintaan {
-  id_permintaan: number;
-  jumlah_pegawai: number;
-  status_permintaan?: boolean | null;
-  approved?: boolean | null;
-  tanggal_permintaan: Date;
-  id_jabatan: number;
-  jabatan: Jabatan;
-  id_user: string;
-  persyaratan?: Persyaratan[]; // Buat properti persyaratan bersifat opsional
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// Interface untuk model Persyaratan
-interface Persyaratan {
-  id_persyaratan: number;
-  pengalaman_kerja: string;
-  pendidikan: string;
-  umur_min: number;
-  umur_max: number;
-  status_pernikahan: string;
-  description?: string | null;
-  id_user: string;
-  id_permintaan: number;
-  permintaan: Permintaan;
-  id_job?: number | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// Interface untuk props yang akan diterima oleh komponen NewJobForm
-interface NewJobFormProps {
-  persyaratan: Persyaratan;
-}
+import { NewJobFormProps } from "../../../../../../../types/NewJob/NewJobProps";
 
 const NewJobForm = ({
   persyaratan: {

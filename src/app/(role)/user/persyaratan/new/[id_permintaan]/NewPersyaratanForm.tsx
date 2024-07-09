@@ -36,42 +36,14 @@ import {
 import RichTextEditor from "@/components/RichTextEditor";
 import { draftToMarkdown } from "markdown-draft-js";
 import { Label } from "@/components/ui/label";
-
-interface Jabatan {
-  id_jabatan: number;
-  id_divisi: number;
-  nama_jabatan: string;
-  deskripsi_jabatan?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// Interface untuk model Permintaan
-interface Permintaan {
-  id_permintaan: number;
-  jumlah_pegawai: number;
-  status_permintaan?: boolean | null;
-  approved?: boolean | null;
-  tanggal_permintaan: Date;
-  id_jabatan: number;
-  jabatan: Jabatan;
-  id_user: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// Interface untuk model Persyaratan
-
-interface NewPersyaratanFormProps {
-  permintaan: Permintaan;
-}
+import { NewPersyaratanProps } from "../../../../../../../types/NewPersyaratan/NewPerysratanProps";
 
 const NewPersyaratanForm = ({
   permintaan: {
     id_permintaan,
     jabatan: { nama_jabatan },
   },
-}: NewPersyaratanFormProps) => {
+}: NewPersyaratanProps) => {
   const form = useForm<createPersyaratanValues>({
     resolver: zodResolver(createPersyaratanSchema),
     defaultValues: {

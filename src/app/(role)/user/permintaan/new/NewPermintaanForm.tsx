@@ -27,62 +27,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-
-interface IPegawai {
-  id_pegawai: number;
-  nama_pegawai: string;
-  email?: string | null;
-  status_pegawai: string;
-  tanggal_gabung?: Date | null;
-  id_jabatan: number;
-  jabatan: IJabatan;
-  user?: IUser | null;
-}
-
-interface IJabatan {
-  id_jabatan: number;
-  id_divisi: number;
-  nama_jabatan: string;
-  deskripsi_jabatan?: string | null;
-  divisi: IDivisi;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface IDivisi {
-  id_divisi: number;
-  nama_divisi: string;
-  deskripsi_divisi?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface IUser {
-  id: string;
-  name?: string | null;
-  password?: string | null;
-  email: string;
-  emailVerified?: Date | null;
-  image?: string | null;
-  umur?: number | null;
-  pendidikan?: string | null;
-  alamat?: string | null;
-  jenis_kelamin?: string | null;
-  status_pernikahan?: string | null;
-  cv?: string | null;
-  role?: string | null;
-  screening_approved?: boolean | null;
-  pegawai?: IPegawai | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface NewPermintaanFormProps {
-  jabatan: IJabatan[];
-  divisi: IDivisi[];
-  user: IUser;
-  pegawai: IPegawai[];
-}
+import { NewPermintaanFormProps } from "../../../../../../types/NewPermintaan/IPermintaanProps";
+import { IPegawai } from "../../../../../../types/NewPermintaan/IPegawai";
 
 const NewPermintaanForm = ({
   jabatan,
@@ -97,6 +43,7 @@ const NewPermintaanForm = ({
   const [selectedJabatan, setSelectedJabatan] = useState<number | null>(null);
   const [jumlahPegawai, setJumlahPegawai] = useState<number>(0);
   const [penggantiPegawai, setPenggantiPegawai] = useState<number[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const form = useForm<createPermintaanValues>({
     resolver: zodResolver(createPermintaanSchema),
@@ -141,7 +88,21 @@ const NewPermintaanForm = ({
     setPenggantiPegawai(updatedPengganti);
   };
 
+  const getAvailablePegawai = (index: number) => {
+    const selectedIds = penggantiPegawai.filter((_, i) => i !== index);
+    return filteredPegawai.filter(
+      (pegawai) => !selectedIds.includes(pegawai.id_pegawai),
+    );
+  };
+
   async function onSubmit(values: createPermintaanValues) {
+    if (penggantiPegawai.some((id) => id === 0)) {
+      setErrorMessage(
+        `Jumlah pegawai tidak sesuai dengan jumlah yang diminta.`,
+      );
+      return;
+    }
+
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
@@ -248,7 +209,7 @@ const NewPermintaanForm = ({
                       <option value="" hidden>
                         Select Pegawai
                       </option>
-                      {filteredPegawai.map((pegawai) => (
+                      {getAvailablePegawai(index).map((pegawai) => (
                         <option
                           key={pegawai.id_pegawai}
                           value={pegawai.id_pegawai}
@@ -261,6 +222,10 @@ const NewPermintaanForm = ({
                 </FormItem>
               ))}
             </div>
+          )}
+
+          {errorMessage && (
+            <div className="text-red-500 text-center">{errorMessage}</div>
           )}
 
           <LoadingButton

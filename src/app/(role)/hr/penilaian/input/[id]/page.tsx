@@ -20,13 +20,27 @@ const page = async ({ params: { id } }: PageProps) => {
     },
   });
 
+  const pendidikan = await prisma.profile.findUnique({
+    where: {
+      id_user: pelamar?.id,
+    },
+    select: {
+      pendidikan: true,
+    },
+  });
+
   const jabatanTitle = jabatan?.title || "";
+  const pendidikanTitle = pendidikan?.pendidikan || "";
 
   if (!pelamar) return null;
 
   return (
     <div>
-      <NewPenilaianForm user={pelamar} jabatan={jabatanTitle} />
+      <NewPenilaianForm
+        user={pelamar}
+        jabatan={jabatanTitle}
+        pendidikan={pendidikanTitle}
+      />
     </div>
   );
 };

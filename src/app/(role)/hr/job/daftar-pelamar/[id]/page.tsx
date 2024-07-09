@@ -48,6 +48,7 @@ const page = async ({ params: { id } }: PageProps) => {
   const getPelamarPerJabatan = await prisma.user.findMany({
     include: {
       job: true,
+      profile: true,
     },
     where: {
       id_job: parseInt(id),
@@ -141,12 +142,16 @@ const page = async ({ params: { id } }: PageProps) => {
               <TableRow key={pelamar.id} className="text-center">
                 <TableCell className="font-bold">{index + 1}</TableCell>
                 <TableCell>{pelamar.name}</TableCell>
-                <TableCell>{hitungUmur(pelamar.tanggal_lahir)} Tahun</TableCell>
-                <TableCell>{pelamar.pendidikan}</TableCell>
-                <TableCell>{pelamar.status_pernikahan}</TableCell>
-                <TableCell>{pelamar.jenis_kelamin}</TableCell>
+                <TableCell>
+                  {hitungUmur(pelamar.profile?.tgl_lahir)} Tahun
+                </TableCell>
+                <TableCell>{pelamar.profile?.pendidikan}</TableCell>
+                <TableCell>{pelamar.profile?.status_pernikahan}</TableCell>
+                <TableCell>{pelamar.profile?.jenis_kelamin}</TableCell>
                 <TableCell className="underline">
-                  {pelamar.cv && <Link href={pelamar.cv}>Lihat CV</Link>}
+                  {pelamar.profile?.cv && (
+                    <Link href={pelamar.profile?.cv}>Lihat CV</Link>
+                  )}
                 </TableCell>
 
                 <TableCell>

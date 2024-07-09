@@ -129,6 +129,7 @@ export const createBiodataSchema = z.object({
 // Buat schema Zod secara dinamis
 export const createPenilaianSchema = z.object({
   nama_pelamar: z.string(),
+  pendidikan: z.string(),
   tes_tulis: numericRequiredString
     .max(3, "Number cant be longer than 3 digits")
     .refine(
@@ -181,7 +182,6 @@ export const createPenilaianSchema = z.object({
     3,
     "Number cant be longer than 3 digits",
   ),
-  pendidikan: z.string(),
   komunikasi: numericRequiredString.max(
     3,
     "Number cant be longer than 3 digits",

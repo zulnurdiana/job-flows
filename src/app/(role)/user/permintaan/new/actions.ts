@@ -15,6 +15,26 @@ export default async function createPermintaan(
   const id_user = session?.user.id;
   const { jumlah_pegawai, id_jabatan } = createPermintaanSchema.parse(values);
 
+  // Validasi jika jumlah pengganti pegawai tidak sama dengan jumlah pegawai yang diminta
+  if (penggantiPegawai.length !== parseInt(jumlah_pegawai)) {
+    throw new Error(
+      "Jumlah pegawai yang dipilih tidak sesuai dengan jumlah yang diminta.",
+    );
+  }
+
+  // Memastikan semua pengganti pegawai ada di database
+  const existingPegawai = await prisma.pegawai.findMany({
+    where: {
+      id_pegawai: {
+        in: penggantiPegawai,
+      },
+    },
+  });
+
+  if (existingPegawai.length !== penggantiPegawai.length) {
+    throw new Error("Beberapa pegawai yang dipilih tidak ditemukan.");
+  }
+
   // Membuat entri baru di tabel permintaan
   await prisma.permintaan.create({
     data: {
