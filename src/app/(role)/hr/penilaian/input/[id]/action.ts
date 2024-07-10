@@ -10,7 +10,7 @@ export async function PenilaianPelamar(formData: FormData, id_pelamar: string) {
   try {
     const values = Object.fromEntries(formData.entries());
 
-    const {
+    let {
       tes_tulis,
       tes_praktek,
       tes_teknis,
@@ -27,6 +27,15 @@ export async function PenilaianPelamar(formData: FormData, id_pelamar: string) {
     } = createPenilaianSchema.parse(values);
 
     let nilai_pendidikan = 0;
+    let nilai_tulis = 0;
+    let nilai_praktek = 0;
+    let nilai_teknis = 0;
+    let nilai_psikotes = 0;
+
+    let tulis = parseInt(tes_tulis);
+    let praktek = parseInt(tes_praktek);
+    let teknis = parseInt(tes_teknis);
+    let psikotes = parseInt(tes_psikotes);
 
     if (pendidikan === "SMA/SMK") {
       nilai_pendidikan = 1;
@@ -36,12 +45,60 @@ export async function PenilaianPelamar(formData: FormData, id_pelamar: string) {
       nilai_pendidikan = 5;
     }
 
-    // Konversi nilai dari string ke number
+    if (tulis >= 0 && tulis <= 20) {
+      nilai_tulis = 1;
+    } else if (tulis >= 21 && tulis <= 40) {
+      nilai_tulis = 2;
+    } else if (tulis >= 41 && tulis <= 60) {
+      nilai_tulis = 3;
+    } else if (tulis >= 61 && tulis <= 80) {
+      nilai_tulis = 4;
+    } else if (tulis >= 81 && tulis <= 100) {
+      nilai_tulis = 5;
+    }
 
-    const tes_tulis_num = Number(tes_tulis);
-    const tes_praktek_num = Number(tes_praktek);
-    const tes_teknis_num = Number(tes_teknis);
-    const tes_psikotes_num = Number(tes_psikotes);
+    if (praktek >= 0 && praktek <= 20) {
+      nilai_praktek = 1;
+    } else if (praktek >= 21 && praktek <= 40) {
+      nilai_praktek = 2;
+    } else if (praktek >= 41 && praktek <= 60) {
+      nilai_praktek = 3;
+    } else if (praktek >= 61 && praktek <= 80) {
+      nilai_praktek = 4;
+    } else if (praktek >= 81 && praktek <= 100) {
+      nilai_praktek = 5;
+    }
+
+    if (teknis >= 0 && teknis <= 20) {
+      nilai_teknis = 1;
+    } else if (teknis >= 21 && teknis <= 40) {
+      nilai_teknis = 2;
+    } else if (teknis >= 41 && teknis <= 60) {
+      nilai_teknis = 3;
+    } else if (teknis >= 61 && teknis <= 80) {
+      nilai_teknis = 4;
+    } else if (teknis >= 81 && teknis <= 100) {
+      nilai_teknis = 5;
+    }
+
+    if (psikotes >= 0 && psikotes <= 20) {
+      nilai_psikotes = 1;
+    } else if (psikotes >= 21 && psikotes <= 40) {
+      nilai_psikotes = 2;
+    } else if (psikotes >= 41 && psikotes <= 60) {
+      nilai_psikotes = 3;
+    } else if (psikotes >= 61 && psikotes <= 80) {
+      nilai_psikotes = 4;
+    } else if (psikotes >= 81 && psikotes <= 100) {
+      nilai_psikotes = 5;
+    }
+
+    // Konversi tes_tulis dari string ke number
+
+    // const tes_tulis_num = Number(tes_tulis);
+    // const tes_praktek_num = Number(tes_praktek);
+    // const tes_teknis_num = Number(tes_teknis);
+    // const tes_psikotes_num = Number(tes_psikotes);
     const pengalaman_num = Number(pengalaman);
     const komunikasi_num = Number(komunikasi);
     const inisiatif_num = Number(inisiatif);
@@ -52,10 +109,10 @@ export async function PenilaianPelamar(formData: FormData, id_pelamar: string) {
 
     // Hitung total nilai berdasarkan beberapa kriteria
     const total_nilai =
-      tes_tulis_num +
-      tes_praktek_num +
-      tes_teknis_num +
-      tes_psikotes_num +
+      nilai_tulis +
+      nilai_praktek +
+      nilai_teknis +
+      nilai_psikotes +
       pengalaman_num +
       komunikasi_num +
       inisiatif_num +
@@ -72,10 +129,10 @@ export async function PenilaianPelamar(formData: FormData, id_pelamar: string) {
         total_nilai,
         detail_penilaian: {
           create: [
-            { id_kriteria: 1, nilai: tes_tulis_num },
-            { id_kriteria: 2, nilai: tes_praktek_num },
-            { id_kriteria: 3, nilai: tes_teknis_num },
-            { id_kriteria: 4, nilai: tes_psikotes_num },
+            { id_kriteria: 1, nilai: nilai_tulis },
+            { id_kriteria: 2, nilai: nilai_praktek },
+            { id_kriteria: 3, nilai: nilai_teknis },
+            { id_kriteria: 4, nilai: nilai_psikotes },
             { id_kriteria: 5, nilai: pengalaman_num },
             { id_kriteria: 6, nilai: nilai_pendidikan },
             { id_kriteria: 7, nilai: komunikasi_num },

@@ -179,7 +179,7 @@ const page = async () => {
                 <TableCell>
                   {res.isExpired ? (
                     <Button asChild>
-                      <Link href={`/hr/job/daftar-pelamar/${res.id_jobs}`}>
+                      <Link href={`/hr/keputusan/${res.id_jobs}`}>
                         Lihat Keputusan
                       </Link>
                     </Button>
