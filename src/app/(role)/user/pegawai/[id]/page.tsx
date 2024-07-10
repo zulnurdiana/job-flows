@@ -35,6 +35,50 @@ const page = async ({ params: { id } }: PageProps) => {
     },
   });
 
+  pegawaiPerJabatan.map(async (pegawai) => {
+    if (
+      pegawai?.tgl_bergabung &&
+      pegawai?.tgl_berakhir &&
+      new Date() > pegawai.tgl_berakhir
+    ) {
+      await prisma.pegawai.update({
+        data: {
+          status_pegawai: "Nonaktif",
+        },
+        where: {
+          id_pegawai: pegawai.id_pegawai,
+        },
+      });
+    } else {
+      await prisma.pegawai.update({
+        data: {
+          status_pegawai: "Aktif",
+        },
+        where: {
+          id_pegawai: pegawai.id_pegawai,
+        },
+      });
+    }
+
+    if (pegawai?.tgl_bergabung && pegawai?.tgl_berakhir) {
+      const currentDate = new Date();
+      const tglBerakhir = new Date(pegawai.tgl_berakhir);
+      const oneMonthBeforeEnd = new Date(tglBerakhir);
+      oneMonthBeforeEnd.setMonth(tglBerakhir.getMonth() - 1);
+
+      if (currentDate >= oneMonthBeforeEnd && currentDate < tglBerakhir) {
+        await prisma.pegawai.update({
+          data: {
+            status_pegawai: `Kontrak selesai ${pegawai.tgl_berakhir.toLocaleDateString()}`,
+          },
+          where: {
+            id_pegawai: pegawai.id_pegawai,
+          },
+        });
+      }
+    }
+  });
+
   const nama_divisi = await prisma.divisi.findUnique({
     where: {
       id_divisi: pegawaiPerJabatan[0].jabatan?.id_divisi,
@@ -77,8 +121,9 @@ const page = async ({ params: { id } }: PageProps) => {
             <TableHead className="text-center font-bold">No</TableHead>
             <TableHead className="text-center">Nama Pegawai</TableHead>
             <TableHead className="text-center">Email</TableHead>
-            <TableHead className="text-center">Status Pegawai</TableHead>
             <TableHead className="text-center">Tanggal Bergabung</TableHead>
+            <TableHead className="text-center">Tanggal Berakhir</TableHead>
+            <TableHead className="text-center">Status Pegawai</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -87,10 +132,14 @@ const page = async ({ params: { id } }: PageProps) => {
               <TableCell className="font-bold">{index + 1}</TableCell>
               <TableCell>{pegawai.nama_pegawai}</TableCell>
               <TableCell>{pegawai.email}</TableCell>
-              <TableCell>{pegawai.status_pegawai}</TableCell>
+
               <TableCell>
                 {pegawai.tgl_bergabung?.toLocaleDateString()}
               </TableCell>
+              <TableCell>
+                {pegawai.tgl_berakhir?.toLocaleDateString()}
+              </TableCell>
+              <TableCell>{pegawai.status_pegawai}</TableCell>
             </TableRow>
           ))}
         </TableBody>
