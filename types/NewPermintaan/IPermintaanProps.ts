@@ -1,7 +1,7 @@
-import { IJabatan } from "./NewPermintaan/IJabatan";
-import { IDivisi } from "./NewPermintaan/IDivisi";
-import { IUser } from "./NewPermintaan/IUser";
-import { IPegawai } from "./NewPermintaan/IPegawai";
+import { IJabatan } from "./IJabatan";
+import { IDivisi } from "./IDivisi";
+import { IUser } from "./IUser";
+import { IPegawai } from "./IPegawai";
 
 export interface NewPermintaanFormProps {
   jabatan: IJabatan[];

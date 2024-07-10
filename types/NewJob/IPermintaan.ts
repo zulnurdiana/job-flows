@@ -1,5 +1,5 @@
 // Permintaan.ts
-import { IJabatan } from "../NewPermintaan/IJabatan";
+import { IJabatan } from "./IJabatan";
 import { IPersyaratan } from "./IPersyaratan";
 
 export interface IPermintaan {

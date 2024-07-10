@@ -42,7 +42,8 @@ model Pegawai{
   nama_pegawai String
   email         String?
   status_pegawai String
-  tanggal_gabung DateTime?
+  tgl_bergabung DateTime?
+  tgl_berakhir DateTime?
   id_jabatan Int
   jabatan Jabatan @relation(fields: [id_jabatan], references: [id_jabatan])
   user User?

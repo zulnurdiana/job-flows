@@ -89,7 +89,7 @@ const page = async ({ params: { id } }: PageProps) => {
               <TableCell>{pegawai.email}</TableCell>
               <TableCell>{pegawai.status_pegawai}</TableCell>
               <TableCell>
-                {pegawai.tanggal_gabung?.toLocaleDateString()}
+                {pegawai.tgl_bergabung?.toLocaleDateString()}
               </TableCell>
             </TableRow>
           ))}

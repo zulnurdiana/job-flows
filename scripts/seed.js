@@ -90,26 +90,24 @@ async function main() {
       }
 
       const existingPegawai = await prisma.pegawai.findUnique({
-        where: { nama_pegawai: p.nama_pegawai }, // Pastikan nama_pegawai unik atau gunakan id_pegawai jika ada
+        where: { nama_pegawai: p.nama_pegawai },
       });
+
+      const dataToUpsert = {
+        nama_pegawai: p.nama_pegawai,
+        status_pegawai: p.status_pegawai,
+        id_jabatan: jabatan.id_jabatan,
+        email: p.email || undefined,
+        tgl_bergabung: p.tgl_gabung || undefined, // Menggunakan tgl_gabung sebagai tgl_bergabung
+        tgl_berakhir: p.tgl_selesai || undefined, // Menggunakan tgl_selesai sebagai tgl_berakhir
+      };
 
       await prisma.pegawai.upsert({
         where: {
           id_pegawai: existingPegawai ? existingPegawai.id_pegawai : 0,
         },
-        update: {
-          status_pegawai: p.status_pegawai,
-          id_jabatan: jabatan.id_jabatan,
-          email: p.email || undefined,
-          tanggal_gabung: p.tanggal_gabung || undefined,
-        },
-        create: {
-          nama_pegawai: p.nama_pegawai,
-          status_pegawai: p.status_pegawai,
-          id_jabatan: jabatan.id_jabatan,
-          email: p.email || undefined,
-          tanggal_gabung: p.tanggal_gabung || undefined,
-        },
+        update: dataToUpsert,
+        create: dataToUpsert,
       });
     }),
   );

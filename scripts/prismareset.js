@@ -13,13 +13,15 @@ async function resetDatabase() {
       prisma.divisi.deleteMany({}),
       prisma.job.deleteMany({}),
       prisma.kriteria.deleteMany({}),
+      prisma.penilaian.deleteMany({}),
+      prisma.detail_Penilaian.deleteMany({}),
+      prisma.profile.deleteMany({}),
       prisma.user.deleteMany({}),
-      prisma.account.deleteMany({}),
-      prisma.session.deleteMany({}),
     ]);
 
     // Mengatur ulang sequence auto-increment primary key hanya untuk id_jabatan
     await prisma.$executeRaw`ALTER SEQUENCE jabatan_id_jabatan_seq RESTART WITH 1`;
+    await prisma.$executeRaw`ALTER SEQUENCE kriteria_id_kriteria_seq RESTART WITH 1`;
 
     console.log("Database telah direset.");
   } catch (error) {

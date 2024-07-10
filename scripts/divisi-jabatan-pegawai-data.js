@@ -173,10 +173,9 @@ const jabatan = [
 function getRandomDateWithinTwoYears() {
   const now = new Date();
   const past = new Date(now.setFullYear(now.getFullYear() - 2));
-  const randomDate = new Date(
-    past.getTime() + Math.random() * (Date.now() - past.getTime()),
-  );
-  return randomDate;
+  const randomTime =
+    past.getTime() + Math.random() * (now.getTime() - past.getTime());
+  return new Date(randomTime);
 }
 
 const pegawai = [
@@ -445,7 +444,12 @@ const pegawai = [
 // Menambahkan email dan tanggal_gabung secara manual
 pegawai.forEach((p) => {
   p.email = `${p.nama_pegawai.toLowerCase()}@qtasnim.com`;
-  p.tanggal_gabung = getRandomDateWithinTwoYears();
+  p.tgl_gabung = getRandomDateWithinTwoYears();
+
+  // Hitung tgl_selesai (1 tahun setelah tgl_gabung)
+  const tglSelesai = new Date(p.tgl_gabung.getTime());
+  tglSelesai.setFullYear(tglSelesai.getFullYear() + 1);
+  p.tgl_selesai = tglSelesai;
 });
 
 module.exports = { divisi, jabatan, pegawai };
