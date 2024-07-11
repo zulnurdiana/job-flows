@@ -12,7 +12,7 @@ const ButtonLamar = ({ id_job }: ButtonLamarProps) => {
     const result = await lamarLowongan(formData);
     if (!result?.error) {
       toast({
-        title: "Sukses",
+        // title: "Sukses",
         description: `${result?.message}`,
       });
     }

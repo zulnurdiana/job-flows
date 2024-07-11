@@ -9,8 +9,6 @@ import {
 import getSession from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import H1 from "@/components/ui/h1";
 import {
   Breadcrumb,
@@ -77,16 +75,24 @@ const page = async ({ params: { id } }: PageProps) => {
     },
   });
 
+  const id_pelamar = getPelamarPerJabatan.map((pelamar) => pelamar.id);
+
   // Mendapatkan nilai Max setiap Kriteria
   const nilaiMax = await Promise.all(
     Array.from({ length: 12 }, (_, index) =>
-      prisma.detail_Penilaian.findFirst({
+      prisma.detail_Penilaian.findFirstOrThrow({
         where: {
           id_kriteria: index + 1, // Kriteria ID dimulai dari 1 hingga 12
+          penilaian: {
+            id_user: {
+              in: id_pelamar,
+            },
+          },
         },
         orderBy: {
           nilai: "desc", // Ambil nilai terbesar
         },
+
         select: {
           nilai: true,
         },
@@ -107,9 +113,9 @@ const page = async ({ params: { id } }: PageProps) => {
         // Tentukan jenis kriteria (benefit atau cost)
         const jenisKriteria = detail.kriteria?.jenis_kriteria || ""; // Ambil jenis_kriteria dari objek kriteria terkait
 
-        if (jenisKriteria === "BENEFIT") {
+        if (jenisKriteria.toUpperCase() === "BENEFIT") {
           normalizedValues[key] = Number((detail.nilai / maxNilai).toFixed(5)); // Pembagian nilai jika benefit
-        } else if (jenisKriteria === "COST") {
+        } else if (jenisKriteria.toUpperCase() === "COST") {
           normalizedValues[key] = Number((maxNilai / detail.nilai).toFixed(5)); // Pembagian nilai jika cost
         }
       }
@@ -122,6 +128,7 @@ const page = async ({ params: { id } }: PageProps) => {
     } as NilaiPelamar;
   });
 
+  // Mendapatkan Kepentingan setiap kriteria
   const kriteriaPromises = Array.from({ length: 12 }, (_, index) =>
     prisma.kriteria.findUnique({
       where: {
@@ -207,6 +214,7 @@ const page = async ({ params: { id } }: PageProps) => {
 
   // Urutkan berdasarkan nilai total dari yang terbesar ke terkecil
   nilaiPelamarWithTotal.sort((a, b) => b.total_nilai - a.total_nilai);
+
   // console.log(nilaiPelamar);
   // console.log(nilaiPelamarWithWeights);
   // console.log(nilaiPelamarWithTotal);
@@ -295,18 +303,18 @@ const page = async ({ params: { id } }: PageProps) => {
                 <TableRow key={pelamar.id_pelamar} className="text-center">
                   <TableCell className="font-bold">{index + 1}</TableCell>
                   <TableCell>{pelamar.nama_pelamar}</TableCell>
-                  <TableCell>{pelamar.nilai_c1}</TableCell>
-                  <TableCell>{pelamar.nilai_c2}</TableCell>
-                  <TableCell>{pelamar.nilai_c3}</TableCell>
-                  <TableCell>{pelamar.nilai_c4}</TableCell>
-                  <TableCell>{pelamar.nilai_c5}</TableCell>
-                  <TableCell>{pelamar.nilai_c6}</TableCell>
-                  <TableCell>{pelamar.nilai_c7}</TableCell>
-                  <TableCell>{pelamar.nilai_c8}</TableCell>
-                  <TableCell>{pelamar.nilai_c9}</TableCell>
-                  <TableCell>{pelamar.nilai_c10}</TableCell>
-                  <TableCell>{pelamar.nilai_c11}</TableCell>
-                  <TableCell>{pelamar.nilai_c12}</TableCell>
+                  <TableCell>{pelamar.nilai_c1.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c2.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c3.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c4.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c5.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c6.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c7.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c8.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c9.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c10.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c11.toFixed(3)}</TableCell>
+                  <TableCell>{pelamar.nilai_c12.toFixed(3)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
