@@ -64,6 +64,7 @@ const page = async ({ params: { id } }: PageProps) => {
           },
         },
       },
+      keputusan: true,
       profile: true,
     },
     where: {
@@ -74,6 +75,17 @@ const page = async ({ params: { id } }: PageProps) => {
       createdAt: "asc",
     },
   });
+
+  const persyaratan_permintaan = await prisma.persyaratan.findFirst({
+    where: {
+      id_job: parseInt(id),
+    },
+    include: {
+      permintaan: true,
+    },
+  });
+
+  let jumlah_permintaan = persyaratan_permintaan?.permintaan.jumlah_pegawai;
 
   const id_pelamar = getPelamarPerJabatan.map((pelamar) => pelamar.id);
 
@@ -190,30 +202,81 @@ const page = async ({ params: { id } }: PageProps) => {
     return nilaiWithWeights as NilaiPelamar;
   });
 
-  const nilaiPelamarWithTotal: { nama_pelamar: string; total_nilai: number }[] =
-    nilaiPelamarWithWeights.map((nilai) => {
-      const totalNilai =
-        (nilai.nilai_c1 || 0) +
-        (nilai.nilai_c2 || 0) +
-        (nilai.nilai_c3 || 0) +
-        (nilai.nilai_c4 || 0) +
-        (nilai.nilai_c5 || 0) +
-        (nilai.nilai_c6 || 0) +
-        (nilai.nilai_c7 || 0) +
-        (nilai.nilai_c8 || 0) +
-        (nilai.nilai_c9 || 0) +
-        (nilai.nilai_c10 || 0) +
-        (nilai.nilai_c11 || 0) +
-        (nilai.nilai_c12 || 0);
+  const nilaiPelamarWithTotal: {
+    nama_pelamar: string;
+    total_nilai: number;
+    id_pelamar: any;
+    keputusan: any;
+  }[] = nilaiPelamarWithWeights.map((nilai) => {
+    const totalNilai =
+      (nilai.nilai_c1 || 0) +
+      (nilai.nilai_c2 || 0) +
+      (nilai.nilai_c3 || 0) +
+      (nilai.nilai_c4 || 0) +
+      (nilai.nilai_c5 || 0) +
+      (nilai.nilai_c6 || 0) +
+      (nilai.nilai_c7 || 0) +
+      (nilai.nilai_c8 || 0) +
+      (nilai.nilai_c9 || 0) +
+      (nilai.nilai_c10 || 0) +
+      (nilai.nilai_c11 || 0) +
+      (nilai.nilai_c12 || 0);
 
-      return {
-        nama_pelamar: nilai.nama_pelamar || "",
-        total_nilai: totalNilai,
-      };
-    });
+    return {
+      id_pelamar: nilai.id_pelamar,
+      nama_pelamar: nilai.nama_pelamar || "",
+      total_nilai: totalNilai,
+      keputusan: "",
+    };
+  });
 
   // Urutkan berdasarkan nilai total dari yang terbesar ke terkecil
   nilaiPelamarWithTotal.sort((a, b) => b.total_nilai - a.total_nilai);
+
+  // Mendapatkan rekomendasi pelamar berdasarkan jumlah permintaan
+  const highScore = nilaiPelamarWithTotal.slice(0, jumlah_permintaan);
+
+  //  Mendapatkan id pelamar high score
+  const id_pelamar_high = highScore.map((high) => high.id_pelamar);
+
+  // Menyimpan keputusan pelamar
+  for (const pelamar of nilaiPelamarWithTotal) {
+    const isHighScore = id_pelamar_high.includes(pelamar.id_pelamar);
+    const existingKeputusan = await prisma.keputusan.findUnique({
+      where: {
+        id_user: pelamar.id_pelamar,
+      },
+    });
+
+    if (!existingKeputusan) {
+      await prisma.keputusan.create({
+        data: {
+          id_user: pelamar.id_pelamar,
+          status: isHighScore ? "Offering" : "Rejection",
+          score_akhir: pelamar.total_nilai,
+        },
+      });
+    } else {
+      await prisma.keputusan.update({
+        where: {
+          id_user: pelamar.id_pelamar,
+        },
+        data: {
+          status: isHighScore ? "Offering" : "Rejection",
+          score_akhir: pelamar.total_nilai,
+        },
+      });
+    }
+  }
+
+  // menampilkan keputusan
+  for (const pelamar of nilaiPelamarWithTotal) {
+    if (id_pelamar_high.includes(pelamar.id_pelamar)) {
+      pelamar.keputusan = "Offering";
+    } else {
+      pelamar.keputusan = "Rejected";
+    }
+  }
 
   // console.log(nilaiPelamar);
   // console.log(nilaiPelamarWithWeights);
@@ -321,22 +384,32 @@ const page = async ({ params: { id } }: PageProps) => {
           </Table>
 
           {nilaiPelamarWithTotal.length > 0 ? (
-            <Table className="w-1/3 border-collapse">
+            <Table className="w-2/4 border-collapse">
               <TableHeader className="bg-gray-200">
                 <TableRow>
-                  <TableHead className="text-center font-bold">
-                    Ranking
-                  </TableHead>
-                  <TableHead className="text-center">Nama Pelamar</TableHead>
+                  <TableHead className="text-center font-bold">Code</TableHead>
+                  <TableHead className="text-center">Pelamar</TableHead>
                   <TableHead className="text-center">Total Nilai</TableHead>
+                  <TableHead className="text-center">Status</TableHead>
+                  <TableHead className="text-center">Ranking</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {nilaiPelamarWithTotal.map((nilai, index) => (
+                {nilaiPelamarWithTotal.map((pelamar, index) => (
                   <TableRow key={index} className="text-center">
-                    <TableCell className="font-bold">{index + 1}</TableCell>
-                    <TableCell>{nilai.nama_pelamar}</TableCell>
-                    <TableCell>{nilai.total_nilai.toFixed(5)}</TableCell>
+                    <TableCell className="font-bold">C{index + 1}</TableCell>
+                    <TableCell>{pelamar.nama_pelamar}</TableCell>
+                    <TableCell>{pelamar.total_nilai.toFixed(5)}</TableCell>
+                    <TableCell
+                      className={
+                        pelamar.keputusan === "Offering"
+                          ? "text-green-500 italic"
+                          : "text-red-500 italic"
+                      }
+                    >
+                      {pelamar.keputusan}
+                    </TableCell>
+                    <TableCell>{index + 1}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

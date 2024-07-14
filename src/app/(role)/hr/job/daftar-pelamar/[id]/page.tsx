@@ -158,7 +158,7 @@ const page = async ({ params: { id } }: PageProps) => {
                   {pelamar.screening_approved === true ? (
                     <span className="text-green-500">Lolos</span>
                   ) : pelamar.screening_approved === false ? (
-                    <span className="text-red-500">Tidak Lolos Screening</span>
+                    <span className="text-red-500">Tidak Lolos</span>
                   ) : (
                     <ButtonScreening user={pelamar} />
                   )}

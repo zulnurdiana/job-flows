@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -34,6 +34,9 @@ type FormData = z.infer<typeof FormSchema>;
 
 export default function LoginForm() {
   const router = useRouter();
+  const { data: session, update } = useSession();
+
+  console.log(session);
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -133,6 +136,7 @@ export default function LoginForm() {
               type="submit"
               className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200"
               disabled={form.formState.isSubmitting}
+              onClick={() => update()}
             >
               {form.formState.isSubmitting ? "Logging in..." : "Login"}
             </Button>
