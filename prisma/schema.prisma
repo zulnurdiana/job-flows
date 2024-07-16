@@ -59,6 +59,7 @@ model Permintaan {
   status_permintaan  Boolean?    @default(false)
   approved           Boolean?    @default(false)
   tanggal_permintaan DateTime    @default(now())
+  alasan             String?
   id_jabatan         Int
   jabatan            Jabatan     @relation(fields: [id_jabatan], references: [id_jabatan], onDelete: Cascade)
   id_user            String

@@ -3,8 +3,17 @@ import prisma from "@/lib/prisma";
 import { cn } from "@/lib/utils";
 import { JobFilterValues } from "@/lib/validation";
 import { Prisma } from "@prisma/client";
-import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface jobResultsProps {
   filterValues: JobFilterValues;
@@ -17,13 +26,10 @@ const JobResults = async ({ filterValues, page = 1 }: jobResultsProps) => {
   const jobsPerPage = 6;
   const skip = (page - 1) * jobsPerPage;
 
-  // digunakan untuk mencari searchParams contoh nya aku  aku jadi aku & aku menghapus spasi yang tidak perlu jika banyak spasi
   const searchString = q
     ?.split(" ")
     .filter((word) => word.length > 1)
     .join(" & ");
-
-  // query or make prisma untuk mencari semua field yg diinginkan
 
   const searchFilter: Prisma.JobWhereInput = searchString
     ? {
@@ -83,7 +89,6 @@ const JobResults = async ({ filterValues, page = 1 }: jobResultsProps) => {
 
   const countPromise = prisma.job.count({ where });
 
-  // metode waterfall untuk mengeksekusi promise
   const [jobs, totalResults] = await Promise.all([jobPromise, countPromise]);
 
   return (
@@ -101,7 +106,7 @@ const JobResults = async ({ filterValues, page = 1 }: jobResultsProps) => {
       )}
 
       {jobs.length > 0 && (
-        <Pagination
+        <CustomPagination
           currentPage={page}
           totalPages={Math.ceil(totalResults / jobsPerPage)}
           filterValues={filterValues}
@@ -117,7 +122,7 @@ interface PaginationProps {
   filterValues: JobFilterValues;
 }
 
-function Pagination({
+function CustomPagination({
   currentPage,
   totalPages,
   filterValues: { q, type, location, remote },
@@ -134,32 +139,36 @@ function Pagination({
     return `/?${searchParams.toString()}`;
   }
 
+  const pageLinks = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageLinks.push(
+      <PaginationItem key={i}>
+        <PaginationLink href={generatePageLink(i)} isActive={i === currentPage}>
+          {i}
+        </PaginationLink>
+      </PaginationItem>,
+    );
+  }
+
   return (
-    <div className="flex justify-between">
-      <Link
-        href={generatePageLink(currentPage - 1)}
-        className={cn(
-          "flex items-center gap-2 font-semibold",
-          currentPage <= 1 && "invisible",
+    <Pagination>
+      <PaginationContent>
+        {currentPage > 1 && (
+          <PaginationItem>
+            <PaginationPrevious href={generatePageLink(currentPage - 1)} />
+          </PaginationItem>
         )}
-      >
-        <ArrowLeft size={16} />
-        Previous Page
-      </Link>
-      <span className="font-semibold">
-        Page {currentPage} of {totalPages}
-      </span>
-      <Link
-        href={generatePageLink(currentPage + 1)}
-        className={cn(
-          "flex items-center gap-2 font-semibold",
-          currentPage >= totalPages && "invisible",
+        {pageLinks}
+        {currentPage < totalPages && (
+          <>
+            {currentPage < totalPages - 1 && <PaginationEllipsis />}
+            <PaginationItem>
+              <PaginationNext href={generatePageLink(currentPage + 1)} />
+            </PaginationItem>
+          </>
         )}
-      >
-        Next Page
-        <ArrowRight size={16} />
-      </Link>
-    </div>
+      </PaginationContent>
+    </Pagination>
   );
 }
 

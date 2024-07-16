@@ -52,31 +52,38 @@ export default async function createPermintaan(
 
 export async function approvedPermintaan(formData: FormData) {
   try {
-    const id_permintaan = parseInt(formData.get("id_permintaan") as string);
-
     const user = await getSession();
 
     if (!user || user.user.role?.toLocaleLowerCase() !== "direktur") {
       throw new Error("Not Unauthorized");
     }
 
-    const permintaan = await prisma.permintaan.update({
-      where: {
-        id_permintaan: id_permintaan,
-      },
-      include: {
-        jabatan: true,
-      },
-      data: {
-        approved: true,
-      },
-    });
-    revalidatePath("/");
-    if (permintaan) {
-      return {
-        code: 200,
-        message: `Berhasil Approve Permintaan Untuk Jabatan ${permintaan.jabatan.nama_jabatan}`,
-      };
+    const id_permintaan = parseInt(formData.get("id_permintaan") as string);
+    const jumlah = parseInt(formData.get("jumlah") as string);
+    const alasan = formData.get("alasan") as string;
+
+    if (alasan !== null) {
+      const permintaan = await prisma.permintaan.update({
+        where: {
+          id_permintaan: id_permintaan,
+        },
+        include: {
+          jabatan: true,
+        },
+        data: {
+          approved: true,
+          jumlah_pegawai: jumlah,
+          alasan: alasan ? alasan : "",
+        },
+      });
+
+      revalidatePath("/");
+      if (permintaan) {
+        return {
+          code: 200,
+          message: `Berhasil Approve Permintaan Untuk Jabatan ${permintaan.jabatan.nama_jabatan}`,
+        };
+      }
     }
   } catch (error) {
     return {
@@ -87,27 +94,32 @@ export async function approvedPermintaan(formData: FormData) {
 
 export async function deletePermintaan(formData: FormData) {
   try {
-    const id_permintaan = parseInt(formData.get("id_permintaan") as string);
     const user = await getSession();
 
     if (!user || user.user.role?.toLowerCase() !== "direktur") {
       throw new Error("Not Unauthorized");
     }
+    const id_permintaan = parseInt(formData.get("id_permintaan") as string);
+    const alasan = formData.get("alasan") as string;
 
-    const permintaan = await prisma.permintaan.delete({
-      where: {
-        id_permintaan: id_permintaan,
-      },
-      include: {
-        jabatan: true,
-      },
-    });
-    revalidatePath("/");
-    if (permintaan) {
-      return {
-        code: 200,
-        message: `Berhasil Rejected Permintaan Untuk Jabatan ${permintaan.jabatan.nama_jabatan}`,
-      };
+
+
+    if (alasan) {
+      const permintaan = await prisma.permintaan.delete({
+        where: {
+          id_permintaan: id_permintaan,
+        },
+        include: {
+          jabatan: true,
+        },
+      });
+      revalidatePath("/");
+      if (permintaan) {
+        return {
+          code: 200,
+          message: `Berhasil Rejected Permintaan Untuk Jabatan ${permintaan.jabatan.nama_jabatan}`,
+        };
+      }
     }
   } catch (error) {
     return {
