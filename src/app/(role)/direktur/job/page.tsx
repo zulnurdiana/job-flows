@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "Halaman Admin",
+  title: "Halaman Direktur",
 };
 
 const page = async () => {

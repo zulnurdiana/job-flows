@@ -12,7 +12,6 @@ const ButtonLamar = ({ id_job }: ButtonLamarProps) => {
     const result = await lamarLowongan(formData);
     if (!result?.error) {
       toast({
-        // title: "Sukses",
         description: `${result?.message}`,
       });
     }
@@ -20,7 +19,7 @@ const ButtonLamar = ({ id_job }: ButtonLamarProps) => {
   return (
     <form action={actionClient}>
       <input hidden id="id_job" name="id_job" value={id_job} readOnly />
-      <FormSubmitButton className="w-full hover:text-white font-bold">
+      <FormSubmitButton className="w-2/5 hover:text-white font-bold">
         Lamar Sekarang
       </FormSubmitButton>
     </form>

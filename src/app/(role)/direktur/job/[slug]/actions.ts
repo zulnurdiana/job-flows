@@ -1,5 +1,4 @@
 "use server";
-
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { del } from "@vercel/blob";
@@ -42,6 +41,7 @@ export async function approvedSubmission(formData: FormData) {
 export async function deleteJob(formData: FormData) {
   try {
     const jobId = parseInt(formData.get("jobId") as string);
+    const alasan = formData.get("alasan") as string;
 
     let user = await getSession();
 
@@ -49,30 +49,32 @@ export async function deleteJob(formData: FormData) {
       throw new Error("Not Unauthorized");
     }
 
-    const job = await prisma.job.findUnique({
-      where: {
-        id: jobId,
-      },
-    });
+    if (alasan || alasan === "") {
+      const job = await prisma.job.findUnique({
+        where: {
+          id: jobId,
+        },
+      });
 
-    if (job?.companyLogoUrl) {
-      del(job.companyLogoUrl);
-    }
+      if (job?.companyLogoUrl) {
+        del(job.companyLogoUrl);
+      }
 
-    const jobDeleted = await prisma.job.delete({
-      where: {
-        id: jobId,
-      },
-    });
-    revalidatePath("/");
-    if (jobDeleted) {
-      return {
-        message: `Berhasil Deleted Lowongan ${jobDeleted.title}`,
-      };
+      const jobDeleted = await prisma.job.delete({
+        where: {
+          id: jobId,
+        },
+      });
+      revalidatePath("/");
+      if (jobDeleted) {
+        return {
+          message: `Berhasil Deleted Lowongan ${jobDeleted.title}`,
+        };
+      }
     }
   } catch (error) {
     return {
-      error: handleError,
+      error: handleError(error),
     };
   }
 

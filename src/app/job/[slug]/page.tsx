@@ -108,15 +108,21 @@ const page = async ({ params: { slug } }: PageProps) => {
         </>
       ) : null}
 
-      <aside className="flex  w-full flex-col sm:flex-row justify-between">
+      <aside className="flex flex-col space-y-16">
         <DetailJobPage job={job} />
         {session && user?.role === "pelamar" ? (
           isExpired ? (
-            <Button>Lowongan sudah ditutup</Button>
+            <div className="w-full text-center">
+              <Button>Lowongan sudah ditutup</Button>
+            </div>
           ) : checkJabatanPending?.id_job === null ? (
-            <ButtonLamar id_job={job.id} />
+            <div className="text-center">
+              <ButtonLamar id_job={job.id} />
+            </div>
           ) : (
-            <Button>Anda sudah melamar</Button>
+            <div className="w-full text-center">
+              <Button>Anda sudah melamar</Button>
+            </div>
           )
         ) : null}
       </aside>

@@ -50,7 +50,7 @@ const ButtonPermintaan = ({ permintaan }: PageButtonPermintaanProps) => {
                   name="id_permintaan"
                   value={permintaan.id_permintaan}
                 />
-                <Label htmlFor="jumlah" className="text-right">
+                <Label htmlFor="jumlah" className="text-center">
                   Jumlah
                 </Label>
                 <Input
@@ -62,7 +62,7 @@ const ButtonPermintaan = ({ permintaan }: PageButtonPermintaanProps) => {
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="alasan" className="text-right">
+                <Label htmlFor="alasan" className="text-center">
                   Alasan
                 </Label>
                 <Textarea id="alasan" name="alasan" className="col-span-3" />
@@ -100,7 +100,7 @@ const ButtonPermintaan = ({ permintaan }: PageButtonPermintaanProps) => {
               />
 
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="alasan" className="text-right">
+                <Label htmlFor="alasan" className="text-center">
                   Alasan
                 </Label>
                 <Textarea id="alasan" name="alasan" className="col-span-3" />

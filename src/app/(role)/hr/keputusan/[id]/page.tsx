@@ -19,6 +19,13 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { CircleChevronDown, Crown, Eye } from "lucide-react";
+
 interface PageProps {
   params: {
     id: string;
@@ -28,6 +35,7 @@ interface PageProps {
 interface NilaiPelamar {
   id_pelamar: any;
   nama_pelamar: any;
+  [key: string]: any;
   nilai_c1: number;
   nilai_c2: number;
   nilai_c3: number;
@@ -48,7 +56,6 @@ const page = async ({ params: { id } }: PageProps) => {
   if (!session) redirect("/");
   if (user?.role?.toLowerCase() !== "hr") redirect("/");
 
-  // Dapatkan data pelamar dengan kriteria penilaian
   const getPelamarPerJabatan = await prisma.user.findMany({
     include: {
       job: true,
@@ -56,7 +63,7 @@ const page = async ({ params: { id } }: PageProps) => {
         include: {
           detail_penilaian: {
             orderBy: {
-              id_kriteria: "asc", // Urutkan berdasarkan ID kriteria
+              id_kriteria: "asc",
             },
             include: {
               kriteria: true,
@@ -89,12 +96,11 @@ const page = async ({ params: { id } }: PageProps) => {
 
   const id_pelamar = getPelamarPerJabatan.map((pelamar) => pelamar.id);
 
-  // Mendapatkan nilai Max setiap Kriteria
   const nilaiMax = await Promise.all(
     Array.from({ length: 12 }, (_, index) =>
       prisma.detail_Penilaian.findFirstOrThrow({
         where: {
-          id_kriteria: index + 1, // Kriteria ID dimulai dari 1 hingga 12
+          id_kriteria: index + 1,
           penilaian: {
             id_user: {
               in: id_pelamar,
@@ -102,9 +108,8 @@ const page = async ({ params: { id } }: PageProps) => {
           },
         },
         orderBy: {
-          nilai: "desc", // Ambil nilai terbesar
+          nilai: "desc",
         },
-
         select: {
           nilai: true,
         },
@@ -112,23 +117,24 @@ const page = async ({ params: { id } }: PageProps) => {
     ),
   );
 
-  // Proses untuk menyimpan nilai C1-C12 untuk setiap pelamar dan membaginya dengan nilai maksimum
   const nilaiPelamar: NilaiPelamar[] = getPelamarPerJabatan.map((pelamar) => {
     const normalizedValues: Partial<NilaiPelamar> = {};
 
     pelamar.penilaian[0]?.detail_penilaian.forEach((detail) => {
       if (detail.nilai !== null && detail.id_kriteria !== null) {
-        const maxNilai = nilaiMax[detail.id_kriteria - 1]?.nilai || 1; // Ambil nilai maksimum, default 1 untuk menghindari pembagian dengan nol
+        const maxNilai = nilaiMax[detail.id_kriteria - 1]?.nilai || 1;
         const key =
           `nilai_c${detail.id_kriteria}` as keyof Partial<NilaiPelamar>;
 
-        // Tentukan jenis kriteria (benefit atau cost)
-        const jenisKriteria = detail.kriteria?.jenis_kriteria || ""; // Ambil jenis_kriteria dari objek kriteria terkait
+        normalizedValues[`nilai_asli_c${detail.id_kriteria}`] = detail.nilai;
+        normalizedValues[`max_c${detail.id_kriteria}`] = maxNilai;
+
+        const jenisKriteria = detail.kriteria?.jenis_kriteria || "";
 
         if (jenisKriteria.toUpperCase() === "BENEFIT") {
-          normalizedValues[key] = Number((detail.nilai / maxNilai).toFixed(5)); // Pembagian nilai jika benefit
+          normalizedValues[key] = Number((detail.nilai / maxNilai).toFixed(5));
         } else if (jenisKriteria.toUpperCase() === "COST") {
-          normalizedValues[key] = Number((maxNilai / detail.nilai).toFixed(5)); // Pembagian nilai jika cost
+          normalizedValues[key] = Number((maxNilai / detail.nilai).toFixed(5));
         }
       }
     });
@@ -140,7 +146,6 @@ const page = async ({ params: { id } }: PageProps) => {
     } as NilaiPelamar;
   });
 
-  // Mendapatkan Kepentingan setiap kriteria
   const kriteriaPromises = Array.from({ length: 12 }, (_, index) =>
     prisma.kriteria.findUnique({
       where: {
@@ -155,49 +160,22 @@ const page = async ({ params: { id } }: PageProps) => {
   const [C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12] =
     await Promise.all(kriteriaPromises);
 
-  // Nilai yang sudah dinormalisasi
   const nilaiPelamarWithWeights: NilaiPelamar[] = nilaiPelamar.map((nilai) => {
     const nilaiWithWeights: Partial<NilaiPelamar> = {
       id_pelamar: nilai.id_pelamar,
       nama_pelamar: nilai.nama_pelamar,
     };
 
-    nilaiWithWeights.nilai_c1 = nilai.nilai_c1
-      ? nilai.nilai_c1 * (C1?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c2 = nilai.nilai_c2
-      ? nilai.nilai_c2 * (C2?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c3 = nilai.nilai_c3
-      ? nilai.nilai_c3 * (C3?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c4 = nilai.nilai_c4
-      ? nilai.nilai_c4 * (C4?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c5 = nilai.nilai_c5
-      ? nilai.nilai_c5 * (C5?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c6 = nilai.nilai_c6
-      ? nilai.nilai_c6 * (C6?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c7 = nilai.nilai_c7
-      ? nilai.nilai_c7 * (C7?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c8 = nilai.nilai_c8
-      ? nilai.nilai_c8 * (C8?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c9 = nilai.nilai_c9
-      ? nilai.nilai_c9 * (C9?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c10 = nilai.nilai_c10
-      ? nilai.nilai_c10 * (C10?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c11 = nilai.nilai_c11
-      ? nilai.nilai_c11 * (C11?.kepentingan ?? 0)
-      : 0;
-    nilaiWithWeights.nilai_c12 = nilai.nilai_c12
-      ? nilai.nilai_c12 * (C12?.kepentingan ?? 0)
-      : 0;
+    for (let i = 1; i <= 12; i++) {
+      const key = `nilai_c${i}` as keyof NilaiPelamar;
+      const kepentingan = eval(`C${i}`)?.kepentingan || 0;
+
+      const normalizedValue = nilai[key];
+      const weightedValue = normalizedValue ? normalizedValue * kepentingan : 0;
+
+      nilaiWithWeights[key] = weightedValue;
+      nilaiWithWeights[`normalized_${key}`] = normalizedValue; // Menyimpan nilai yang sudah dinormalisasi
+    }
 
     return nilaiWithWeights as NilaiPelamar;
   });
@@ -208,19 +186,10 @@ const page = async ({ params: { id } }: PageProps) => {
     id_pelamar: any;
     keputusan: any;
   }[] = nilaiPelamarWithWeights.map((nilai) => {
-    const totalNilai =
-      (nilai.nilai_c1 || 0) +
-      (nilai.nilai_c2 || 0) +
-      (nilai.nilai_c3 || 0) +
-      (nilai.nilai_c4 || 0) +
-      (nilai.nilai_c5 || 0) +
-      (nilai.nilai_c6 || 0) +
-      (nilai.nilai_c7 || 0) +
-      (nilai.nilai_c8 || 0) +
-      (nilai.nilai_c9 || 0) +
-      (nilai.nilai_c10 || 0) +
-      (nilai.nilai_c11 || 0) +
-      (nilai.nilai_c12 || 0);
+    const totalNilai = Array.from({ length: 12 }, (_, i) => {
+      const key = `nilai_c${i + 1}` as keyof NilaiPelamar;
+      return nilai[key] || 0;
+    }).reduce((sum, value) => sum + value, 0);
 
     return {
       id_pelamar: nilai.id_pelamar,
@@ -230,16 +199,12 @@ const page = async ({ params: { id } }: PageProps) => {
     };
   });
 
-  // Urutkan berdasarkan nilai total dari yang terbesar ke terkecil
   nilaiPelamarWithTotal.sort((a, b) => b.total_nilai - a.total_nilai);
 
-  // Mendapatkan rekomendasi pelamar berdasarkan jumlah permintaan
   const highScore = nilaiPelamarWithTotal.slice(0, jumlah_permintaan);
 
-  //  Mendapatkan id pelamar high score
   const id_pelamar_high = highScore.map((high) => high.id_pelamar);
 
-  // Menyimpan keputusan pelamar
   for (const pelamar of nilaiPelamarWithTotal) {
     const isHighScore = id_pelamar_high.includes(pelamar.id_pelamar);
     const existingKeputusan = await prisma.keputusan.findUnique({
@@ -269,7 +234,6 @@ const page = async ({ params: { id } }: PageProps) => {
     }
   }
 
-  // menampilkan keputusan
   for (const pelamar of nilaiPelamarWithTotal) {
     if (id_pelamar_high.includes(pelamar.id_pelamar)) {
       pelamar.keputusan = "Offering";
@@ -278,13 +242,9 @@ const page = async ({ params: { id } }: PageProps) => {
     }
   }
 
-  // console.log(nilaiPelamar);
-  // console.log(nilaiPelamarWithWeights);
-  // console.log(nilaiPelamarWithTotal);
-
   return (
-    <div className="max-w-5xl mx-auto my-4 space-y-6 px-4 rounded-lg min-h-[400px]">
-      <div className="max-w-5xl mx-auto">
+    <div className="max-w-6xl mx-auto my-8 p-6 bg-white shadow-md rounded-lg">
+      <div className="max-w-6xl mx-auto mb-6">
         <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
           <BreadcrumbList className="flex space-x-2 text-gray-600">
             <BreadcrumbItem>
@@ -308,7 +268,7 @@ const page = async ({ params: { id } }: PageProps) => {
         </Breadcrumb>
       </div>
 
-      <div className="text-center">
+      <div className="text-center mb-6">
         <H1 className="text-3xl font-extrabold text-gray-800">
           Keputusan Pelamar <br />
           Jabatan{" "}
@@ -320,11 +280,12 @@ const page = async ({ params: { id } }: PageProps) => {
 
       {getPelamarPerJabatan.length > 0 ? (
         <>
-          <Table className="w-full border-collapse">
+          {/* NILAI SETIAP PELAMAR */}
+          <Table className="w-full border border-gray-300">
             <TableHeader className="bg-gray-200">
               <TableRow>
-                <TableHead className="text-center font-bold">No</TableHead>
-                <TableHead className="text-center">Nama Pelamar</TableHead>
+                <TableHead className="font-bold text-center">No</TableHead>
+                <TableHead className="">Nama Pelamar</TableHead>
                 {Array.from({ length: 12 }, (_, index) => (
                   <TableHead className="text-center" key={index}>
                     C{index + 1}
@@ -334,60 +295,150 @@ const page = async ({ params: { id } }: PageProps) => {
             </TableHeader>
             <TableBody>
               {getPelamarPerJabatan.map((pelamar, index) => (
-                <TableRow key={pelamar.id} className="text-center">
-                  <TableCell className="font-bold">{index + 1}</TableCell>
-                  <TableCell>{pelamar.name}</TableCell>
+                <TableRow key={pelamar.id}>
+                  <TableCell className="text-center">{index + 1}</TableCell>
+                  <TableCell className="">{pelamar.name}</TableCell>
                   {Array.from({ length: 12 }, (_, index) => {
                     const nilai =
                       pelamar.penilaian[0]?.detail_penilaian.find(
                         (detail) => detail.id_kriteria === index + 1,
                       )?.nilai || "-";
-                    return <TableCell key={index}>{nilai}</TableCell>;
+                    return (
+                      <TableCell className="text-center" key={index}>
+                        {nilai}
+                      </TableCell>
+                    );
                   })}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
 
-          <Table className="w-full border-collapse">
-            <TableHeader className="bg-gray-200">
-              <TableRow>
-                <TableHead className="text-center font-bold">No</TableHead>
-                <TableHead className="text-center">Nama Pelamar</TableHead>
-                {Array.from({ length: 12 }, (_, index) => (
-                  <TableHead className="text-center" key={index}>
-                    C{index + 1}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {nilaiPelamar.map((pelamar, index) => (
-                <TableRow key={pelamar.id_pelamar} className="text-center">
-                  <TableCell className="font-bold">{index + 1}</TableCell>
-                  <TableCell>{pelamar.nama_pelamar}</TableCell>
-                  <TableCell>{pelamar.nilai_c1.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c2.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c3.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c4.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c5.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c6.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c7.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c8.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c9.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c10.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c11.toFixed(3)}</TableCell>
-                  <TableCell>{pelamar.nilai_c12.toFixed(3)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {/* DETAIL PENILAIAN */}
+          <Collapsible className="w-full my-5">
+            <CollapsibleTrigger className="bg-gray-400 w-full p-1 rounded-md flex justify-center items-center hover:bg-gray-500">
+              <CircleChevronDown
+                className="text-white"
+                width={20}
+                height={20}
+              />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="my-2">
+              {/* PERHITUNGAN NORMALISASI */}
+              <Table className="w-full border border-gray-300 mb-6">
+                <TableHeader className="bg-gray-200">
+                  <TableRow>
+                    <TableHead className="font-bold text-center ">No</TableHead>
+                    <TableHead className="">Nama Pelamar</TableHead>
+                    {Array.from({ length: 12 }, (_, index) => (
+                      <TableHead className="text-center" key={index}>
+                        C{index + 1}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {nilaiPelamar.map((pelamar, index) => (
+                    <TableRow key={pelamar.id_pelamar}>
+                      <TableCell className="font-bold text-center">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="">{pelamar.nama_pelamar}</TableCell>
+                      {Array.from({ length: 12 }, (_, idx) => (
+                        <TableCell className="text-center" key={idx}>
+                          {pelamar[`nilai_asli_c${idx + 1}`]} /{" "}
+                          {pelamar[`max_c${idx + 1}`]}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
 
+              {/* NILAI NORMALISASI */}
+              <Table className="w-full border border-gray-300 mb-6">
+                <TableHeader className="bg-gray-200">
+                  <TableRow>
+                    <TableHead className="font-bold text-center">No</TableHead>
+                    <TableHead className="">Nama Pelamar</TableHead>
+                    {Array.from({ length: 12 }, (_, index) => (
+                      <TableHead className="text-center" key={index}>
+                        C{index + 1}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {nilaiPelamar.map((pelamar, index) => (
+                    <TableRow key={pelamar.id_pelamar}>
+                      <TableCell className="font-bold text-center">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="">{pelamar.nama_pelamar}</TableCell>
+                      {Array.from({ length: 12 }, (_, idx) => (
+                        <TableCell className="text-center" key={idx}>
+                          {pelamar[`nilai_c${idx + 1}`].toFixed(3)}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+
+              {/* Proses Perhitungan Akhir */}
+              <Table className="w-full border border-gray-300 mb-6">
+                <TableHeader className="bg-gray-200">
+                  <TableRow>
+                    <TableHead className="font-bold text-center">
+                      Nama
+                    </TableHead>
+                    <TableHead className="text-center">
+                      Proses Perhitungan
+                    </TableHead>
+                    <TableHead className="text-center">Hasil Akhir</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {nilaiPelamarWithWeights.map((pelamar, index) => (
+                    <TableRow key={pelamar.id_pelamar}>
+                      <TableCell className="text-center">
+                        {pelamar.nama_pelamar}
+                      </TableCell>
+                      <TableCell className="text-sm text-center w-[70%]">
+                        {Array.from({ length: 12 }, (_, i) => {
+                          const key = `nilai_c${i + 1}` as keyof NilaiPelamar;
+                          const normalizedKey =
+                            `normalized_nilai_c${i + 1}` as keyof NilaiPelamar;
+                          const nilai = pelamar[key] || 0;
+                          const normalizedValue = pelamar[normalizedKey] || 0;
+                          const kepentingan =
+                            eval(`C${i + 1}`)?.kepentingan || 0;
+                          return (
+                            <span key={i}>
+                              {i > 0 && " + "}({normalizedValue.toFixed(3)} x{" "}
+                              {kepentingan.toFixed(3)})
+                            </span>
+                          );
+                        })}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {nilaiPelamarWithTotal
+                          .find((n) => n.id_pelamar === pelamar.id_pelamar)
+                          ?.total_nilai.toFixed(5)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* HASIL SAW */}
           {nilaiPelamarWithTotal.length > 0 ? (
-            <Table className="w-2/4 border-collapse">
+            <Table className="w-full border border-gray-300">
               <TableHeader className="bg-gray-200">
                 <TableRow>
-                  <TableHead className="text-center font-bold">Code</TableHead>
+                  <TableHead className="text-center">Code</TableHead>
                   <TableHead className="text-center">Pelamar</TableHead>
                   <TableHead className="text-center">Total Nilai</TableHead>
                   <TableHead className="text-center">Status</TableHead>
@@ -396,20 +447,36 @@ const page = async ({ params: { id } }: PageProps) => {
               </TableHeader>
               <TableBody>
                 {nilaiPelamarWithTotal.map((pelamar, index) => (
-                  <TableRow key={index} className="text-center">
-                    <TableCell className="font-bold">C{index + 1}</TableCell>
-                    <TableCell>{pelamar.nama_pelamar}</TableCell>
-                    <TableCell>{pelamar.total_nilai.toFixed(5)}</TableCell>
+                  <TableRow
+                    key={index}
+                    className={
+                      pelamar.keputusan === "Offering" ? "bg-green-100" : ""
+                    }
+                  >
+                    <TableCell className="font-bold text-center">
+                      C{index + 1}
+                    </TableCell>
+                    <TableCell className="flex gap-3">
+                      {pelamar.nama_pelamar}{" "}
+                      {pelamar.keputusan === "Offering" && (
+                        <span>
+                          <Crown width={18} height={18} />
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {pelamar.total_nilai.toFixed(5)}
+                    </TableCell>
                     <TableCell
-                      className={
+                      className={`text-center ${
                         pelamar.keputusan === "Offering"
                           ? "text-green-500 italic"
                           : "text-red-500 italic"
-                      }
+                      }`}
                     >
                       {pelamar.keputusan}
                     </TableCell>
-                    <TableCell>{index + 1}</TableCell>
+                    <TableCell className="text-center">{index + 1}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
