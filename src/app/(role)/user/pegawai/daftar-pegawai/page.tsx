@@ -77,8 +77,8 @@ const page = async () => {
       </Breadcrumb>
 
       <H1 className="text-center text-3xl font-extrabold text-gray-800">
-        Daftar Pegawai Untuk <br />
-        Setiap Jabatan
+        Daftar Pegawai Untuk Divisi <br />
+        {nama_divisi?.nama_divisi}
       </H1>
 
       <div className="bg-white shadow overflow-hidden rounded-lg">
@@ -87,7 +87,7 @@ const page = async () => {
             <TableRow>
               <TableHead className="text-center font-bold p-4">No</TableHead>
               <TableHead className="text-center p-4">Jabatan</TableHead>
-              <TableHead className="text-center p-4">Divisi</TableHead>
+
               <TableHead className="text-center p-4">Jumlah Pegawai</TableHead>
               <TableHead className="text-center p-4">Action</TableHead>
             </TableRow>
@@ -100,7 +100,7 @@ const page = async () => {
               >
                 <TableCell className="font-bold p-4">{index + 1}</TableCell>
                 <TableCell className="p-4">{res.nama_jabatan}</TableCell>
-                <TableCell className="p-4">{res.divisi.nama_divisi}</TableCell>
+
                 <TableCell className="p-4">
                   {res.pegawai.length} Pegawai
                 </TableCell>

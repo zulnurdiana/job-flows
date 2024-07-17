@@ -1,4 +1,4 @@
-import { LogOut, NotebookPen } from "lucide-react";
+import { Eye, LogOut, NotebookPen } from "lucide-react";
 import { User } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,6 +26,7 @@ import {
   Users,
 } from "lucide-react";
 import UserProfilePlaceHolder from "@/assets/profile.jpeg";
+import prisma from "@/lib/prisma";
 
 interface UserButtonProps {
   user: User;
@@ -47,7 +48,17 @@ export default function UserButton({ user }: UserButtonProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>
-          {user.name || "User"} as {user.role}
+          {user.name || "User"} <br />{" "}
+          <span className="text-sm text-muted-foreground">
+            {user.role === "hr" ? (
+              "HR Recruitment"
+            ) : (
+              <>
+                {(user.role ?? "").charAt(0).toUpperCase() +
+                  (user.role ?? "").slice(1)}
+              </>
+            )}
+          </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
@@ -64,7 +75,13 @@ export default function UserButton({ user }: UserButtonProps) {
               <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href="/pelamar/biodata">
                   <FilePen className="mr-2 h-4 w-4" />
-                  Formulir Biodata
+                  Profile
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/pelamar/keputusan">
+                  <Eye className="mr-2 h-4 w-4" />
+                  Keputusan
                 </Link>
               </DropdownMenuItem>
             </>
@@ -125,7 +142,7 @@ export default function UserButton({ user }: UserButtonProps) {
                   Daftar Pegawai
                 </Link>
               </DropdownMenuItem>
-              
+
               <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href="/user/permintaan/new">
                   <FileInput className="mr-2 h-4 w-4" />

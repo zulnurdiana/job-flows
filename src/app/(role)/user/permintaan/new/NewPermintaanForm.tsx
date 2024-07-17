@@ -147,24 +147,6 @@ const NewPermintaanForm = ({
         >
           <FormField
             control={control}
-            name="jumlah_pegawai"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Jumlah Pegawai</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="number"
-                    className="mt-1 p-2 border rounded-md"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
             name="id_jabatan"
             render={({ field }) => (
               <FormItem>
@@ -188,6 +170,24 @@ const NewPermintaanForm = ({
                       </option>
                     ))}
                   </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="jumlah_pegawai"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Jumlah Pegawai</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    className="mt-1 p-2 border rounded-md"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -24,7 +24,7 @@ export async function lamarLowongan(formData: FormData) {
 
     if (!profile?.cv) {
       return {
-        message: "Silahkan upload CV dan lengkapi biodata terlebih dahulu",
+        message: "Silahkan upload CV dan lengkapi profile terlebih dahulu",
       };
     }
 

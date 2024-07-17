@@ -24,7 +24,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { CircleChevronDown, Crown, Eye } from "lucide-react";
+import { CircleChevronDown, Crown, Eye, Plane } from "lucide-react";
 
 interface PageProps {
   params: {
@@ -56,6 +56,7 @@ const page = async ({ params: { id } }: PageProps) => {
   if (!session) redirect("/");
   if (user?.role?.toLowerCase() !== "hr") redirect("/");
 
+  // Mendapatkan Pelamar untuk setiap jabatan
   const getPelamarPerJabatan = await prisma.user.findMany({
     include: {
       job: true,
@@ -83,6 +84,7 @@ const page = async ({ params: { id } }: PageProps) => {
     },
   });
 
+  // Mendapatkan Persyaratan
   const persyaratan_permintaan = await prisma.persyaratan.findFirst({
     where: {
       id_job: parseInt(id),
@@ -92,10 +94,13 @@ const page = async ({ params: { id } }: PageProps) => {
     },
   });
 
+  // Mendapatkan jumlah permintaan untuk lowongan yg dipilih
   let jumlah_permintaan = persyaratan_permintaan?.permintaan.jumlah_pegawai;
 
+  // Mendapatkan pelamar untuk jabatan tertentu
   const id_pelamar = getPelamarPerJabatan.map((pelamar) => pelamar.id);
 
+  // Mendapatkan nilai max dari setiap pelamar untuk setiap kriteria
   const nilaiMax = await Promise.all(
     Array.from({ length: 12 }, (_, index) =>
       prisma.detail_Penilaian.findFirstOrThrow({
@@ -117,6 +122,7 @@ const page = async ({ params: { id } }: PageProps) => {
     ),
   );
 
+  // Menormalisasi Nilai Pelamar
   const nilaiPelamar: NilaiPelamar[] = getPelamarPerJabatan.map((pelamar) => {
     const normalizedValues: Partial<NilaiPelamar> = {};
 
@@ -146,6 +152,7 @@ const page = async ({ params: { id } }: PageProps) => {
     } as NilaiPelamar;
   });
 
+  // Mendapatkan kepentingan Kriteria
   const kriteriaPromises = Array.from({ length: 12 }, (_, index) =>
     prisma.kriteria.findUnique({
       where: {
@@ -160,6 +167,7 @@ const page = async ({ params: { id } }: PageProps) => {
   const [C1, C2, C3, C4, C5, C6, C7, C8, C9, C10, C11, C12] =
     await Promise.all(kriteriaPromises);
 
+  // Kalikan nilai normalisasi dengan setiap kepentingan kriteria
   const nilaiPelamarWithWeights: NilaiPelamar[] = nilaiPelamar.map((nilai) => {
     const nilaiWithWeights: Partial<NilaiPelamar> = {
       id_pelamar: nilai.id_pelamar,
@@ -180,6 +188,7 @@ const page = async ({ params: { id } }: PageProps) => {
     return nilaiWithWeights as NilaiPelamar;
   });
 
+  // Menjumlahkan nilai yang sudah dinormalisasi
   const nilaiPelamarWithTotal: {
     nama_pelamar: string;
     total_nilai: number;
@@ -199,12 +208,16 @@ const page = async ({ params: { id } }: PageProps) => {
     };
   });
 
+  // menyortir pelamar berdasarkan total_nilai
   nilaiPelamarWithTotal.sort((a, b) => b.total_nilai - a.total_nilai);
 
+  // Mendapatkan calon pegawai yang memenuhi syarat
   const highScore = nilaiPelamarWithTotal.slice(0, jumlah_permintaan);
 
+  // mendapatkan id tiap pelamar yang paling tinggi
   const id_pelamar_high = highScore.map((high) => high.id_pelamar);
 
+  // mengupdate status keputusan pada setiap pelamar
   for (const pelamar of nilaiPelamarWithTotal) {
     const isHighScore = id_pelamar_high.includes(pelamar.id_pelamar);
     const existingKeputusan = await prisma.keputusan.findUnique({
@@ -217,30 +230,52 @@ const page = async ({ params: { id } }: PageProps) => {
       await prisma.keputusan.create({
         data: {
           id_user: pelamar.id_pelamar,
-          status: isHighScore ? "Offering" : "Rejection",
+          status: isHighScore ? "Offering" : "Rejected",
           score_akhir: pelamar.total_nilai,
         },
       });
+    } else {
+      if (
+        // Ngecek jika ada penambahan permintaan
+        existingKeputusan.status === "Rejected" &&
+        id_pelamar_high.includes(pelamar.id_pelamar)
+      ) {
+        await prisma.keputusan.update({
+          where: {
+            id_user: pelamar.id_pelamar,
+          },
+          data: {
+            status: "Offering",
+            score_akhir: pelamar.total_nilai,
+          },
+        });
+      }
+    }
+  }
+
+  //  mengupdate status keputusan pada setiap pelamar
+  const updateKeputusanPromises = nilaiPelamarWithTotal.map(async (pelamar) => {
+    if (id_pelamar_high.includes(pelamar.id_pelamar)) {
+      const keputusan = await prisma.keputusan.findUnique({
+        where: {
+          id_user: pelamar.id_pelamar,
+        },
+      });
+      pelamar.keputusan = keputusan?.status || "Offering";
     } else {
       await prisma.keputusan.update({
         where: {
           id_user: pelamar.id_pelamar,
         },
         data: {
-          status: isHighScore ? "Offering" : "Rejection",
-          score_akhir: pelamar.total_nilai,
+          status: "Rejected",
         },
       });
-    }
-  }
-
-  for (const pelamar of nilaiPelamarWithTotal) {
-    if (id_pelamar_high.includes(pelamar.id_pelamar)) {
-      pelamar.keputusan = "Offering";
-    } else {
       pelamar.keputusan = "Rejected";
     }
-  }
+  });
+
+  await Promise.all(updateKeputusanPromises);
 
   return (
     <div className="max-w-6xl mx-auto my-8 p-6 bg-white shadow-md rounded-lg">
@@ -450,19 +485,27 @@ const page = async ({ params: { id } }: PageProps) => {
                   <TableRow
                     key={index}
                     className={
-                      pelamar.keputusan === "Offering" ? "bg-green-100" : ""
+                      pelamar.keputusan === "Offering"
+                        ? "bg-green-100"
+                        : pelamar.keputusan === "Onboarding"
+                          ? "bg-blue-100"
+                          : ""
                     }
                   >
                     <TableCell className="font-bold text-center">
                       C{index + 1}
                     </TableCell>
-                    <TableCell className="flex gap-3">
+                    <TableCell className="flex gap-1">
                       {pelamar.nama_pelamar}{" "}
-                      {pelamar.keputusan === "Offering" && (
+                      {pelamar.keputusan === "Offering" ? (
                         <span>
                           <Crown width={18} height={18} />
                         </span>
-                      )}
+                      ) : pelamar.keputusan === "Onboarding" ? (
+                        <span>
+                          <Plane width={18} height={18} />
+                        </span>
+                      ) : null}
                     </TableCell>
                     <TableCell className="text-center">
                       {pelamar.total_nilai.toFixed(5)}
@@ -471,7 +514,9 @@ const page = async ({ params: { id } }: PageProps) => {
                       className={`text-center ${
                         pelamar.keputusan === "Offering"
                           ? "text-green-500 italic"
-                          : "text-red-500 italic"
+                          : pelamar.keputusan === "Onboarding"
+                            ? "text-blue-500 italic"
+                            : ""
                       }`}
                     >
                       {pelamar.keputusan}

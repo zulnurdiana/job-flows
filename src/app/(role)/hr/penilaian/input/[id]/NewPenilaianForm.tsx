@@ -71,13 +71,13 @@ const NewPenilaianForm = ({
     });
     try {
       const result = await PenilaianPelamar(formData, id);
+      reset();
       if (result) {
         toast({
           className: cn(""),
           title: "Sukses",
           description: `${result?.message}`,
         });
-        reset();
       }
     } catch (error) {
       alert("Terjadi kesalahan");
