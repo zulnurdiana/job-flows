@@ -96,3 +96,46 @@ export async function accKeputusan(formData: FormData) {
     };
   }
 }
+
+export async function tolakKeputusan(formData: FormData) {
+  try {
+    const id_keputusan = parseInt(formData.get("id_keputusan") as string);
+    const alasan = formData.get("alasan") as string;
+
+    const keputusan_pelamar = await prisma.keputusan.findUnique({
+      where: {
+        id_keputusan: id_keputusan,
+      },
+      include: {
+        user: {
+          include: {
+            job: true,
+          },
+        },
+      },
+    });
+
+    if (alasan) {
+      const keputusan = await prisma.keputusan.update({
+        where: {
+          id_keputusan: id_keputusan,
+        },
+        data: {
+          status: "Menolak",
+          alasan: alasan ? alasan : "",
+        },
+      });
+      revalidatePath("/");
+      if (keputusan) {
+        return {
+          code: 200,
+          message: `Anda telah menolak tawaran kerja untuk jabatan ${keputusan_pelamar?.user?.job?.title} `,
+        };
+      }
+    }
+  } catch (error) {
+    return {
+      error: handleError(error),
+    };
+  }
+}

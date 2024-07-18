@@ -59,7 +59,7 @@ const page = async () => {
     },
   });
 
-  console.log(persyaratan?.permintaan.id_permintaan);
+  // console.log(persyaratan?.permintaan.id_permintaan);
 
   const pegawai = await prisma.pegawai.findMany({
     where: {
@@ -108,7 +108,7 @@ const page = async () => {
             <TableCell>{keputusan?.status}</TableCell>
             <TableCell className="flex items-center gap-3 w-2/4">
               {keputusan?.status === "Onboarding" && (
-                <div className="text-green-500">{`Selamat ${pelamar?.name} Anda telah diterima oleh pihak HR`}</div>
+                <div className="text-green-500">{`Selamat ${pelamar?.name} Anda telah diterima oleh pihak HR pada jabatan ${lowongan?.title}`}</div>
               )}
               {keputusan?.status === "Offering" && (
                 <ButtonKeputusan keputusan={keputusan} />

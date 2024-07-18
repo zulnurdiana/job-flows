@@ -169,7 +169,7 @@ model Keputusan {
   id_keputusan Int @id @default(autoincrement())
   score_akhir  Float
   status       String
-
+  alasan       String?
   id_user String? @unique
   user User? @relation(fields: [id_user], references: [id])
 }

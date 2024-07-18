@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Keputusan } from "@prisma/client";
-import { accKeputusan } from "./action";
+import { accKeputusan, tolakKeputusan } from "./action";
 
 interface PageButtonKeputusanProps {
   keputusan: Keputusan;
@@ -77,7 +77,7 @@ interface KeputusanProps {
 }
 
 async function RejectKeputusan(formData: FormData) {
-  const result = await deletePermintaan(formData);
+  const result = await tolakKeputusan(formData);
 
   if (!result?.error) {
     toast({
@@ -91,6 +91,13 @@ function ApprovedKeputusan({ id_keputusan }: KeputusanProps) {
   // Digunakan karena agar progressive enchanment ketika js dimatikan
   async function actionClient(formData: FormData) {
     const result = await accKeputusan(formData);
+
+    if (!result?.error) {
+      toast({
+        title: "Success",
+        description: `${result?.message}`,
+      });
+    }
   }
 
   return (
