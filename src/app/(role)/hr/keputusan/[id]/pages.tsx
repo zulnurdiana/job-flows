@@ -216,12 +216,8 @@ const page = async ({ params: { id } }: PageProps) => {
 
   // Urutkan pelamar yang difilter berdasarkan total nilai
 
-  console.log(filteredNilaiPelamar);
-
   // Mendapatkan calon pegawai yang memenuhi syarat
   const highScore = filteredNilaiPelamar.slice(0, jumlah_permintaan);
-
-  console.log(highScore);
 
   // mendapatkan id tiap pelamar yang paling tinggi
   const id_pelamar_high = highScore.map((high) => high.id_pelamar);

@@ -84,6 +84,18 @@ const page = async ({ params: { id } }: PageProps) => {
     },
   });
 
+  const getPelamarPerKeputusan = await prisma.keputusan.findMany({});
+
+  const filterKeputusanPelamar = getPelamarPerJabatan.map((pelamar) => {
+    const keputusan = getPelamarPerKeputusan.find(
+      (keputusan) => keputusan.id_user === pelamar.id,
+    );
+    return {
+      status: keputusan?.status,
+      id_user: keputusan?.id_user,
+    };
+  });
+
   // Mendapatkan Persyaratan
   const persyaratan_permintaan = await prisma.persyaratan.findFirst({
     where: {
@@ -200,19 +212,31 @@ const page = async ({ params: { id } }: PageProps) => {
       return nilai[key] || 0;
     }).reduce((sum, value) => sum + value, 0);
 
+    const keputusan_pelamar = filterKeputusanPelamar.find(
+      (keputusan) => keputusan.id_user === nilai.id_pelamar,
+    );
+
     return {
       id_pelamar: nilai.id_pelamar,
       nama_pelamar: nilai.nama_pelamar || "",
       total_nilai: totalNilai,
-      keputusan: "",
+      keputusan: keputusan_pelamar ? keputusan_pelamar.status : "",
     };
   });
 
+  const filteredPelamar = nilaiPelamarWithTotal.filter(
+    (pelamar) => pelamar.keputusan !== "Menolak",
+  );
+
   // menyortir pelamar berdasarkan total_nilai
+  const sortedPelamar = filteredPelamar.sort(
+    (a, b) => b.total_nilai - a.total_nilai,
+  );
+
   nilaiPelamarWithTotal.sort((a, b) => b.total_nilai - a.total_nilai);
 
   // Mendapatkan calon pegawai yang memenuhi syarat
-  const highScore = nilaiPelamarWithTotal.slice(0, jumlah_permintaan);
+  const highScore = sortedPelamar.slice(0, jumlah_permintaan);
 
   // mendapatkan id tiap pelamar yang paling tinggi
   const id_pelamar_high = highScore.map((high) => high.id_pelamar);
@@ -263,15 +287,32 @@ const page = async ({ params: { id } }: PageProps) => {
       });
       pelamar.keputusan = keputusan?.status || "Offering";
     } else {
-      await prisma.keputusan.update({
+      const keputusan = await prisma.keputusan.findUnique({
         where: {
           id_user: pelamar.id_pelamar,
         },
-        data: {
-          status: "Rejected",
-        },
       });
-      pelamar.keputusan = "Rejected";
+      if (keputusan?.status === "Menolak") {
+        await prisma.keputusan.update({
+          where: {
+            id_user: pelamar.id_pelamar,
+          },
+          data: {
+            status: "Menolak",
+          },
+        });
+        pelamar.keputusan = "Menolak";
+      } else {
+        await prisma.keputusan.update({
+          where: {
+            id_user: pelamar.id_pelamar,
+          },
+          data: {
+            status: "Rejected",
+          },
+        });
+        pelamar.keputusan = "Rejected";
+      }
     }
   });
 
