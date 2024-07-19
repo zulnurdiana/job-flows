@@ -1,3 +1,5 @@
+import getSession from "@/lib/getSession";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import {
   Table,
@@ -10,8 +12,6 @@ import {
 import H1 from "@/components/ui/h1";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import getSession from "@/lib/getSession";
-import { redirect } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,15 +20,24 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 6;
 
 const page = async ({ searchParams }: any) => {
   const session = await getSession();
   if (!session || session.user.role?.toLowerCase() !== "direktur")
     redirect("/");
 
-  const page = parseInt(searchParams.page || "1");
+  const currentPage = parseInt(searchParams.page || "1");
 
   const daftarPegawaiPerjabatan = await prisma.jabatan.findMany({
     include: {
@@ -40,7 +49,7 @@ const page = async ({ searchParams }: any) => {
         nama_divisi: "asc",
       },
     },
-    skip: (page - 1) * ITEMS_PER_PAGE,
+    skip: (currentPage - 1) * ITEMS_PER_PAGE,
     take: ITEMS_PER_PAGE,
   });
 
@@ -51,7 +60,7 @@ const page = async ({ searchParams }: any) => {
     nama_jabatan: jabatan.nama_jabatan,
     nama_divisi: jabatan.divisi.nama_divisi,
     jumlah_pegawai: jabatan.pegawai.length,
-    index: (page - 1) * ITEMS_PER_PAGE + index + 1, // Calculate the correct index
+    index: (currentPage - 1) * ITEMS_PER_PAGE + index + 1, // Calculate the correct index
   }));
 
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
@@ -112,16 +121,30 @@ const page = async ({ searchParams }: any) => {
       </div>
 
       <div className="flex justify-center space-x-4 mt-4">
-        {page > 1 && (
-          <Button asChild variant="outline">
-            <Link href={`?page=${page - 1}`}>Previous</Link>
-          </Button>
-        )}
-        {page < totalPages && (
-          <Button asChild variant="outline">
-            <Link href={`?page=${page + 1}`}>Next</Link>
-          </Button>
-        )}
+        <Pagination>
+          <PaginationContent>
+            {currentPage > 1 && (
+              <PaginationItem>
+                <PaginationPrevious href={`?page=${currentPage - 1}`} />
+              </PaginationItem>
+            )}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <PaginationItem key={i + 1}>
+                <PaginationLink
+                  href={`?page=${i + 1}`}
+                  isActive={currentPage === i + 1}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            {currentPage < totalPages && (
+              <PaginationItem>
+                <PaginationNext href={`?page=${currentPage + 1}`} />
+              </PaginationItem>
+            )}
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

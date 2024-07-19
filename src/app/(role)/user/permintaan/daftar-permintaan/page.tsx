@@ -41,6 +41,12 @@ const page = async () => {
     },
   });
 
+  let alasan: string = "";
+
+  permintaanByUser.map((permintaan) => {
+    alasan = permintaan.alasan ? permintaan.alasan : "";
+  });
+
   return (
     <div className="max-w-5xl mx-auto my-4 space-y-6 min-h-[400px] px-4">
       <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
@@ -74,6 +80,12 @@ const page = async () => {
               <TableHead className="text-center font-bold p-2">
                 Jumlah Permintaan
               </TableHead>
+              {alasan && (
+                <TableHead className="text-center font-bold p-2">
+                  Catatan
+                </TableHead>
+              )}
+
               <TableHead className="text-center font-bold p-2">
                 Status Permintaan
               </TableHead>
@@ -89,9 +101,18 @@ const page = async () => {
                 <TableCell className="p-2">
                   {permintaan.jabatan.nama_jabatan}
                 </TableCell>
+
                 <TableCell className="p-2">
                   {permintaan.jumlah_pegawai}
                 </TableCell>
+                {alasan && (
+                  <TableCell className="p-2 text-justify w-2/6 font-mono text-xs">
+                    {permintaan.alasan?.trim() !== ""
+                      ? permintaan.alasan
+                      : "Tidak ada catatan dari Direktur"}
+                  </TableCell>
+                )}
+
                 <TableCell className="p-2">
                   {permintaan.approved === false ? (
                     "Pending"

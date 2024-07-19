@@ -24,6 +24,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 import { CircleChevronDown, CircleX, Crown, Eye, Plane } from "lucide-react";
 
 interface PageProps {
@@ -93,6 +102,7 @@ const page = async ({ params: { id } }: PageProps) => {
     return {
       status: keputusan?.status,
       id_user: keputusan?.id_user,
+      alasan: keputusan?.alasan,
     };
   });
 
@@ -206,6 +216,7 @@ const page = async ({ params: { id } }: PageProps) => {
     total_nilai: number;
     id_pelamar: any;
     keputusan: any;
+    alasan: any;
   }[] = nilaiPelamarWithWeights.map((nilai) => {
     const totalNilai = Array.from({ length: 12 }, (_, i) => {
       const key = `nilai_c${i + 1}` as keyof NilaiPelamar;
@@ -221,6 +232,7 @@ const page = async ({ params: { id } }: PageProps) => {
       nama_pelamar: nilai.nama_pelamar || "",
       total_nilai: totalNilai,
       keputusan: keputusan_pelamar ? keputusan_pelamar.status : "",
+      alasan: keputusan_pelamar ? keputusan_pelamar.alasan : "",
     };
   });
 
@@ -561,10 +573,30 @@ const page = async ({ params: { id } }: PageProps) => {
                           ? "text-green-500 italic"
                           : pelamar.keputusan === "Onboarding"
                             ? "text-blue-500 italic"
-                            : "text-red-500 italic"
+                            : pelamar.keputusan === "Rejected"
+                              ? "text-red-500 italic"
+                              : "text-red-800 italic underline cursor-pointer"
                       }`}
                     >
-                      {pelamar.keputusan}
+                      {pelamar.keputusan !== "Menolak" ? (
+                        pelamar.keputusan
+                      ) : (
+                        <Dialog>
+                          <DialogTrigger className="text-red-800 italic underline cursor-pointer">
+                            {pelamar.keputusan}
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle className="font-mono mb-2">
+                                Alasan {pelamar.nama_pelamar} menolak tawaran
+                              </DialogTitle>
+                              <DialogDescription className="font-mono text-justify">
+                                {pelamar.alasan}
+                              </DialogDescription>
+                            </DialogHeader>
+                          </DialogContent>
+                        </Dialog>
+                      )}
                     </TableCell>
                     <TableCell className="text-center">{index + 1}</TableCell>
                   </TableRow>

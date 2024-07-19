@@ -34,6 +34,7 @@ const getJobDetails = async () => {
       permintaans: {
         select: {
           jumlah_pegawai: true,
+          tanggal_permintaan: true,
           persyaratan: {
             select: {
               id_job: true,
@@ -106,6 +107,15 @@ const getJobDetails = async () => {
       (tanggal) => new Date(tanggal) < new Date(),
     );
 
+    // Get the most recent tanggal_permintaan for sorting purposes
+    const mostRecentTanggalPermintaan = jabatan.permintaans.reduce(
+      (acc: Date, permintaan) =>
+        new Date(permintaan.tanggal_permintaan) > acc
+          ? new Date(permintaan.tanggal_permintaan)
+          : acc,
+      new Date(0),
+    );
+
     return {
       id_jabatan: jabatan.id_jabatan,
       nama_jabatan: jabatan.nama_jabatan,
@@ -119,8 +129,17 @@ const getJobDetails = async () => {
       id_jobs: jobIdsForJabatan,
       tanggal_selesai: tanggal_selesai,
       isExpired: isExpired,
+      mostRecentTanggalPermintaan: mostRecentTanggalPermintaan, // Add this for sorting
+      tanggal_permintaan: mostRecentTanggalPermintaan, // Add this to display
     };
   });
+
+  // Sort by most recent tanggal_permintaan
+  formattedResult.sort(
+    (a, b) =>
+      b.mostRecentTanggalPermintaan.getTime() -
+      a.mostRecentTanggalPermintaan.getTime(),
+  );
 
   return formattedResult.filter((jabatan) => jabatan.jumlah_pegawai > 0);
 };
@@ -163,6 +182,7 @@ const page = async () => {
             <TableHead className="text-center">Divisi</TableHead>
             <TableHead className="text-center">Jumlah Pelamar</TableHead>
             <TableHead className="text-center">Jumlah Permintaan</TableHead>
+            <TableHead className="text-center">Tanggal Permintaan</TableHead>
             <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -176,6 +196,9 @@ const page = async () => {
                 <TableCell>{res.nama_divisi}</TableCell>
                 <TableCell>{res.jumlah_pelamar} Pelamar</TableCell>
                 <TableCell>{res.jumlah_pegawai} Pegawai</TableCell>
+                <TableCell>
+                  {new Date(res.tanggal_permintaan).toLocaleDateString()}
+                </TableCell>
                 <TableCell>
                   {res.isExpired ? (
                     <Button asChild>

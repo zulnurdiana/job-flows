@@ -20,8 +20,19 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
-const page = async () => {
+const ITEM_PER_PAGE = 5;
+
+const page = async ({ searchParams }: any) => {
   const session = await getSession();
   const user_id = session?.user.id;
   const user = await prisma.user.findUnique({
@@ -37,6 +48,12 @@ const page = async () => {
     },
   });
 
+  if (!session || session.user.role?.toLowerCase() !== "user") {
+    redirect("/");
+  }
+
+  const currentPage = parseInt(searchParams.page || "1");
+
   const id_divisi = user?.pegawai?.jabatan.id_divisi;
   const nama_divisi = await prisma.divisi.findUnique({
     where: {
@@ -46,6 +63,13 @@ const page = async () => {
       nama_divisi: true,
     },
   });
+
+  const totalItems = await prisma.jabatan.count({
+    where: {
+      id_divisi: id_divisi,
+    },
+  });
+
   const result = await prisma.jabatan.findMany({
     where: {
       id_divisi: id_divisi,
@@ -54,11 +78,11 @@ const page = async () => {
       divisi: true,
       pegawai: true,
     },
+    skip: (currentPage - 1) * ITEM_PER_PAGE,
+    take: ITEM_PER_PAGE,
   });
 
-  if (!session || session.user.role?.toLowerCase() !== "user") {
-    redirect("/");
-  }
+  const totalPages = Math.ceil(totalItems / ITEM_PER_PAGE);
 
   return (
     <div className="max-w-5xl min-h-[400px] m-auto my-4 space-y-6 px-4">
@@ -87,7 +111,6 @@ const page = async () => {
             <TableRow>
               <TableHead className="text-center font-bold p-4">No</TableHead>
               <TableHead className="text-center p-4">Jabatan</TableHead>
-
               <TableHead className="text-center p-4">Jumlah Pegawai</TableHead>
               <TableHead className="text-center p-4">Action</TableHead>
             </TableRow>
@@ -98,9 +121,10 @@ const page = async () => {
                 key={res.id_jabatan}
                 className="text-center even:bg-gray-50"
               >
-                <TableCell className="font-bold p-4">{index + 1}</TableCell>
+                <TableCell className="font-bold p-4">
+                  {(currentPage - 1) * ITEM_PER_PAGE + index + 1}
+                </TableCell>
                 <TableCell className="p-4">{res.nama_jabatan}</TableCell>
-
                 <TableCell className="p-4">
                   {res.pegawai.length} Pegawai
                 </TableCell>
@@ -115,6 +139,33 @@ const page = async () => {
             ))}
           </TableBody>
         </Table>
+      </div>
+
+      <div className="flex justify-center space-x-4 mt-4">
+        <Pagination>
+          <PaginationContent>
+            {currentPage > 1 && (
+              <PaginationItem>
+                <PaginationPrevious href={`?page=${currentPage - 1}`} />
+              </PaginationItem>
+            )}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <PaginationItem key={i + 1}>
+                <PaginationLink
+                  href={`?page=${i + 1}`}
+                  isActive={currentPage === i + 1}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            {currentPage < totalPages && (
+              <PaginationItem>
+                <PaginationNext href={`?page=${currentPage + 1}`} />
+              </PaginationItem>
+            )}
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

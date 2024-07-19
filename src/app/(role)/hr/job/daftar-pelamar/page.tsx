@@ -34,13 +34,14 @@ const getJobDetails = async () => {
       permintaans: {
         select: {
           jumlah_pegawai: true,
+          tanggal_permintaan: true,
           persyaratan: {
             select: {
               id_job: true,
               job: {
                 select: {
                   approved: true,
-                  tanggal_selesai: true, // Tambahkan ini untuk mendapatkan tanggal_selesai
+                  tanggal_selesai: true,
                 },
               },
             },
@@ -105,6 +106,15 @@ const getJobDetails = async () => {
       (tanggal) => new Date(tanggal) < new Date(),
     );
 
+    // Get the most recent tanggal_permintaan for sorting purposes
+    const mostRecentTanggalPermintaan = jabatan.permintaans.reduce(
+      (acc: Date, permintaan) =>
+        new Date(permintaan.tanggal_permintaan) > acc
+          ? new Date(permintaan.tanggal_permintaan)
+          : acc,
+      new Date(0),
+    );
+
     return {
       id_jabatan: jabatan.id_jabatan,
       nama_jabatan: jabatan.nama_jabatan,
@@ -115,15 +125,22 @@ const getJobDetails = async () => {
         0,
       ),
       jumlah_pelamar: jumlah_pelamar,
-      id_jobs: jobIdsForJabatan, // Tambahkan id_job ke hasil
-      tanggal_selesai: tanggal_selesai, // Tambahkan tanggal_selesai ke hasil
-      isExpired: isExpired, // Tambahkan isExpired ke hasil
+      id_jobs: jobIdsForJabatan,
+      tanggal_permintaan: mostRecentTanggalPermintaan,
+      tanggal_selesai: tanggal_selesai,
+      isExpired: isExpired,
     };
   });
+
+  // Sort by tanggal_permintaan in descending order
+  formattedResult.sort(
+    (a, b) => b.tanggal_permintaan.getTime() - a.tanggal_permintaan.getTime(),
+  );
 
   // Filter jabatan yang memiliki pegawai
   return formattedResult.filter((jabatan) => jabatan.jumlah_pegawai > 0);
 };
+
 const page = async () => {
   const session = await getSession();
   const user = session?.user;
@@ -162,6 +179,7 @@ const page = async () => {
             <TableHead className="text-center">Divisi</TableHead>
             <TableHead className="text-center">Jumlah Pelamar</TableHead>
             <TableHead className="text-center">Jumlah Permintaan</TableHead>
+            <TableHead className="text-center">Tanggal Permintaan</TableHead>
             <TableHead className="text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -175,6 +193,9 @@ const page = async () => {
                 <TableCell>{res.nama_divisi}</TableCell>
                 <TableCell>{res.jumlah_pelamar} Pelamar</TableCell>
                 <TableCell>{res.jumlah_pegawai} Pegawai</TableCell>
+                <TableCell>
+                  {new Date(res.tanggal_permintaan).toLocaleDateString()}
+                </TableCell>
                 <TableCell>
                   {res.isExpired ? (
                     <span className="text-red-500">Ditutup</span>
