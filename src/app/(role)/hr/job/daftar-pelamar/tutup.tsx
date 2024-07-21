@@ -36,6 +36,11 @@ const getJobDetails = async () => {
           id_permintaan: true,
           jumlah_pegawai: true,
           tanggal_permintaan: true,
+          pegawai: {
+            select: {
+              id_pegawai: true,
+            },
+          },
           persyaratan: {
             select: {
               id_job: true,
@@ -67,7 +72,6 @@ const getJobDetails = async () => {
       id_job: {
         in: jobIds,
       },
-      screening_approved: true,
     },
     _count: {
       id: true,
@@ -105,6 +109,13 @@ const getJobDetails = async () => {
         (tanggal) => new Date(tanggal) < new Date(),
       );
 
+      const statusPermintaan =
+        permintaan.pegawai.length === 0
+          ? "Selesai"
+          : isExpired
+            ? "Ditutup"
+            : "";
+
       return {
         id_jabatan: jabatan.id_jabatan,
         nama_jabatan: jabatan.nama_jabatan,
@@ -114,7 +125,7 @@ const getJobDetails = async () => {
         id_jobs: jobIdsForPermintaan,
         tanggal_permintaan: permintaan.tanggal_permintaan,
         tanggal_selesai: tanggal_selesai,
-        isExpired: isExpired,
+        statusPermintaan: statusPermintaan,
       };
     }),
   );
@@ -144,7 +155,7 @@ const page = async () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Penilaian Pelamar</BreadcrumbPage>
+              <BreadcrumbPage>Screening Daftar Pelamar</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -152,7 +163,7 @@ const page = async () => {
 
       <div className="text-center">
         <H1 className="text-3xl font-extrabold text-gray-800">
-          Penilaian Pelamar <br /> Setiap Jabatan
+          Screening Daftar Pelamar <br /> Setiap Jabatan
         </H1>
       </div>
 
@@ -182,16 +193,14 @@ const page = async () => {
                   {new Date(res.tanggal_permintaan).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  {res.isExpired ? (
-                    <Button asChild>
-                      <Link href={`/hr/keputusan/${res.id_jobs.join(",")}`}>
-                        Lihat Keputusan
-                      </Link>
-                    </Button>
+                  {res.statusPermintaan ? (
+                    <span className="text-red-500">{res.statusPermintaan}</span>
                   ) : (
                     <Button asChild>
-                      <Link href={`/hr/penilaian/${res.id_jobs.join(",")}`}>
-                        Nilai Pelamar
+                      <Link
+                        href={`/hr/job/daftar-pelamar/${res.id_jobs.join(",")}`}
+                      >
+                        Lihat Pelamar
                       </Link>
                     </Button>
                   )}

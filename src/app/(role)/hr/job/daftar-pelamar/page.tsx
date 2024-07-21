@@ -33,6 +33,7 @@ const getJobDetails = async () => {
       },
       permintaans: {
         select: {
+          id_permintaan: true,
           jumlah_pegawai: true,
           tanggal_permintaan: true,
           persyaratan: {
@@ -82,62 +83,45 @@ const getJobDetails = async () => {
     {} as Record<number, number>,
   );
 
-  const formattedResult = jobDetails.map((jabatan) => {
-    const jobIdsForJabatan = jabatan.permintaans.flatMap((permintaan) =>
-      permintaan.persyaratan
+  const formattedResult = jobDetails.flatMap((jabatan) =>
+    jabatan.permintaans.map((permintaan) => {
+      const jobIdsForPermintaan = permintaan.persyaratan
         .filter((persyaratan) => persyaratan.job?.approved === true)
         .map((persyaratan) => persyaratan.id_job)
-        .filter((id): id is number => id !== null),
-    );
+        .filter((id): id is number => id !== null);
 
-    const jumlah_pelamar = jobIdsForJabatan.reduce(
-      (acc: number, id_job: number) => acc + (pelamarMap[id_job] || 0),
-      0,
-    );
+      const jumlah_pelamar = jobIdsForPermintaan.reduce(
+        (acc: number, id_job: number) => acc + (pelamarMap[id_job] || 0),
+        0,
+      );
 
-    const tanggal_selesai = jabatan.permintaans.flatMap((permintaan) =>
-      permintaan.persyaratan
+      const tanggal_selesai = permintaan.persyaratan
         .filter((persyaratan) => persyaratan.job?.approved === true)
         .map((persyaratan) => persyaratan.job?.tanggal_selesai)
-        .filter((tanggal): tanggal is Date => tanggal !== null),
-    );
+        .filter((tanggal): tanggal is Date => tanggal !== null);
 
-    const isExpired = tanggal_selesai.some(
-      (tanggal) => new Date(tanggal) < new Date(),
-    );
+      const isExpired = tanggal_selesai.some(
+        (tanggal) => new Date(tanggal) < new Date(),
+      );
 
-    // Get the most recent tanggal_permintaan for sorting purposes
-    const mostRecentTanggalPermintaan = jabatan.permintaans.reduce(
-      (acc: Date, permintaan) =>
-        new Date(permintaan.tanggal_permintaan) > acc
-          ? new Date(permintaan.tanggal_permintaan)
-          : acc,
-      new Date(0),
-    );
+      return {
+        id_jabatan: jabatan.id_jabatan,
+        nama_jabatan: jabatan.nama_jabatan,
+        nama_divisi: jabatan.divisi.nama_divisi,
+        jumlah_pegawai: permintaan.jumlah_pegawai,
+        jumlah_pelamar: jumlah_pelamar,
+        id_jobs: jobIdsForPermintaan,
+        tanggal_permintaan: permintaan.tanggal_permintaan,
+        tanggal_selesai: tanggal_selesai,
+        isExpired: isExpired,
+      };
+    }),
+  );
 
-    return {
-      id_jabatan: jabatan.id_jabatan,
-      nama_jabatan: jabatan.nama_jabatan,
-      nama_divisi: jabatan.divisi.nama_divisi,
-      jumlah_pegawai: jabatan.permintaans.reduce(
-        (acc: number, permintaan: { jumlah_pegawai: number }) =>
-          acc + permintaan.jumlah_pegawai,
-        0,
-      ),
-      jumlah_pelamar: jumlah_pelamar,
-      id_jobs: jobIdsForJabatan,
-      tanggal_permintaan: mostRecentTanggalPermintaan,
-      tanggal_selesai: tanggal_selesai,
-      isExpired: isExpired,
-    };
-  });
-
-  // Sort by tanggal_permintaan in descending order
   formattedResult.sort(
     (a, b) => b.tanggal_permintaan.getTime() - a.tanggal_permintaan.getTime(),
   );
 
-  // Filter jabatan yang memiliki pegawai
   return formattedResult.filter((jabatan) => jabatan.jumlah_pegawai > 0);
 };
 
@@ -185,9 +169,9 @@ const page = async () => {
         </TableHeader>
         <TableBody>
           {jobDetails
-            .filter((res) => res.id_jobs.length > 0) // Filter untuk memastikan id_jobs ada
+            .filter((res) => res.id_jobs.length > 0)
             .map((res, index) => (
-              <TableRow key={res.id_jabatan} className="text-center">
+              <TableRow key={index} className="text-center">
                 <TableCell className="font-bold">{index + 1}</TableCell>
                 <TableCell>{res.nama_jabatan}</TableCell>
                 <TableCell>{res.nama_divisi}</TableCell>
@@ -201,7 +185,9 @@ const page = async () => {
                     <span className="text-red-500">Ditutup</span>
                   ) : (
                     <Button asChild>
-                      <Link href={`/hr/job/daftar-pelamar/${res.id_jobs}`}>
+                      <Link
+                        href={`/hr/job/daftar-pelamar/${res.id_jobs.join(",")}`}
+                      >
                         Lihat Pelamar
                       </Link>
                     </Button>
