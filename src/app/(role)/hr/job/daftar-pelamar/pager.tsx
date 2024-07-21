@@ -36,11 +36,6 @@ const getJobDetails = async () => {
           id_permintaan: true,
           jumlah_pegawai: true,
           tanggal_permintaan: true,
-          pegawai: {
-            select: {
-              id_pegawai: true,
-            },
-          },
           persyaratan: {
             select: {
               id_job: true,
@@ -109,13 +104,6 @@ const getJobDetails = async () => {
         (tanggal) => new Date(tanggal) < new Date(),
       );
 
-      const statusPermintaan =
-        permintaan.pegawai.length === 0
-          ? "Selesai"
-          : isExpired
-            ? "Ditutup"
-            : "";
-
       return {
         id_jabatan: jabatan.id_jabatan,
         nama_jabatan: jabatan.nama_jabatan,
@@ -125,7 +113,7 @@ const getJobDetails = async () => {
         id_jobs: jobIdsForPermintaan,
         tanggal_permintaan: permintaan.tanggal_permintaan,
         tanggal_selesai: tanggal_selesai,
-        statusPermintaan: statusPermintaan,
+        isExpired: isExpired,
       };
     }),
   );
@@ -193,8 +181,8 @@ const page = async () => {
                   {new Date(res.tanggal_permintaan).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  {res.statusPermintaan ? (
-                    <span className="text-red-500">{res.statusPermintaan}</span>
+                  {res.isExpired ? (
+                    <span className="text-red-500">Ditutup</span>
                   ) : (
                     <Button asChild>
                       <Link

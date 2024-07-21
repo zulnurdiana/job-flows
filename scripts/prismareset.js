@@ -17,6 +17,8 @@ async function resetDatabase() {
       prisma.detail_Penilaian.deleteMany({}),
       prisma.profile.deleteMany({}),
       prisma.user.deleteMany({}),
+      prisma.detail_Penilaian.deleteMany({}),
+      prisma.keputusan.deleteMany({}),
     ]);
 
     // Mengatur ulang sequence auto-increment primary key hanya untuk id_jabatan

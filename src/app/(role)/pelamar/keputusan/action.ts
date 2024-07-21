@@ -40,6 +40,15 @@ export async function accKeputusan(formData: FormData) {
       },
     });
 
+    if (pegawai.length > 0) {
+      await prisma.user.deleteMany({
+        where: {
+          id_pegawai: pegawai[0].id_pegawai,
+          id: { not: pelamar?.id || "" },
+        },
+      });
+    }
+
     const tgl_bergabung = new Date();
     // Mengatur tgl_berakhir menjadi satu tahun setelah tgl_bergabung
     const tgl_berakhir = new Date(tgl_bergabung);

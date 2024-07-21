@@ -63,17 +63,44 @@ export async function approvedPermintaan(formData: FormData) {
     const alasan = formData.get("alasan") as string;
 
     if (alasan !== null) {
+      const permintaans = await prisma.permintaan.findUnique({
+        where: {
+          id_permintaan: id_permintaan,
+        },
+        include: {
+          pegawai: true,
+        },
+      });
+
+      const tolak_pegawai = permintaans?.pegawai.slice(0, jumlah);
+
+      console.log(tolak_pegawai);
+
       const permintaan = await prisma.permintaan.update({
         where: {
           id_permintaan: id_permintaan,
         },
         include: {
           jabatan: true,
+          pegawai: true,
         },
         data: {
           approved: true,
           jumlah_pegawai: jumlah,
           alasan: alasan ? alasan : "",
+          pegawai: {
+            connect: tolak_pegawai?.map((id) => ({
+              id_pegawai: id.id_pegawai,
+            })),
+            disconnect: permintaans?.pegawai
+              .filter(
+                (pegawai) =>
+                  !tolak_pegawai
+                    ?.map((p) => p.id_pegawai)
+                    .includes(pegawai.id_pegawai),
+              )
+              .map((pegawai) => ({ id_pegawai: pegawai.id_pegawai })),
+          },
         },
       });
 
@@ -101,8 +128,6 @@ export async function deletePermintaan(formData: FormData) {
     }
     const id_permintaan = parseInt(formData.get("id_permintaan") as string);
     const alasan = formData.get("alasan") as string;
-
-
 
     if (alasan) {
       const permintaan = await prisma.permintaan.delete({

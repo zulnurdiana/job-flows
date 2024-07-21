@@ -36,6 +36,11 @@ const getJobDetails = async () => {
           id_permintaan: true,
           jumlah_pegawai: true,
           tanggal_permintaan: true,
+          pegawai: {
+            select: {
+              id_pegawai: true,
+            },
+          },
           persyaratan: {
             select: {
               id_job: true,
@@ -84,38 +89,47 @@ const getJobDetails = async () => {
   );
 
   const formattedResult = jobDetails.flatMap((jabatan) =>
-    jabatan.permintaans.map((permintaan) => {
-      const jobIdsForPermintaan = permintaan.persyaratan
-        .filter((persyaratan) => persyaratan.job?.approved === true)
-        .map((persyaratan) => persyaratan.id_job)
-        .filter((id): id is number => id !== null);
+    jabatan.permintaans
+      .map((permintaan) => {
+        const jobIdsForPermintaan = permintaan.persyaratan
+          .filter((persyaratan) => persyaratan.job?.approved === true)
+          .map((persyaratan) => persyaratan.id_job)
+          .filter((id): id is number => id !== null);
 
-      const jumlah_pelamar = jobIdsForPermintaan.reduce(
-        (acc: number, id_job: number) => acc + (pelamarMap[id_job] || 0),
-        0,
-      );
+        const jumlah_pelamar = jobIdsForPermintaan.reduce(
+          (acc: number, id_job: number) => acc + (pelamarMap[id_job] || 0),
+          0,
+        );
 
-      const tanggal_selesai = permintaan.persyaratan
-        .filter((persyaratan) => persyaratan.job?.approved === true)
-        .map((persyaratan) => persyaratan.job?.tanggal_selesai)
-        .filter((tanggal): tanggal is Date => tanggal !== null);
+        const tanggal_selesai = permintaan.persyaratan
+          .filter((persyaratan) => persyaratan.job?.approved === true)
+          .map((persyaratan) => persyaratan.job?.tanggal_selesai)
+          .filter((tanggal): tanggal is Date => tanggal !== null);
 
-      const isExpired = tanggal_selesai.some(
-        (tanggal) => new Date(tanggal) < new Date(),
-      );
+        const isExpired = tanggal_selesai.some(
+          (tanggal) => new Date(tanggal) < new Date(),
+        );
 
-      return {
-        id_jabatan: jabatan.id_jabatan,
-        nama_jabatan: jabatan.nama_jabatan,
-        nama_divisi: jabatan.divisi.nama_divisi,
-        jumlah_pegawai: permintaan.jumlah_pegawai,
-        jumlah_pelamar: jumlah_pelamar,
-        id_jobs: jobIdsForPermintaan,
-        tanggal_permintaan: permintaan.tanggal_permintaan,
-        tanggal_selesai: tanggal_selesai,
-        isExpired: isExpired,
-      };
-    }),
+        const statusPermintaan =
+          permintaan.pegawai.length === 0
+            ? "Selesai"
+            : isExpired
+              ? "Ditutup"
+              : "";
+
+        return {
+          id_jabatan: jabatan.id_jabatan,
+          nama_jabatan: jabatan.nama_jabatan,
+          nama_divisi: jabatan.divisi.nama_divisi,
+          jumlah_pegawai: permintaan.jumlah_pegawai,
+          jumlah_pelamar: jumlah_pelamar,
+          id_jobs: jobIdsForPermintaan,
+          tanggal_permintaan: permintaan.tanggal_permintaan,
+          tanggal_selesai: tanggal_selesai,
+          statusPermintaan: statusPermintaan,
+        };
+      })
+      .filter((permintaan) => permintaan.statusPermintaan !== "Selesai"),
   );
 
   formattedResult.sort(
@@ -181,8 +195,8 @@ const page = async () => {
                   {new Date(res.tanggal_permintaan).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  {res.isExpired ? (
-                    <span className="text-red-500">Ditutup</span>
+                  {res.statusPermintaan ? (
+                    <span className="text-red-500">{res.statusPermintaan}</span>
                   ) : (
                     <Button asChild>
                       <Link
