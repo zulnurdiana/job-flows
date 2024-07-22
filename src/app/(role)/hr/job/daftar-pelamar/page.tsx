@@ -89,47 +89,45 @@ const getJobDetails = async () => {
   );
 
   const formattedResult = jobDetails.flatMap((jabatan) =>
-    jabatan.permintaans
-      .map((permintaan) => {
-        const jobIdsForPermintaan = permintaan.persyaratan
-          .filter((persyaratan) => persyaratan.job?.approved === true)
-          .map((persyaratan) => persyaratan.id_job)
-          .filter((id): id is number => id !== null);
+    jabatan.permintaans.map((permintaan) => {
+      const jobIdsForPermintaan = permintaan.persyaratan
+        .filter((persyaratan) => persyaratan.job?.approved === true)
+        .map((persyaratan) => persyaratan.id_job)
+        .filter((id): id is number => id !== null);
 
-        const jumlah_pelamar = jobIdsForPermintaan.reduce(
-          (acc: number, id_job: number) => acc + (pelamarMap[id_job] || 0),
-          0,
-        );
+      const jumlah_pelamar = jobIdsForPermintaan.reduce(
+        (acc: number, id_job: number) => acc + (pelamarMap[id_job] || 0),
+        0,
+      );
 
-        const tanggal_selesai = permintaan.persyaratan
-          .filter((persyaratan) => persyaratan.job?.approved === true)
-          .map((persyaratan) => persyaratan.job?.tanggal_selesai)
-          .filter((tanggal): tanggal is Date => tanggal !== null);
+      const tanggal_selesai = permintaan.persyaratan
+        .filter((persyaratan) => persyaratan.job?.approved === true)
+        .map((persyaratan) => persyaratan.job?.tanggal_selesai)
+        .filter((tanggal): tanggal is Date => tanggal !== null);
 
-        const isExpired = tanggal_selesai.some(
-          (tanggal) => new Date(tanggal) < new Date(),
-        );
+      const isExpired = tanggal_selesai.some(
+        (tanggal) => new Date(tanggal) < new Date(),
+      );
 
-        const statusPermintaan =
-          permintaan.pegawai.length === 0
-            ? "Selesai"
-            : isExpired
-              ? "Ditutup"
-              : "";
+      const statusPermintaan =
+        permintaan.pegawai.length === 0
+          ? "Selesai"
+          : isExpired
+            ? "Ditutup"
+            : "";
 
-        return {
-          id_jabatan: jabatan.id_jabatan,
-          nama_jabatan: jabatan.nama_jabatan,
-          nama_divisi: jabatan.divisi.nama_divisi,
-          jumlah_pegawai: permintaan.jumlah_pegawai,
-          jumlah_pelamar: jumlah_pelamar,
-          id_jobs: jobIdsForPermintaan,
-          tanggal_permintaan: permintaan.tanggal_permintaan,
-          tanggal_selesai: tanggal_selesai,
-          statusPermintaan: statusPermintaan,
-        };
-      })
-      .filter((permintaan) => permintaan.statusPermintaan !== "Selesai"),
+      return {
+        id_jabatan: jabatan.id_jabatan,
+        nama_jabatan: jabatan.nama_jabatan,
+        nama_divisi: jabatan.divisi.nama_divisi,
+        jumlah_pegawai: permintaan.jumlah_pegawai,
+        jumlah_pelamar: jumlah_pelamar,
+        id_jobs: jobIdsForPermintaan,
+        tanggal_permintaan: permintaan.tanggal_permintaan,
+        tanggal_selesai: tanggal_selesai,
+        statusPermintaan: statusPermintaan,
+      };
+    }),
   );
 
   formattedResult.sort(
@@ -178,7 +176,7 @@ const page = async () => {
             <TableHead className="text-center">Jumlah Pelamar</TableHead>
             <TableHead className="text-center">Jumlah Permintaan</TableHead>
             <TableHead className="text-center">Tanggal Permintaan</TableHead>
-            <TableHead className="text-center">Action</TableHead>
+            <TableHead className="text-center">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -195,8 +193,14 @@ const page = async () => {
                   {new Date(res.tanggal_permintaan).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  {res.statusPermintaan ? (
-                    <span className="text-red-500">{res.statusPermintaan}</span>
+                  {res.statusPermintaan === "Selesai" ? (
+                    <span className="text-green-500 italic">
+                      {res.statusPermintaan}
+                    </span>
+                  ) : res.statusPermintaan === "Ditutup" ? (
+                    <span className="text-red-500 italic">
+                      {res.statusPermintaan}
+                    </span>
                   ) : (
                     <Button asChild>
                       <Link

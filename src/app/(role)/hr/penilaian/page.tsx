@@ -36,6 +36,11 @@ const getJobDetails = async () => {
           id_permintaan: true,
           jumlah_pegawai: true,
           tanggal_permintaan: true,
+          pegawai: {
+            select: {
+              id_pegawai: true,
+            },
+          },
           persyaratan: {
             select: {
               id_job: true,
@@ -105,6 +110,8 @@ const getJobDetails = async () => {
         (tanggal) => new Date(tanggal) < new Date(),
       );
 
+      const statusPermintaan = permintaan.pegawai.length === 0 ? "Selesai" : "";
+
       return {
         id_jabatan: jabatan.id_jabatan,
         nama_jabatan: jabatan.nama_jabatan,
@@ -114,6 +121,7 @@ const getJobDetails = async () => {
         id_jobs: jobIdsForPermintaan,
         tanggal_permintaan: permintaan.tanggal_permintaan,
         tanggal_selesai: tanggal_selesai,
+        statusPermintaan: statusPermintaan,
         isExpired: isExpired,
       };
     }),
@@ -165,7 +173,7 @@ const page = async () => {
             <TableHead className="text-center">Jumlah Pelamar</TableHead>
             <TableHead className="text-center">Jumlah Permintaan</TableHead>
             <TableHead className="text-center">Tanggal Permintaan</TableHead>
-            <TableHead className="text-center">Action</TableHead>
+            <TableHead className="text-center">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -181,8 +189,11 @@ const page = async () => {
                 <TableCell>
                   {new Date(res.tanggal_permintaan).toLocaleDateString()}
                 </TableCell>
+
                 <TableCell>
-                  {res.isExpired ? (
+                  {res.statusPermintaan === "Selesai" ? (
+                    <span className="text-green-500 italic">Selesai</span>
+                  ) : res.isExpired ? (
                     <Button asChild>
                       <Link href={`/hr/keputusan/${res.id_jobs.join(",")}`}>
                         Lihat Keputusan

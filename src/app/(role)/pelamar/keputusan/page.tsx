@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/table";
 import prisma from "@/lib/prisma";
 import ButtonKeputusan from "./ButtonKeputusan";
+import LoadingKeputusan from "@/assets/loading.svg";
+import Image from "next/image";
 
 const page = async () => {
   const session = await getSession();
@@ -68,7 +70,7 @@ const page = async () => {
   });
 
   return (
-    <div className="max-w-5xl mx-auto my-4 space-y-4 rounded-lg min-h-[400px] px-4">
+    <div className="max-w-5xl mx-auto my-6 rounded-lg min-h-[400px] px-4">
       <Breadcrumb className="bg-gray-100 p-4 rounded-lg">
         <BreadcrumbList className="flex space-x-2 text-gray-600">
           <BreadcrumbItem>
@@ -84,42 +86,61 @@ const page = async () => {
 
       <H1 className="text-start">Hasil Penerimaan Pegawai</H1>
       <span>
-        Berikut adalah hasil nilai dan keputusan yang sudah dinilai oleh pihak
-        HR Recruitment
+        Berikut adalah hasil dan keputusan yang sudah dinilai oleh pihak HR
+        Recruitment
       </span>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Jabatan</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>
-              {keputusan?.status === "Onboarding" ||
-              keputusan?.status === "Rejected" ||
-              keputusan?.status === "Offering"
-                ? "Pesan"
-                : "Action"}
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell>{lowongan?.title}</TableCell>
-            <TableCell>{keputusan?.status}</TableCell>
-            <TableCell className="flex items-center gap-3 w-2/4">
-              {keputusan?.status === "Onboarding" && (
-                <div className="text-green-500">{`Selamat ${pelamar?.name} Anda telah diterima oleh pihak HR pada jabatan ${lowongan?.title}`}</div>
-              )}
-              {keputusan?.status === "Offering" && (
-                <ButtonKeputusan keputusan={keputusan} />
-              )}
-              {keputusan?.status === "Rejected" && (
-                <div className="text-red-500">{`Mohon maaf ${pelamar?.name} Anda tidak diterima tetap semangat ya.`}</div>
-              )}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      {pelamar?.id_job === null ? (
+        <div className="font-mono text-red-500">
+          Belum ada lowongan yang dilamar
+        </div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Jabatan</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>
+                {keputusan?.status === "Onboarding" ||
+                keputusan?.status === "Rejected" ||
+                keputusan?.status === "Offering"
+                  ? "Pesan"
+                  : "Action"}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>{lowongan?.title}</TableCell>
+              <TableCell>
+                {keputusan?.status ? (
+                  keputusan?.status
+                ) : (
+                  <Image
+                    src={LoadingKeputusan}
+                    width={50}
+                    height={50}
+                    alt="loading"
+                  />
+                )}
+              </TableCell>
+              <TableCell className="flex items-center gap-3 w-2/4 text-justify">
+                {keputusan?.status === "Onboarding" && (
+                  <div className="text-green-500">{`Selamat ${pelamar?.name} Anda telah diterima oleh pihak HR pada jabatan ${lowongan?.title}`}</div>
+                )}
+                {keputusan?.status === "Offering" && (
+                  <ButtonKeputusan keputusan={keputusan} />
+                )}
+                {keputusan?.status === "Rejected" && (
+                  <div className="text-red-500">{`Mohon maaf ${pelamar?.name} Anda tidak diterima tetap semangat ya.`}</div>
+                )}
+                {!keputusan?.status && (
+                  <div className="text-blue-500">{`Sedang dalam proses penilaian, harap menunggu`}</div>
+                )}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 };
